@@ -1,0 +1,149 @@
+<html xmlns:java="http://xml.apache.org/xslt/java">
+<head id="oms_oxml_schema_pivot2">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Pivot Table Structure</title>
+<!--Generated with Help Tools v. 5.1.4x
+-->
+<script src="help.js" type="text/javascript"></script><script src="help-screen-reader.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">if (typeof top.modulesLocation == "undefined") { top.modulesLocation = "../../modules.js"; }
+    </script><script type="text/javascript">document.write("<SCRIPT type='text/javascript' src='" + top.modulesLocation + "'><" + "/SCRIPT" + ">");
+</script>
+</head>
+<script type="text/javascript">
+<!--
+              if (parent == self) { //no parent, so need to create frameset
+                loadFrames('oms_oxml_schema_pivot2.htm');
+              }
+              //--></script>
+<body onload="javascript:sync_toc('N20791')">
+<noscript>
+<div class="scripthelp">
+<table border="0" frame="0">
+<tr>
+<td style="vertical-align:top"><img alt="" src="images/warning.gif"></td><td>
+<p style="font-size:larger;">Note: your browser is configured to prevent scripts from running. This online documentation
+                  relies on scripts for navigation, table of contents, search, and other features. To make full
+                  use of the documentation, adjust your browser settings to allow scripts to run. See
+                  <a href="_script_help.htm" target="scripthelp">Adjusting browser settings</a> for more information.</p>
+</td>
+</tr>
+</table>
+</div>
+</noscript>
+<div class="navbuttons" id="navbuttons">
+<a accesskey="p" class="backbutton" id="backlayer" onMouseOut="document.getElementById('backbutton').src='images/help_back.png';" onMouseUp="document.getElementById('backbutton').src='images/help_back2.png';" onMouseDown="document.getElementById('backbutton').src='images/help_back3.png';" onMouseOver="document.getElementById('backbutton').src='images/help_back2.png';" href="oms_oxml_schema_pivot1.htm">Previous<img alt="(P)revious: oms_oxml_schema_pivot1" border="none" id="backbutton" src="images/help_back.png"></a>
+</div>
+<DIV id="navtrail" class="navtrail">
+<A HREF="oms_oxml_schema_intro.htm">Output XML Schema</A> &gt; <A HREF="oms_oxml_schema_elements.htm">Elements</A> &gt; </DIV>
+<h1>Pivot Table Structure</h1>
+<p class="body">Pivot tables have a completely hierarchical structure
+in OXML. The small Regression Coefficients table below shows how a
+rectangular pivot table becomes a tree structure.</p>
+<div class="figurecaption">Regression Coefficients pivot table</div>
+<div class="imageblock">
+<img alt="Regression Coefficients pivot table" src="images/oms_oxml_table_structure2.gif"></div>
+<p class="body">Here is the same table with the column dimension
+pivoted to become the last row dimension. Dimension names that are
+normally hidden have been shown as well.</p>
+<div class="figurecaption">Statistics rotated into row dimension</div>
+<div class="imageblock">
+<img alt="Statistics rotated into row dimension" src="images/oms_oxml_table_structure3.gif"></div>
+<p class="body">A tree structure can be seen in this pivot. The
+dimension name "Model" is the root; its children are the model numbers
+(of which there is only one in this example). Each model number has
+one child: the "Variables" dimension. </p>
+<p class="body">The OXML fragment below represents the same table
+and illustrates the elements that compose a <span class="code">&lt;pivotTable&gt;</span> element.</p>
+<p class="bullet">&bull;&nbsp;A <span class="code">&lt;dimension&gt;</span> element will have a sequence of children which may be <span class="code">&lt;group&gt;</span> elements or <span class="code">&lt;category&gt;</span> elements. The dimensions in our example
+table are "Model", "Variables", and "Statistics."</p>
+<p class="bullet">&bull;&nbsp;A <span class="code">&lt;group&gt;</span> element is a non-leaf node in a dimension's tree. It can have any
+number of children, and each one can be either a <span class="code">&lt;group&gt;</span> or a <span class="code">&lt;category&gt;</span>. The "Statistics" dimension in the example contains two groups:
+"Unstandardized Coefficients" and "Standardized Coefficients."</p>
+<p class="bullet">&bull;&nbsp;A <span class="code">&lt;category&gt;</span> element is a leaf node in a dimension's tree. It can have only one
+child: either a <span class="code">&lt;cell&gt;</span> or
+another <span class="code">&lt;dimension&gt;</span>. In the
+example, the dimension "Model" has one category, named "1". Other
+categories in the example are "Sig.", "(Constant)", and "B."</p>
+<p class="bullet">&bull;&nbsp;A <span class="code">&lt;cell&gt;</span> element represents a cell in the pivot table body. It can have footnotes
+as children, but no other children. In the example table after pivoting,
+all the cells, and only the cells, are in the last column on the right.</p>
+<h2>Example XML</h2>
+<pre class="syntaxcompactblock">
+&lt;pivotTable subType="Coefficients" text="Coefficients"&gt;
+ &lt;footnote&gt;
+  &lt;note text="Dependent Variable: salary Current Salary"/&gt;
+ &lt;/footnote&gt;
+ &lt;dimension axis="row" text="Model"&gt;
+  &lt;category number="1" text="1"&gt;
+   &lt;dimension axis="row" text="Variables"&gt;
+    &lt;category text="(Constant)"&gt;
+     &lt;dimension axis="column" text="Statistics"&gt;
+      &lt;group text="Unstandardized Coefficients"&gt;
+       &lt;category text="B"&gt;
+        &lt;cell decimals="3"  format="g" number="1928.2057573545" text="1928.206"/&gt;
+       &lt;/category&gt;
+       &lt;category text="Std. Error"&gt;
+        &lt;cell decimals="3" number="888.67985268068" text="888.680"/&gt;
+       &lt;/category&gt;
+      &lt;/group&gt;
+      &lt;category text="t"&gt;
+       &lt;cell decimals="3" number="2.1697417259299" text="2.170"/&gt;
+      &lt;/category&gt;
+      &lt;category text="Sig."&gt;
+       &lt;cell decimals="3" number="0.030524621952912" text=".031"/&gt;
+      &lt;/category&gt;
+     &lt;/dimension&gt;
+    &lt;/category&gt;
+    &lt;category label="Beginning Salary" text="Beginning Salary" varName="salbegin" variable="true"&gt;
+     &lt;dimension axis="column" text="Statistics"&gt;
+      &lt;group text="Unstandardized Coefficients"&gt;
+       &lt;category text="B"&gt;
+        &lt;cell decimals="3"  format="g" number="1.909449729068" text="1.909"/&gt;
+       &lt;/category&gt;
+       &lt;category text="Std. Error"&gt;
+        &lt;cell decimals="3" number="0.047409681743933" text=".047"/&gt;
+       &lt;/category&gt;
+      &lt;/group&gt;
+      &lt;group text="Standardized Coefficients"&gt;
+       &lt;category text="Beta"&gt;
+        &lt;cell decimals="3" number="0.88011746559995" text=".880"/&gt;
+       &lt;/category&gt;
+      &lt;/group&gt;
+      &lt;category text="t"&gt;
+       &lt;cell decimals="3" number="40.275523033063" text="40.276"/&gt;
+      &lt;/category&gt;
+      &lt;category text="Sig."&gt;
+       &lt;cell decimals="3" number="8.2032224019992e-155" text=".000"/&gt;
+      &lt;/category&gt;
+     &lt;/dimension&gt;
+    &lt;/category&gt;
+   &lt;/dimension&gt;
+  &lt;/category&gt;
+  &lt;/dimension&gt;
+&lt;/pivotTable&gt;
+</pre>
+<div id="related_topics">
+<h2>Related Topics</h2>
+<div class="link">
+<a href="oms_oxml_schema_intro.htm">Output XML Schema</a>
+</div>
+<div class="link">
+<a href="oms_oxml_schema_common.htm">Common Attributes</a>
+</div>
+<div class="link">
+<a href="oms_oxml_schema_elements.htm">Elements</a>
+</div>
+<div class="link">
+<a href="oms_oxml_schema_pivot1.htm">Pivot Table Child Elements</a>
+</div>
+</div>
+<div class="copyright">&copy; Copyright IBM Corporation
+1989, 2013.</div>
+<script type="text/javascript">
+              filter_modules_topic();
+            </script>
+</body>
+</html>

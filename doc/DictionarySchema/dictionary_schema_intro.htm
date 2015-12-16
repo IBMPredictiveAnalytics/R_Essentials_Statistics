@@ -1,0 +1,111 @@
+<html xmlns:java="http://xml.apache.org/xslt/java">
+<head id="dictionary_schema_intro">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Dictionary Schema Overview</title>
+<!--Generated with Help Tools v. 5.1.4x
+-->
+<script src="help.js" type="text/javascript"></script><script src="help-screen-reader.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">if (typeof top.modulesLocation == "undefined") { top.modulesLocation = "../../modules.js"; }
+    </script><script type="text/javascript">document.write("<SCRIPT type='text/javascript' src='" + top.modulesLocation + "'><" + "/SCRIPT" + ">");
+</script>
+</head>
+<script type="text/javascript">
+<!--
+              if (parent == self) { //no parent, so need to create frameset
+                loadFrames('dictionary_schema_intro.htm');
+              }
+              //--></script>
+<body onload="javascript:sync_toc('N20750')">
+<noscript>
+<div class="scripthelp">
+<table border="0" frame="0">
+<tr>
+<td style="vertical-align:top"><img alt="" src="images/warning.gif"></td><td>
+<p style="font-size:larger;">Note: your browser is configured to prevent scripts from running. This online documentation
+                  relies on scripts for navigation, table of contents, search, and other features. To make full
+                  use of the documentation, adjust your browser settings to allow scripts to run. See
+                  <a href="_script_help.htm" target="scripthelp">Adjusting browser settings</a> for more information.</p>
+</td>
+</tr>
+</table>
+</div>
+</noscript>
+<div class="navbuttons" id="navbuttons">
+<a accesskey="n" class="nextbutton" id="nextlayer" onMouseOut="document.getElementById('nextbutton').src='images/help_next.png';" onMouseUp="document.getElementById('nextbutton').src='images/help_next2.png';" onMouseDown="document.getElementById('nextbutton').src='images/help_next3.png';" onMouseOver="document.getElementById('nextbutton').src='images/help_next2.png';" href="dictionary_element.htm"><img alt="(N)ext: dictionary_element" border="none" id="nextbutton" src="images/help_next.png">Next</a>
+</div>
+<DIV id="navtrail" class="navtrail">
+<A HREF="dictionary_schema_intro.htm">Dictionary Schema Overview</A> &gt; </DIV>
+<h1>Dictionary Schema Overview</h1>
+<p class="body">The dictionary schema is an XML representation of the IBM&reg; SPSS&reg; Statistics data dictionary. The data dictionary
+contains metadata that describes various properties of a data file.
+A copy of the dictionary schema, <span class="name">dictionary-1.0.xsd</span> is installed with SPSS Statistics. This
+section provides a general overview of the schema. Detailed schema
+documentation is provided in subsequent sections. The following figure
+shows a basic outline of the dictionary schema.</p>
+<div class="figurecaption">Outline of the dictionary schema</div>
+<pre class="codeblock">&lt;dictionary locale="string" rowCount="integer" creationDateTime="dateTime"&gt;
+  &lt;variable alignment="right" | "center" | "left"
+    displayWidth="integer" label="string" name="string" type="integer"    
+    measurmentLevel="nominal" | "ordinal" | "scale" | "unknown"&gt;
+    &lt;variableFormat decimals="integer" type="string" width="integer"/&gt;
+    &lt;variableWriteFormat decimals="integer" type="string" width="integer"/&gt;
+    &lt;missingValue data="lowest" | "highest" | "string" type="lowerBound" | "upperBound"/&gt;
+    &lt;attributeSet version="integer"&gt;
+      &lt;attribute name="string" type="user" | "system"&gt;
+        &lt;attributeValue value="string"/&gt;
+      &lt;/attribute&gt;
+    &lt;/attributeSet&gt;
+  &lt;/variable&gt;
+  &lt;weightVariable name="string"/&gt;
+  &lt;valueLabelSet&gt;
+    &lt;valueLabel label="string"/&gt;
+    &lt;valueLabelVariable name="string"/&gt;
+  &lt;/valueLabelSet&gt;
+  &lt;variableSet name="string"&gt;
+    &lt;variablesetVariable name="string"/&gt;
+  &lt;/variableSet&gt;
+  &lt;multipleResponseSet name="string"&gt;
+    &lt;multipleResponseSetCategoryLabels
+      value="variableLabels" | "countedValues"/&gt;
+    &lt;multipleResponseSetDichotomy value="string"/&gt;
+    &lt;multipleResponseSetLabelSource value="variableLabel"/&gt;
+    &lt;multipleResponseSetLabel value="string"/&gt;
+    &lt;multipleResponseSetVariable name="string"/&gt;
+  &lt;/multipleResponseSet&gt;
+  &lt;attributeSet version="integer"&gt;
+    &lt;attribute name="string" type="user" | "system"&gt;
+      &lt;attributeValue value="string"/&gt;
+    &lt;/attribute&gt;
+  &lt;/attributeSet&gt;
+&lt;/dictionary&gt;</pre>
+<div id="related_topics">
+<h2>Related Topics</h2>
+<div class="link">
+<a href="dictionary_element.htm">dictionary Element</a>
+</div>
+<div class="link">
+<a href="variable_element.htm">variable Element</a>
+</div>
+<div class="link">
+<a href="weightvariable_element.htm">weightVariable Element</a>
+</div>
+<div class="link">
+<a href="valuelabelset_element.htm">valueLabelSet Element</a>
+</div>
+<div class="link">
+<a href="multipleresponseset_element.htm">multipleResponseSet Element</a>
+</div>
+<div class="link">
+<a href="variableset_element.htm">variableSet Element</a>
+</div>
+</div>
+<div class="copyright">&copy; Copyright IBM Corporation
+1989, 2013.</div>
+<script type="text/javascript">
+              filter_modules_topic();
+            </script>
+</body>
+</html>

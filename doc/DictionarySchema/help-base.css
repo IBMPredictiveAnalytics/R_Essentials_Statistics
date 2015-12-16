@@ -1,0 +1,262 @@
+/************************************************************************
+** Licensed Materials - Property of IBM
+**
+** IBM SPSS Products: Documentation Tools
+**
+** (C) Copyright IBM Corp. 2000, 2011
+**
+** US Government Users Restricted Rights - Use, duplication or disclosure
+** restricted by GSA ADP Schedule Contract with IBM Corp.
+************************************************************************/
+
+/* This stylesheet contains default formatting information
+   for online help. Other formatting information can be found
+   in help-core.css and help-loc.css. 
+
+   This is the file to modify if you want to customize the
+   look and feel of the online help for a particular product. To
+   make a custom help stylesheet:
+
+	1. Make a copy of this file in the root directory of
+           your help project, preferably with a custom name
+           (e.g. spss-help.css).
+	2. Change style elements defined here as desired;
+	   note:*adding* elements not already present in this file
+           may cause problems, since such elements may conflict with
+           style information contained in help-core.css or
+           help-loc.css.
+	3. Add a "custom-stylesheet" attribute to your project
+           <build-help> element in your XML project file that
+           links to the custom version you created. For example:
+
+                <build-help target-html-dir="help"
+                            custom-stylesheet="spss-help.css"/>
+
+		4. After customizing the stylesheet, test it thoroughly
+           with supported browsers to make sure you are
+           getting the desired results.    
+
+*/
+
+<!--
+
+/* font sizes and colors
+***********************************/
+
+BODY {font-size:80%}	/* sets global baseline */
+
+H1 {font-size:1.5em; color:black}  /* #f26721 */
+H2 {font-size:1.3em; color:black}
+
+TABLE, TD, TH {font-size: 1em}		/* 1em = normal text */
+
+.index-search  /* Contents and Search panel text */
+	{ font-size:0.85em}
+
+.top, 			/* top-level toc entries */
+.tocindex,  	/* lower-level toc entries */
+.index,	 		/* index entries */
+.indexdiv 		/* search results */
+	{font-size: 1em} 
+	
+.navtrail 		/* navigation trail links */
+	{font-size:0.85em}
+
+.navbuttons  /* Previous and Next links */
+	{font-size:0.85em}
+
+.link 			/* Related Topics links */
+	{font-size:1em}
+
+
+/* hyperlink styles
+***********************************/
+
+/* global defaults */
+
+A:link {text-decoration:underline; color:blue}		/* unvisited  */
+A:visited {text-decoration:underline; color:purple}	/* visited */
+A:hover,	/* mouseover */
+A:active {text-decoration:underline; color:red}		/* click */
+
+/* persist unvisited color */
+.tocprintbutton A:visited {color:blue}
+
+/* remove underline */
+.tocprintbutton A:link,
+.tocprintbutton A:visited,
+.top A:link,
+.top A:visited,
+.tocindex A:link,
+.tocindex A:visited,
+.navtrail A:link,
+.navtrail A:visited,
+.navbuttons A:link,
+.navbuttons A:visited,
+.index A:link,
+.index A:visited,
+.link A:link,
+.link A:visited,
+.collapse_trigger A:link,
+.collapse_trigger A:visited,
+A.glossary-ref:link,
+A.glossary-ref:visited,
+A.linkref:link, 
+A.linkref:visited {text-decoration:none}
+
+/* restore underline for hover */
+.tocprintbutton A:hover,
+.tocprintbutton A:active,
+.top A:hover,
+.top A:active,
+.tocindex A:hover,
+.tocindex A:active,
+.navtrail A:hover,
+.navtrail A:active,
+.navbuttons A:hover,
+.navbuttons A:active,
+.index A:hover,
+.index A:active,
+.link A:hover,
+.link A:active,
+.collapse_trigger A:hover,
+.collapse_trigger A:active {text-decoration:underline}
+
+/* Popup links with dashed underlines */
+A.glossary-ref:link, 	/* popup glossary definitions */ 
+A.glossary-ref:visited,
+A.linkref:link,			/* popup biblio entries */ 
+A.linkref:visited {font-weight:bold; border-bottom:1px dashed}
+
+A.glossary-ref:hover, 
+A.glossary-ref:active,
+A.linkref:hover,
+A.linkref:active {color:red}
+
+/* disabled previous and next buttons */
+A.disabled {text-decoration:none; color:gray}
+A.disabled:hover {text-decoration:none; color:gray}
+
+/* navigation controls
+***********************************/
+
+/* this is the color scheme for the nav controls;
+   set the background and text color here and all
+   the nav controls should inherit the properties */
+
+.tabs {	
+	white-space:nowrap; 
+	line-height:2em;
+	margin:0px;
+	padding:0px;
+	background-color:#eee;
+	font-size:1em; 
+	}
+
+.fronttab {
+	display:inline; 
+	background-color:#eee;
+    color:black;
+	font-weight:bold;
+    padding:7px 5px 5px 5px;
+	border-style:solid;  
+	border-width:1px;
+    border-color:#eee #eee #eee #777;
+	}
+
+.backtab {	
+	padding:5px;
+	background-color:gray;
+	text-decoration:none;
+	font-weight:normal;
+	border-style:solid;  
+	border-width:1px;
+    border-color:gray #ccc #555 gray;
+	} 
+
+.backtab:link,  
+.backtab:visited {color:#eee; text-decoration:none}    
+.backtab:hover {color:blue; text-decoration:underline; background-color:white}
+.backtab:active {color:red; text-decoration:underline; background-color:white} 
+
+
+/* Contents and Search panels */
+.index-search {
+	padding:5px; 
+	vertical-align:bottom; 
+	border-bottom:1px solid gray; 
+	background-color:#eee; }
+
+/* Index panel */
+.indexsubtabs {
+	line-height:2em;
+	padding:7px 5px 7px 7px;
+	background-color:#eee; 
+	font-size:1em;
+	border-bottom:1px solid gray; 
+	}
+
+/*  alphabet buttons */
+.indexsubtab, 
+.indexsubtabselected {
+	padding:.3em .3em .3em .3em;
+	color:black; }
+
+/* unselected alphabet buttons */
+.indexsubtab {
+	border-top:1px solid white; 
+	border-right:1px solid gray; 
+	border-bottom:1px solid gray; 
+	border-left:1px solid white; 
+	background-color:#dbd9e6;}
+.indexsubtab:link, 
+.indexsubtab:visited {color:black; text-decoration:none;} 
+.indexsubtab:hover {color:black; background-color:white; text-decoration:none; border:1px solid blue; }   
+.indexsubtab:active {color:red; background-color:white; text-decoration:none; border:1px solid red; }  
+
+/* selected alphabet button */
+.indexsubtabselected {
+	border-top:1px solid #333; 
+	border-right:1px solid gray; 
+	border-bottom:1px solid gray; 
+	border-left:1px solid #000; 
+	background-color:white; 
+	font-weight:bold; }
+.indexsubtabselected:link, 
+.indexsubtabselected:visited {color:black; background-color:white; text-decoration:none} 
+.indexsubtabselected:hover {color:black; background-color:white; text-decoration:none; border:1px solid blue; }   
+.indexsubtabselected:active {color:red; background-color:white; text-decoration:none;border:1px solid red; }  
+
+/* toc and index entry highlights */
+.top a:focus,
+.top a:active,
+.tocindex a:focus,
+.tocindex a:active,
+.index a:focus,
+.index a:active { background-color:#ff9; border:1px solid #fc9}  
+
+/* pale yellow background */
+.codeblock,
+.htmlblock,
+.syntaxblock,
+.syntaxcompactblock,
+.collapsible_block,
+.scripthelp {background-color:#ffffe6}
+
+/* "screen" inline tag */
+.screen {font-weight:bold; color:#408080}
+
+
+/* full text search highlight */
+.searchhighlight {background-color:#ff9}
+
+
+/* have to override the default font for step-glyph, since Verdana doesn't
+  contain the glyph */
+.step-glyph {font-family:Arial,Helvetica,sans-serif}
+
+
+/* Note: Other styles moved to help-core.css*/
+
+-->
+

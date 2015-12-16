@@ -1,0 +1,61 @@
+<html xmlns:java="http://xml.apache.org/xslt/java">
+<head id="multipleResponsSetLabelSource_element">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>multipleResponseSetLabelSource Element</title>
+<!--Generated with Help Tools v. 5.1.4x
+-->
+<script src="help.js" type="text/javascript"></script><script src="help-screen-reader.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">if (typeof top.modulesLocation == "undefined") { top.modulesLocation = "../../modules.js"; }
+    </script><script type="text/javascript">document.write("<SCRIPT type='text/javascript' src='" + top.modulesLocation + "'><" + "/SCRIPT" + ">");
+</script>
+</head>
+<script type="text/javascript">
+<!--
+              if (parent == self) { //no parent, so need to create frameset
+                loadFrames('multipleresponssetlabelsource_element.htm');
+              }
+              //--></script>
+<body onload="javascript:sync_toc('N207AD')">
+<noscript>
+<div class="scripthelp">
+<table border="0" frame="0">
+<tr>
+<td style="vertical-align:top"><img alt="" src="images/warning.gif"></td><td>
+<p style="font-size:larger;">Note: your browser is configured to prevent scripts from running. This online documentation
+                  relies on scripts for navigation, table of contents, search, and other features. To make full
+                  use of the documentation, adjust your browser settings to allow scripts to run. See
+                  <a href="_script_help.htm" target="scripthelp">Adjusting browser settings</a> for more information.</p>
+</td>
+</tr>
+</table>
+</div>
+</noscript>
+<div class="navbuttons" id="navbuttons">
+<a accesskey="p" class="backbutton" id="backlayer" onMouseOut="document.getElementById('backbutton').src='images/help_back.png';" onMouseUp="document.getElementById('backbutton').src='images/help_back2.png';" onMouseDown="document.getElementById('backbutton').src='images/help_back3.png';" onMouseOver="document.getElementById('backbutton').src='images/help_back2.png';" href="multipleresponsesetdichotomy_element.htm">Previous<img alt="(P)revious: multipleresponsesetdichotomy_element" border="none" id="backbutton" src="images/help_back.png"></a><a accesskey="n" class="nextbutton" id="nextlayer" onMouseOut="document.getElementById('nextbutton').src='images/help_next.png';" onMouseUp="document.getElementById('nextbutton').src='images/help_next2.png';" onMouseDown="document.getElementById('nextbutton').src='images/help_next3.png';" onMouseOver="document.getElementById('nextbutton').src='images/help_next2.png';" href="multipleresponsesetlabel_element.htm"><img alt="(N)ext: multipleresponsesetlabel_element" border="none" id="nextbutton" src="images/help_next.png">Next</a>
+</div>
+<DIV id="navtrail" class="navtrail">
+<A HREF="dictionary_schema_intro.htm">Dictionary Schema Overview</A> &gt; <A HREF="multipleresponseset_element.htm">multipleResponseSet Element</A> &gt; </DIV>
+<h1>multipleResponseSetLabelSource Element</h1>
+<p class="body">For multiple dichotomy sets, the <span class="code">&lt;multipleResponseSetLabelSource/&gt;</span> element indicates that the variable label for the first variable
+in the set is used as the descriptive label for the multiple response
+set.</p>
+<p class="bullet">&bull;&nbsp;The <span class="code">&lt;multipleResponseSet&gt;</span> element can contain one <span class="code">&lt;multipleResponseSetLabelSource/&gt;</span> element.</p>
+<p class="bullet">&bull;&nbsp;If this element is present, the <span class="code">&lt;multipleResponseSetCategoryLabels/&gt;</span> and <span class="code">&lt;multipleResponseSetDichotomy/&gt;</span> elements
+must also be present in the <span class="code">&lt;multipleResponseSet&gt;</span> element.</p>
+<p class="bullet">&bull;&nbsp;The <span class="code">&lt;multipleResponseSetLabelSource/&gt;</span> element has a single attribute, <span class="code">value</span>, with a value of "variableLabel".</p>
+<p class="bullet">&bull;&nbsp;A &lt;multipleResponseSet&gt; element can contain
+a &lt;multipleResponseSetLabelSource/&gt; or a &lt;multipleResponseSetLabel/&gt;
+element, but not both.</p>
+<p class="bullet">&bull;&nbsp;For multiple category sets, this element is not present.</p>
+<h2>Example</h2>
+<pre class="codeblock">&lt;multipleResponseSetLabelSource value="variableLabel" /&gt;</pre>
+<div class="copyright">&copy; Copyright IBM Corporation
+1989, 2013.</div>
+<script type="text/javascript">
+              filter_modules_topic();
+            </script>
+</body>
+</html>

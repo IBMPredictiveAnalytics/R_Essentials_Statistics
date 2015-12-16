@@ -1,0 +1,2 @@
+PKG_CPPFLAGS = -DDARWIN -isysroot /Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6
+PKG_LIBS = -Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk -mmacosx-version-min=10.6

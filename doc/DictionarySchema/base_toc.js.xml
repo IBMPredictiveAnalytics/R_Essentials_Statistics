@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><es>
+<N20750 u="dictionary_schema_intro.htm">Dictionary Schema Overview<N20757 u="dictionary_element.htm">dictionary Element</N20757>
+<N2075E u="variable_element.htm">variable Element<N20765 u="missingvalue_element.htm">missingValue Element</N20765>
+<N2076C u="variableformat_element.htm">variableFormat Element</N2076C>
+<N20773 u="variablewriteformat_element.htm">variableWriteFormat Element</N20773>
+</N2075E>
+<N2077A u="weightvariable_element.htm">weightVariable Element</N2077A>
+<N20781 u="valuelabelset_element.htm">valueLabelSet Element<N2078A u="valuelabel_element.htm">valueLabel Element</N2078A>
+<N20791 u="valuelabelvariable_element.htm">valueLabelVariable Element</N20791>
+</N20781>
+<N20798 u="multipleresponseset_element.htm">multipleResponseSet Element<N207A1 u="multipleresponsesetcategorylabels_element.htm">multipleResponseSetCategoryLabels Element</N207A1>
+<N207A7 u="multipleresponsesetdichotomy_element.htm">multipleResponseSetDichtomy Element</N207A7>
+<N207AD u="multipleresponssetlabelsource_element.htm">multipleResponseSetLabelSource Element</N207AD>
+<N207B1 u="multipleresponsesetlabel_element.htm">multipleResponseSetLabel Element</N207B1>
+<N207B7 u="multipleresponsesetvariable_element.htm">multipleResponseSetVariable Element</N207B7>
+</N20798>
+<N207BD u="variableset_element.htm">variableSet Element</N207BD>
+<N207C4 u="attributeset_element.htm">attributeSet Element</N207C4>
+</N20750>
+<N207CE u="">Elements<N207D4 u="dictionary-1.0_elems_attribute.htm">attribute Element</N207D4>
+<N207DE u="dictionary-1.0_elems_attributeset.htm">attributeSet Element</N207DE>
+<N207E8 u="dictionary-1.0_elems_attributevalue.htm">attributeValue Element</N207E8>
+<N207EF u="dictionary-1.0_elems_dictionary.htm">dictionary Element</N207EF>
+<N2080B u="dictionary-1.0_elems_extension.htm">extension Element</N2080B>
+<N20812 u="dictionary-1.0_elems_missingvalue.htm">missingValue Element</N20812>
+<N20819 u="dictionary-1.0_elems_multipleresponseset.htm">multipleResponseSet Element</N20819>
+<N20835 u="dictionary-1.0_elems_multipleresponsesetcategorylabels.htm">multipleResponseSetCategoryLabels Element</N20835>
+<N2083C u="dictionary-1.0_elems_multipleresponsesetdichotomy.htm">multipleResponseSetDichotomy Element</N2083C>
+<N20843 u="dictionary-1.0_elems_multipleresponsesetlabel.htm">multipleResponseSetLabel Element</N20843>
+<N2084A u="dictionary-1.0_elems_multipleresponsesetlabelsource.htm">multipleResponseSetLabelSource Element</N2084A>
+<N20851 u="dictionary-1.0_elems_multipleresponsesetvariable.htm">multipleResponseSetVariable Element</N20851>
+<N20858 u="dictionary-1.0_elems_valuelabel.htm">valueLabel Element</N20858>
+<N2085F u="dictionary-1.0_elems_valuelabelset.htm">valueLabelSet Element</N2085F>
+<N2086C u="dictionary-1.0_elems_valuelabelvariable.htm">valueLabelVariable Element</N2086C>
+<N20873 u="dictionary-1.0_elems_variable.htm">variable Element<N20886 u="dictionary-1.0_elems_variable_variableformat.htm">variableFormat Element</N20886>
+<N2088D u="dictionary-1.0_elems_variable_variablewriteformat.htm">variableWriteFormat Element</N2088D>
+</N20873>
+<N20894 u="dictionary-1.0_elems_variableset.htm">variableSet Element</N20894>
+<N2089E u="dictionary-1.0_elems_variablesetvariable.htm">variableSetVariable Element</N2089E>
+<N208A5 u="dictionary-1.0_elems_weightvariable.htm">weightVariable Element</N208A5>
+</N207CE>
+<N208B2 u="legalnotices.htm">Notices</N208B2>
+</es>

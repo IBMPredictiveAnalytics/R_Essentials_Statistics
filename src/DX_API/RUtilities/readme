@@ -1,0 +1,24 @@
+RUtilities Module
+
+Introduction
+------------
+This SDK directory is used to:
+    -- Support use of the R browser() function to debug R code executed from the IBM® SPSS® Statistics - Integration Plug-In for R.
+    -- Support installation of R packages.
+
+Environment Variables
+---------------------
+Set the value of <SPSS_HOME> to the installation directory of IBM SPSS Statistics.
+
+Usage
+------------
+
+  Windows:
+     Copy the content under the Windows subdirectory to <SPSS_HOME>
+  UNIX64:
+     Copy the content under the UNIX64 subdirectory to <SPSS_HOME>/bin
+  MacOS:
+     Copy the content under the MacOS subdirectory to <SPSS_HOME>/bin
+
+
+© Copyright IBM Corp. 1989, 2013

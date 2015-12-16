@@ -1,0 +1,128 @@
+<html xmlns:java="http://xml.apache.org/xslt/java">
+<head id="oms_oxml_schema_elements">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Elements</title>
+<!--Generated with Help Tools v. 5.1.4x
+-->
+<script src="help.js" type="text/javascript"></script><script src="help-screen-reader.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">if (typeof top.modulesLocation == "undefined") { top.modulesLocation = "../../modules.js"; }
+    </script><script type="text/javascript">document.write("<SCRIPT type='text/javascript' src='" + top.modulesLocation + "'><" + "/SCRIPT" + ">");
+</script>
+</head>
+<script type="text/javascript">
+<!--
+              if (parent == self) { //no parent, so need to create frameset
+                loadFrames('oms_oxml_schema_elements.htm');
+              }
+              //--></script>
+<body onload="javascript:sync_toc('N20785')">
+<noscript>
+<div class="scripthelp">
+<table border="0" frame="0">
+<tr>
+<td style="vertical-align:top"><img alt="" src="images/warning.gif"></td><td>
+<p style="font-size:larger;">Note: your browser is configured to prevent scripts from running. This online documentation
+                  relies on scripts for navigation, table of contents, search, and other features. To make full
+                  use of the documentation, adjust your browser settings to allow scripts to run. See
+                  <a href="_script_help.htm" target="scripthelp">Adjusting browser settings</a> for more information.</p>
+</td>
+</tr>
+</table>
+</div>
+</noscript>
+<div class="navbuttons" id="navbuttons">
+<a accesskey="p" class="backbutton" id="backlayer" onMouseOut="document.getElementById('backbutton').src='images/help_back.png';" onMouseUp="document.getElementById('backbutton').src='images/help_back2.png';" onMouseDown="document.getElementById('backbutton').src='images/help_back3.png';" onMouseOver="document.getElementById('backbutton').src='images/help_back2.png';" href="oms_oxml_schema_common.htm">Previous<img alt="(P)revious: oms_oxml_schema_common" border="none" id="backbutton" src="images/help_back.png"></a><a accesskey="n" class="nextbutton" id="nextlayer" onMouseOut="document.getElementById('nextbutton').src='images/help_next.png';" onMouseUp="document.getElementById('nextbutton').src='images/help_next2.png';" onMouseDown="document.getElementById('nextbutton').src='images/help_next3.png';" onMouseOver="document.getElementById('nextbutton').src='images/help_next2.png';" href="oms_oxml_schema_pivot1.htm"><img alt="(N)ext: oms_oxml_schema_pivot1" border="none" id="nextbutton" src="images/help_next.png">Next</a>
+</div>
+<DIV id="navtrail" class="navtrail">
+<A HREF="oms_oxml_schema_intro.htm">Output XML Schema</A> &gt; </DIV>
+<h1>Elements</h1>
+<p class="body">The elements found in an OXML document correspond
+to the objects and structures you see in IBM&reg; SPSS&reg; Statistics output. There is an outline, which
+is a tree structure with an <span class="code">outputTree</span> element as its root, composed of <span class="code">command</span> and <span class="code">textBlock</span> elements.</p>
+<h2>Commands</h2>
+<p class="body">A &lt;<span class="code">command&gt;</span> element is the parent node for all the output from one execution
+of a syntax command. The &lt;<span class="code">command&gt;</span> element has the following attributes:</p>
+<p class="body">
+<span class="runinhead">command.</span> Attribute values are command identifiers. These identifiers are
+the same as the command identifiers used in the <span class="syntax">OMS</span> command, and are usually (but not always) the same
+as the actual command names.</p>
+<p class="body">
+<span class="runinhead">text.</span> The text displayed in the outline pane of the Viewer for the top
+node of the command's output block. In English, this is usually --
+but not -- always -- the same as the command name. This is a localized
+text string that is affected by the current output language setting. </p>
+<p class="body">
+<span class="runinhead">xml:lang.</span>The output language. Attribute values are standard two-letter language
+codes (e.g., "en" for English, "es" for Spanish, "fr" for French).</p>
+<p class="body">
+<span class="runinhead">displayOutlineVariables,
+displayTableVariables.</span> Attribute values are the settings
+for display of variables and/or variable labels in the outline pane
+and pivot tables: <span class="code">label</span>, <span class="code">name</span>, or <span class="code">both</span>.</p>
+<p class="body">
+<span class="runinhead">displayOutlineValues,
+displayTableValues.</span> Attribute values are the settings
+for display of values and/or value labels in the outline pane and
+pivot table: <span class="code">label</span>, <span class="code">value</span>, or <span class="code">both</span>.</p>
+<p class="body">A &lt;<span class="code">command&gt;</span> element may contain one or more of the following child elements: <span class="code">heading</span>, <span class="code">pivotTable</span>, <span class="code">chart</span>, and <span class="code">textBlock</span>. </p>
+<h2>Headings</h2>
+<p class="body">A &lt;<span class="code">heading&gt;</span> element is just a heading in the output outline under a command.
+It can have any of the sets of common text attributes. In the Viewer,
+there is a small text block named "Title" under each heading (and
+command) in the outline that contains the heading text. That text
+block is not present in the OXML. A <span class="code">&lt;heading&gt;</span> element may contain <span class="code">heading</span>, <span class="code">pivotTable</span>, <span class="code">chart</span>, and <span class="code">textBlock</span> elements.</p>
+<h2>Text Blocks</h2>
+<p class="body">Some of the output consists of lines of text.
+Those are collected in <span class="code">&lt;textBlock&gt;</span> elements. A <span class="code">&lt;textBlock&gt;</span> element may have any number of <span class="code">line</span> elements as children. The body text of each <span class="code">line</span> element is a line of text. The <span class="code">&lt;textBlock&gt; </span>element itself may have any of the
+sets of common text attributes.</p>
+<h2>Charts</h2>
+<p class="body">Each chart is represented by a subdocument described
+in the Chart XML schema and documented elsewhere.</p>
+<h2>Pivot Tables</h2>
+<p class="body">A <span class="code">&lt;pivotTable&gt;</span> element always has at least two attributes:</p>
+<p class="body">
+<span class="runinhead">text.</span> The text displayed in the Viewer outline for the pivot table object.
+For default table titles, this is a localized text string that is
+affected by the current output language setting. For table titles
+that include information about variables used in the table, it is
+also affected by the current setting for display of variable names
+and/or variable names.</p>
+<p class="body">
+<span class="runinhead">subType.</span> The table subtype identifier. These identifiers are the same as
+the subtype identifiers in the OMS command. They are not affected
+by output language or other user-controlled settings.</p>
+<p class="body">A <span class="code">&lt;pivotTable&gt;</span> element can also have a number of common attributes including <span class="code">label</span>, <span class="code">varName</span>, and <span class="code">variable</span>, and two additional
+attributes:</p>
+<p class="body">
+<span class="runinhead">rowVertical.</span> Attribute values are <span class="name">xs:boolean</span>, indicating whether row labels are displayed vertically rather than
+horizontally. The attribute value is <span class="code">false</span> by default and not included in OXML. It is only included if the
+value if <span class="code">true</span>.</p>
+<p class="body">
+<span class="runinhead">columnVertical.</span> Attribute values are <span class="name">xs:boolean</span>, indicating whether column labels are displayed vertically rather
+than horizontally. The attribute value is <span class="code">false</span> by default and not included in OXML. It is only included if the
+value if <span class="code">true</span>.</p>
+<div id="related_topics">
+<h2>Related Topics</h2>
+<div class="link">
+<a href="oms_oxml_schema_intro.htm">Output XML Schema</a>
+</div>
+<div class="link">
+<a href="oms_oxml_schema_common.htm">Common Attributes</a>
+</div>
+<div class="link">
+<a href="oms_oxml_schema_pivot1.htm">Pivot Table Child Elements</a>
+</div>
+<div class="link">
+<a href="oms_oxml_schema_pivot2.htm">Pivot Table Structure</a>
+</div>
+</div>
+<div class="copyright">&copy; Copyright IBM Corporation
+1989, 2013.</div>
+<script type="text/javascript">
+              filter_modules_topic();
+            </script>
+</body>
+</html>

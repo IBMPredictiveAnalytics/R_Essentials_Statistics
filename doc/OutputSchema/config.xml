@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- ***************************************************************** -->
+<!--                                                                   -->
+<!-- Licensed Materials - Property of IBM                              -->
+<!--                                                                   -->
+<!-- IBM SPSS Products: Documentation Tools                            -->
+<!--                                                                   -->
+<!-- (C) Copyright IBM Corp. 2000, 2011                                -->
+<!--                                                                   -->
+<!-- US Government Users Restricted Rights - Use, duplication or       -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!--                                                                   -->
+<!-- ***************************************************************** -->
+
+<config>
+  <module_script>../modules.js</module_script>
+  <help_dir>.</help_dir>
+  <topicfile>blank.htm</topicfile>
+</config>

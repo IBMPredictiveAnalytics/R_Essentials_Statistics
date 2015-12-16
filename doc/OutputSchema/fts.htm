@@ -1,0 +1,106 @@
+<!-- ***************************************************************** -->
+<!--                                                                   -->
+<!-- Licensed Materials - Property of IBM                              -->
+<!--                                                                   -->
+<!-- IBM SPSS Products: Documentation Tools                            -->
+<!--                                                                   -->
+<!-- (C) Copyright IBM Corp. 2000, 2011                                -->
+<!--                                                                   -->
+<!-- US Government Users Restricted Rights - Use, duplication or       -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!--                                                                   -->
+<!-- ***************************************************************** -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<html xmlns:math="http://exslt.org/math">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Index</title>
+<!--Generated with Help Tools v. 2.6.3-->
+<script src="help.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">
+// get custom stylesheet ref from top object
+if (typeof top.customStylesheet != "undefined") {
+  document.write("<link href='" + top.customStylesheet + "' rel='stylesheet'>");
+}
+// get location of modules.js from top object
+if (typeof top.modulesLocation != 'undefined') {
+  document.write("<script type='text/javascript' src='" + top.modulesLocation + "'><" + "/script>");
+}
+
+// backup string definitions in case out-of-date helploc.js is present
+if (typeof stb_fts_search_fulltext == "undefined") var stb_fts_search_fulltext = "Full text";
+if (typeof stb_fts_search_keywords == "undefined") var stb_fts_search_keywords = "Keywords only";
+
+function getSearchType() {
+  // returns the value of the selected search type
+  if (document.getElementById("searchtype").checked) {
+    return "fulltext";
+  }
+  else { return "keywords"; }
+}
+
+</script>
+<style type="text/css">
+.scrolldiv {padding:5px}
+</style>
+</head>
+<body class="nav-body" scroll="no" onload="setclip();" onresize="setclip()">
+<div class="tabs" id="navtabs">
+  <a class="backtab" href="javascript:parent.navframe.navEvent('toc_top.htm','');">
+    <script type="text/javascript">
+      document.write(stb_fts_contents);
+    </script>
+  </a>
+  <a class="backtab" href="javascript:parent.navframe.navEvent('index_top.htm','');">
+    <script type="text/javascript">
+      document.write(stb_fts_index);
+    </script>
+  </a>
+  <span class="fronttab">
+    <script type="text/javascript">
+      document.write(stb_fts_search);
+    </script>
+  </span>
+</div>
+<div id="index-search">
+<div class="index-search">
+<form name="searchForm" action="javascript:helpsearch(document.getElementById('searchText').value,getSearchType());" 
+style="padding:0px;margin:0px;">
+  <table width="100%">
+    <tr>
+    <td style="padding-top:5px; padding-left:5px; padding-bottom:0"><script type="text/javascript">
+      document.write(stb_fts_search_terms);
+    </script>
+    </td>
+    <td style="width:1px;white-space:nowrap;">&nbsp;
+    </td>
+  </tr>    
+  <tr>
+    <td style="padding:5px">
+  <input style="width:100%;" type="text" id="searchText" />
+    </td>
+    <td style="width:1px;white-space:nowrap">
+  <button type="submit" class="index-button">
+    <script type="text/javascript">
+      document.write(stb_fts_search);
+    </script>
+  </button>
+    </td>
+  </tr>
+  </table>
+  <div style="padding-left:5px">
+  <input type="checkbox" id="searchtype">
+    <script type="text/javascript">document.write(stb_fts_search_fulltext);</script>
+  </input>
+  </div>
+</form>
+</div>
+</div>
+<div style="display:none;padding:5px;" id="searching_message">Searching...</div>
+<div id="scrolldiv" class="scrolldiv" style="overflow:auto;padding:0px;margin:0px;">
+<div id="indexdiv" class="indexdiv" style="padding:4px;"></div>
+</div>
+</body>
+</html>

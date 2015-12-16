@@ -1,0 +1,158 @@
+<html xmlns:java="http://xml.apache.org/xslt/java">
+<head id="variableFormat_element">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>variableFormat Element</title>
+<!--Generated with Help Tools v. 5.1.4x
+-->
+<script src="help.js" type="text/javascript"></script><script src="help-screen-reader.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">if (typeof top.modulesLocation == "undefined") { top.modulesLocation = "../../modules.js"; }
+    </script><script type="text/javascript">document.write("<SCRIPT type='text/javascript' src='" + top.modulesLocation + "'><" + "/SCRIPT" + ">");
+</script>
+</head>
+<script type="text/javascript">
+<!--
+              if (parent == self) { //no parent, so need to create frameset
+                loadFrames('variableformat_element.htm');
+              }
+              //--></script>
+<body onload="javascript:sync_toc('N2076C')">
+<noscript>
+<div class="scripthelp">
+<table border="0" frame="0">
+<tr>
+<td style="vertical-align:top"><img alt="" src="images/warning.gif"></td><td>
+<p style="font-size:larger;">Note: your browser is configured to prevent scripts from running. This online documentation
+                  relies on scripts for navigation, table of contents, search, and other features. To make full
+                  use of the documentation, adjust your browser settings to allow scripts to run. See
+                  <a href="_script_help.htm" target="scripthelp">Adjusting browser settings</a> for more information.</p>
+</td>
+</tr>
+</table>
+</div>
+</noscript>
+<div class="navbuttons" id="navbuttons">
+<a accesskey="p" class="backbutton" id="backlayer" onMouseOut="document.getElementById('backbutton').src='images/help_back.png';" onMouseUp="document.getElementById('backbutton').src='images/help_back2.png';" onMouseDown="document.getElementById('backbutton').src='images/help_back3.png';" onMouseOver="document.getElementById('backbutton').src='images/help_back2.png';" href="missingvalue_element.htm">Previous<img alt="(P)revious: missingvalue_element" border="none" id="backbutton" src="images/help_back.png"></a><a accesskey="n" class="nextbutton" id="nextlayer" onMouseOut="document.getElementById('nextbutton').src='images/help_next.png';" onMouseUp="document.getElementById('nextbutton').src='images/help_next2.png';" onMouseDown="document.getElementById('nextbutton').src='images/help_next3.png';" onMouseOver="document.getElementById('nextbutton').src='images/help_next2.png';" href="variablewriteformat_element.htm"><img alt="(N)ext: variablewriteformat_element" border="none" id="nextbutton" src="images/help_next.png">Next</a>
+</div>
+<DIV id="navtrail" class="navtrail">
+<A HREF="dictionary_schema_intro.htm">Dictionary Schema Overview</A> &gt; <A HREF="variable_element.htm">variable Element</A> &gt; </DIV>
+<h1>variableFormat Element</h1>
+<p class="body">The <span class="code">&lt;variableFormat/&gt;</span> element
+contains the defined display and print format for each variable. Each <span class="code">&lt;variable&gt;</span> element contains one <span class="code">&lt;variableFormat/&gt;</span> element.</p>
+<h2>Attributes</h2>
+<p class="bullet">&bull;&nbsp;<span class="runinhead">decimals.</span> Number of decimal positions. The value is a non-negative integer
+and is always "0" for string variables.</p>
+<p class="bullet">&bull;&nbsp;<span class="runinhead">width.</span> Maximum
+width (including decimal indicator for numeric variables) in bytes.</p>
+<p class="bullet">&bull;&nbsp;<span class="runinhead">type.</span> Data
+format. The IBM&reg; SPSS&reg; Statistics variable format
+expressed in all upper case letters.</p>
+<h2>Example</h2>
+<pre class="codeblock">&lt;variableFormat decimals="0" type="DATE" width="10"/&gt;</pre>
+<p class="body">
+<span class="runinhead">A. </span> Standard characters.</p>
+<p class="body">
+<span class="runinhead">AHEX. </span> Hexadecimal characters.</p>
+<p class="body">
+<span class="runinhead">COMMA. </span> Numbers with commas as the grouping symbol and a period as the decimal
+indicator. For example: 1,234,567.89.</p>
+<p class="body">
+<span class="runinhead">DOLLAR. </span>Numbers with a leading dollar sign ($), commas
+as the grouping symbol, and a period as the decimal indicator. For
+example: $1,234,567.89.</p>
+<p class="body">
+<span class="runinhead">F. </span>Standard numeric.</p>
+<p class="body">
+<span class="runinhead">IB. </span>Integer binary.</p>
+<p class="body">
+<span class="runinhead">PIBHEX. </span>Hexadecimal of PIB (positive integer binary).</p>
+<p class="body">
+<span class="runinhead">P. </span>Packed decimal.</p>
+<p class="body">
+<span class="runinhead">PIB. </span> Positive integer binary.</p>
+<p class="body">
+<span class="runinhead">PK. </span> Unsigned packed decimal.</p>
+<p class="body">
+<span class="runinhead">RB. </span> Real binary.</p>
+<p class="body">
+<span class="runinhead">RBHEX. </span> Hexadecimal of RB
+(real binary).</p>
+<p class="body">
+<span class="runinhead">Z. </span> Zoned
+decimal.</p>
+<p class="body">
+<span class="runinhead">N. </span> Restricted
+numeric.</p>
+<p class="body">
+<span class="runinhead">E. </span>Scientific
+notation.</p>
+<p class="body">
+<span class="runinhead">DATE. </span> International
+date of the general form dd-mmm-yyyy.</p>
+<p class="body">
+<span class="runinhead">TIME. </span>Time of the general form hh:mm:ss.ss.</p>
+<p class="body">
+<span class="runinhead">DATETIME. </span> Date and time of the general
+form dd-mmm-yyyy hh:mm:ss.ss.</p>
+<p class="body">
+<span class="runinhead">ADATE. </span> American date of the general form mm/dd/yyyy.</p>
+<p class="body">
+<span class="runinhead">JDATE. </span> Julian date of the general form
+yyyyddd.</p>
+<p class="body">
+<span class="runinhead">DTIME. </span>Days
+and time of the general form dd hh:mm:ss.ss.</p>
+<p class="body">
+<span class="runinhead">WKDAY. </span>Day of the week.</p>
+<p class="body">
+<span class="runinhead">MONTH. </span>Month.</p>
+<p class="body">
+<span class="runinhead">MOYR. </span> Month and year.</p>
+<p class="body">
+<span class="runinhead">QYR. </span> Quarter and year of the general
+form qQyyyy.</p>
+<p class="body">
+<span class="runinhead">WKYR. </span> Week
+and year.</p>
+<p class="body">
+<span class="runinhead">PCT. </span> Percentage
+sign after numbers.</p>
+<p class="body">
+<span class="runinhead">DOT. </span> Numbers with periods as the grouping symbol and a comma as the decimal
+indicator. For example: 1.234.567,89.</p>
+<p class="body">
+<span class="runinhead">CCA. </span> Custom currency format 1.</p>
+<p class="body">
+<span class="runinhead">CCB. </span> Custom currency format 2.</p>
+<p class="body">
+<span class="runinhead">CCC. </span> Custom currency format
+3.</p>
+<p class="body">
+<span class="runinhead">CCD. </span> Custom currency
+format 4.</p>
+<p class="body">
+<span class="runinhead">CCE. </span> Custom
+currency format 5.</p>
+<p class="body">
+<span class="runinhead">EDATE. </span> European date of the general form dd.mm.yyyy.</p>
+<p class="body">
+<span class="runinhead">SDATE. </span> Sortable date of the general
+form yyyy/mm/dd.</p>
+<div id="related_topics">
+<h2>Related Topics</h2>
+<div class="link">
+<a href="missingvalue_element.htm">missingValue Element</a>
+</div>
+<div class="link">
+<a href="variablewriteformat_element.htm">variableWriteFormat Element</a>
+</div>
+</div>
+<div class="copyright">&copy; Copyright IBM Corporation
+1989, 2013.</div>
+<script type="text/javascript">
+              filter_modules_topic();
+            </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+/************************************************************************
+** Licensed Materials - Property of IBM
+**
+** IBM SPSS Products: Documentation Tools
+**
+** (C) Copyright IBM Corp. 2000, 2011
+**
+** US Government Users Restricted Rights - Use, duplication or disclosure
+** restricted by GSA ADP Schedule Contract with IBM Corp.
+************************************************************************/
+
+/* This stylesheet contains core formatting information
+   for online help. Other formatting information can be found
+   in help-loc.css and help-base.css. 
+
+   -----DO NOT MODIFY THIS FILE-----
+
+   If you want to customize the look and feel of the
+   online help for a particular product, create a custom
+   version of help-base.css and change formatting
+   information there.   
+
+   Changes necessary to support localization of online help
+   should be made to help-loc.css. See that file
+   for more details.
+
+*/
+
+<!--
+
+.body {display:block; margin-left:8px; margin-right:10px}
+.bullet {margin-top:12px; margin-left:36px; text-indent:-1em; list-style-type:disc }
+
+.codeblock {display:block; margin-left:5px; padding:5px;}
+.code-highlight {font-size:larger; color:#C00}
+.code-required {font-weight:bold}
+.codeblockbackground {display:block; margin-left:5px; padding:5px;} /* deprecated after help 2.5.3 */
+
+.collapsible_block {border-style:outset; border-width:3px}
+.collapse_trigger {margin-top:5px; margin-bottom:5px}
+
+.copyright {font-size:smaller; text-align:left; border-top:gray; border-top-style:solid; border-width:1px; padding-top:6px; margin-top:36px}
+
+.definedword {font-weight:bold}
+
+.equation { font-family:serif; font-size:125%; }
+.equation table { font-family:serif; }
+
+.figurecaption { display:block; margin-top:12px; font-weight:bold }
+
+.glossary {margin-top:10px; display:block;}
+p.glossary { display:inline; }
+p.bullet span.glossary { display:inline; }
+.glossary-term {font-weight:bold}
+.glossary-definition {}
+
+.html {}
+
+.htmlblock {display:block; margin-left:5px; padding:5px;}
+
+.imageblock {display:block; margin-left:8px; margin-top:10px;}
+
+.indexdiv { }
+
+.index { white-space:nowrap; } /* prevents wrapping of text */
+
+.index-button {
+	padding:1px 0px; 
+	margin:2px; 
+	vertical-align:bottom; }
+
+.input {font-weight:bold}
+
+.italic {}
+
+.keywords { display:none; }
+
+.label {}
+
+.link {display:block; margin-top:4px; margin-left:8px; margin-right:8px} /* Related Topics */
+
+.list-contin { margin-left:36px; margin-top:12px }
+
+.matrixname {font-weight:bold}
+
+.mlcomment{margin-left:10px; color:#900;font-weight:normal}
+
+.mfrac tr td { font-family: serif; font-size=100%}
+
+.menuselection {margin-left:10px}
+
+.name {}
+
+.nav-body {margin:0px;padding:0px;}
+.navbuttons { float:right; vertical-align:middle;} /* Previous and Next */
+.navbuttons a img { vertical-align:middle; margin:2px; }
+
+.numbered-p {text-indent: -18px; padding-left:18px; margin-top: 0px;}
+.numbered-p-contin {padding-left:18px; margin-top: 0px;}
+
+.parameter {}
+
+.pathitem {margin-left:10px}
+
+.product-icon {padding-bottom:5px}
+
+.popup {width:200px; height:auto; z-index:100; padding:3px; background-color:#fee;
+         border:1px solid black}
+
+.runinhead {font-weight:bold}
+
+.scripthelp {border:1px solid black; text-align:center; padding:5px; margin:5px}
+
+.slash {font-weight:normal}
+
+.spss-citation {margin-left:30px; text-indent:-20px}
+
+/* 4/03 CH: changed margin-top to 0 to work around an IE bug  */
+.step {text-indent: -1.3em; margin-left:1.3em; margin-top: 0px;}
+.step-contin {margin-left:10px; margin-top: 0px;}
+
+.superscript {vertical-align:super; font-size:80%}
+.subscript {vertical-align:sub; font-size:80%}
+
+.symbol {}
+.syntax {}
+
+.syntaxblock, 
+.syntaxcompactblock {display:block; margin-left:5px; padding:5px;}
+
+.table { border-color: black; border-width:1px; margin-left: 8px; margin-right:10px; }
+.table-cell {border-color: black; border-width:1px; padding:3px}
+.tablecaption { display:block; margin-top:12px; font-weight:bold }
+th.table-cell { background-color: #ccc }
+
+.tagblock {margin-left:10px; font-weight:bold}
+.tag {color:#00c;font-weight:normal}
+
+.tocindex { display:none; margin-left:20px; white-space:nowrap; }  /* prevents wrapping of text */
+.tocprintbutton { padding-left:0px; line-height:1.5; vertical-align:top; }
+
+.top { display:block; white-space:nowrap; } /* prevents wrapping of text */
+
+
+/* *************** */
+/* printed  styles */
+/* *************** */
+
+@media print {
+	.scripthelp, .navbuttons, .navtrail, #related_topics { display:none; }
+	.collapsible_block { display:block ! important; }
+	.collapse_trigger { display:none; }
+}
+
+
+/* *************** */
+/* MathML styles (copied from Carlisle's pmathmlcss.xsl, see http://www.w3.org/math/xsl) */
+/* *************** */
+
+.equation { margin-left:8px; white-space:nowrap;}
+
+.inlineequation { white-space:nowrap; font-size:125%; text-indent:0ex;}
+
+.munderover, .mover, .munder, .mfrac, .mtable {
+text-align: center;
+display:-moz-inline-box;
+-moz-box-orient:vertical;
+display:inline-table;
+display:inline-block;
+padding:0ex;
+}
+
+.munder, .mover {
+  display:inline;
+}
+
+.munder tr, .mover tr {
+  text-align:center;
+}
+
+.msubsup
+{
+text-align: left;
+display:-moz-inline-box;
+-moz-box-orient:vertical;
+display:inline-table;
+display:inline-block;
+padding:0ex;
+font-size:80%;
+/*
+margin-left:-0.5ex;
+*/
+}
+
+.msubsupbox { font-size:100%; vertical-align:middle;}
+
+.mtable tr td {
+/*  padding:0.2em 0.5em; */
+  white-space:nowrap;
+}
+
+.munderover, .mfrac, .mtable, .msubsup, .mi, .mi1, .mo, .mn { vertical-align:middle; }
+
+.mrow { vertical-align:baseline; }
+
+.mtable table { white-space:nowrap; }
+
+.mtable table, .mtable table tr, .mtable table tr td { font-size:100%; font-family:serif;}
+
+.mtable table tr td table { text-align:center; }
+
+.mover { vertical-align:text-bottom; position:relative; }
+
+.moveraccent { position:relative; top:0.3ex;}
+
+.mover td { font-size:100%; }
+
+.munder { font-size:100%; }
+
+.munderaccent {font-size:70%;padding-top:0px;text-align:center;}
+
+.munderbar { border-bottom:1pt solid; }
+
+.munderoverover {display:block;font-size:smaller;vertical-align:bottom;}
+
+.munderoverbase {display:block;font-size:larger;font-family:times,Serif;}
+
+.munderoverunder {display:block;font-size:smaller;vertical-align:top;}
+
+.mrow { font-family:serif; }
+
+.moverbar { border-top: 1px solid; }
+
+.moverbar .moverbar { padding-top:2px; margin-top:2px; }
+
+.maccent { position:relative; top:0.6em; font-size:100%; }
+
+.mindex { padding:0ex; display:block; }
+
+.msum { font-size:200%; font-family:serif; padding:0px; margin:0px; vertical-align:middle; }
+
+.mintegral { padding:0px; margin:0px; vertical-align:middle;}
+
+.mcenter {
+width:100%;
+text-align:center;
+cell-spacing:0px; padding:0px;
+}
+	
+.lr {
+display: inline;
+vertical-align: middle;
+border:0px; cell-spacing:0px;
+line-height: 95%
+}
+
+.mi,.mi1 {
+font-family:serif;
+}
+
+
+.mspace{
+display: inline;
+}
+.mtext {
+font-family:serif;
+}
+.ms {
+font-family:monospace;
+}
+
+.mi1 {
+font-style: italic; padding-left:2px;
+}
+
+.doublestruck {
+font-family:  castellar, algerian,"niagara engraved";
+}
+.mo {
+margin-right: .3ex;
+margin-left: .3ex;
+font-family: times,serif;
+}
+
+.mn {
+  font-family:serif;
+}
+
+.msqrt {
+border-style: solid;
+border-width: .1em 0pt 0pt 0pt;
+margin-left: 0em;
+margin-top: 0.5em;
+display: inline;
+}
+
+.msqrtradic {
+  padding:0px;
+  margin:0px;
+  vertical-align:0ex;
+  line-height:90%;
+}
+
+.msqrtbody {
+  margin-left:-0.2em;
+  white-space:nowrap;
+  padding:0px;
+  margin:0px;
+  vertical-align:middle;
+  font-size:100%;
+}
+
+.actuarial {
+border-style: solid;
+border-width: .1em .1em 0pt 0pt ;
+padding-right: .2em;
+margin-right: 0em;
+margin-top: .2em;
+display: inline;
+}
+
+.ssa {
+ position:relative; top:+0.5ex;  
+width: 0pt;
+color: red;
+}
+
+.mfrac { margin-top:0.2ex; }
+
+.mfraca {
+vertical-align: bottom;
+display:block;
+border-bottom:0.2ex solid;
+padding:0.2ex 0.5ex 0ex 0.5ex;
+white-space:nowrap;
+}
+
+.mfracaa {
+border-width: 0em 0em .2ex 0em ; border-style: solid;
+}
+
+
+.mfracb {
+vertical-align: top;
+display:block;
+padding:0.2ex 0.5ex 0ex 0.5ex;
+white-space:nowrap;
+}
+
+.merror{
+background-color: white  ;
+border-style: solid;
+border-color: #FF0000;
+color: #FF0000;
+}
+.mphantom{
+visibility: hidden;
+}
+
+.msup{
+  vertical-align:1ex;
+  font-size:80%;
+  padding:1px;
+}
+
+.msub{
+  vertical-align:-1ex;
+  font-size:80%;
+  padding:1px;
+}
+
+
+.msub .mn, .msubsup .mn {
+  /* font-size: 80% */;
+  vertical-align: middle;
+}
+
+
+-->

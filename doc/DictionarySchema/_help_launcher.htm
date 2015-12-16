@@ -1,0 +1,52 @@
+<!-- ***************************************************************** -->
+<!--                                                                   -->
+<!-- Licensed Materials - Property of IBM                              -->
+<!--                                                                   -->
+<!-- IBM SPSS Products: Documentation Tools                            -->
+<!--                                                                   -->
+<!-- (C) Copyright IBM Corp. 2000, 2011                                -->
+<!--                                                                   -->
+<!-- US Government Users Restricted Rights - Use, duplication or       -->
+<!-- disclosure restricted by GSA ADP Schedule Contract with IBM Corp. -->
+<!--                                                                   -->
+<!-- ***************************************************************** -->
+
+<html>
+  <head>
+    <title>Help Loader</title>
+    <script type="text/javascript" src="help.js"></script>
+    <script type="text/javascript" src="help-screen-reader.js"></script>
+    <script type="text/javascript" src="helploc.js"></script>
+    <script type="text/javascript">
+
+    function redirectHelp() {
+      // load config from file
+      var configdocs = new Array();
+      var modulescript, topicfile;
+      loadXMLfile("config.xml",configdocs);
+      // if no config file, just load defaults
+      if (configdocs.length == 0 || configdocs[0] == null) {
+        top.help_dir = "";
+        topicfile = getFirstTopic();
+        notoc = false;
+      }
+      else {
+        var configdoc = configdocs[0];
+        // set up config
+        modulescript = configdoc.getElementsByTagName("module_script").item(0).firstChild.nodeValue;
+        if (modulescript.indexOf(":") != -1) modulescript = "file:/" + modulescript;
+        top.modulesLocation = modulescript;
+        top.help_dir = configdoc.getElementsByTagName("help_dir").item(0).firstChild.nodeValue + "/";
+        if (top.help_dir.indexOf(":") != -1) top.help_dir = "file:/" + top.help_dir;
+        topicfile = configdoc.getElementsByTagName("topicfile").item(0).firstChild.nodeValue;
+        notoc = (configdoc.getElementsByTagName("no-toc").length > 0);
+      }
+      // start help
+      target = top.help_dir + topicfile;
+      loadFrames(target,notoc);
+    }
+    </script>
+  </head>
+  <script type="text/javascript">redirectHelp()</script>
+</html>
+

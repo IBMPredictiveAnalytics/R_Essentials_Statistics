@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?><es>
+<N20777 u="oms_oxml_schema_intro.htm">Output XML Schema<N2077F u="oms_oxml_schema_common.htm">Common Attributes</N2077F>
+<N20785 u="oms_oxml_schema_elements.htm">Elements<N2078B u="oms_oxml_schema_pivot1.htm">Pivot Table Child Elements</N2078B>
+<N20791 u="oms_oxml_schema_pivot2.htm">Pivot Table Structure</N20791>
+</N20785>
+</N20777>
+<N2079C u="output_schema_versions.htm">Output schema versions</N2079C>
+<N207A0 u="">Schema Version 1.8 (Default)<N20EE8 u="">Elements<N20EEE u="spss-output-1.8_elems_category.htm">category Element<N20F00 u="spss-output-1.8_elems_category_footnote.htm">footnote Element<N20F0F u="spss-output-1.8_elems_category_footnote_marker.htm">marker Element</N20F0F>
+<N20F19 u="spss-output-1.8_elems_category_footnote_note.htm">note Element</N20F19>
+</N20F00>
+<N20F23 u="spss-output-1.8_elems_category_cell.htm">cell Element<N20F32 u="spss-output-1.8_elems_category_cell_footnote.htm">footnote Element<N20F41 u="spss-output-1.8_elems_category_cell_footnote_marker.htm">marker Element</N20F41>
+<N20F4B u="spss-output-1.8_elems_category_cell_footnote_note.htm">note Element</N20F4B>
+</N20F32>
+<N20F55 u="spss-output-1.8_elems_category_cell_sig.htm">sig Element</N20F55>
+</N20F23>
+</N20EEE>
+<N20F5C u="spss-output-1.8_elems_charttitle.htm">chartTitle Element<N20F6E u="spss-output-1.8_elems_charttitle_chart.htm">chart Element</N20F6E>
+<N20F75 u="spss-output-1.8_elems_charttitle_shapearray.htm">shapeArray Element</N20F75>
+<N20F7C u="spss-output-1.8_elems_charttitle_objectarray.htm">objectArray Element</N20F7C>
+</N20F5C>
+<N20F83 u="spss-output-1.8_elems_dimension.htm">dimension Element<N20F95 u="spss-output-1.8_elems_dimension_footnote.htm">footnote Element<N20FA4 u="spss-output-1.8_elems_dimension_footnote_marker.htm">marker Element</N20FA4>
+<N20FAE u="spss-output-1.8_elems_dimension_footnote_note.htm">note Element</N20FAE>
+</N20F95>
+</N20F83>
+<N20FB8 u="spss-output-1.8_elems_group.htm">group Element<N20FCA u="spss-output-1.8_elems_group_footnote.htm">footnote Element<N20FD9 u="spss-output-1.8_elems_group_footnote_marker.htm">marker Element</N20FD9>
+<N20FE3 u="spss-output-1.8_elems_group_footnote_note.htm">note Element</N20FE3>
+</N20FCA>
+</N20FB8>
+<N20FED u="spss-output-1.8_elems_heading.htm">heading Element</N20FED>
+<N21008 u="spss-output-1.8_elems_modeltitle.htm">modelTitle Element<N21017 u="spss-output-1.8_elems_modeltitle_model.htm">model Element</N21017>
+<N2101E u="spss-output-1.8_elems_modeltitle_modelview.htm">modelView Element</N2101E>
+</N21008>
+<N21025 u="spss-output-1.8_elems_outputtree.htm">outputTree Element<N21035 u="spss-output-1.8_elems_outputtree_command.htm">command Element</N21035>
+<N21050 u="spss-output-1.8_elems_outputtree_pagetitle.htm">pageTitle Element<N2105A u="spss-output-1.8_elems_outputtree_pagetitle_line.htm">line Element</N2105A>
+</N21050>
+</N21025>
+<N21061 u="spss-output-1.8_elems_pivottable.htm">pivotTable Element<N21076 u="spss-output-1.8_elems_pivottable_footnote.htm">footnote Element<N21085 u="spss-output-1.8_elems_pivottable_footnote_marker.htm">marker Element</N21085>
+<N2108F u="spss-output-1.8_elems_pivottable_footnote_note.htm">note Element</N2108F>
+</N21076>
+<N21099 u="spss-output-1.8_elems_pivottable_caption.htm">caption Element<N210A5 u="spss-output-1.8_elems_pivottable_caption_footnote.htm">footnote Element<N210B4 u="spss-output-1.8_elems_pivottable_caption_footnote_marker.htm">marker Element</N210B4>
+<N210BE u="spss-output-1.8_elems_pivottable_caption_footnote_note.htm">note Element</N210BE>
+</N210A5>
+</N21099>
+<N210C8 u="spss-output-1.8_elems_pivottable_cornertext.htm">cornerText Element<N210D4 u="spss-output-1.8_elems_pivottable_cornertext_footnote.htm">footnote Element<N210E3 u="spss-output-1.8_elems_pivottable_cornertext_footnote_marker.htm">marker Element</N210E3>
+<N210ED u="spss-output-1.8_elems_pivottable_cornertext_footnote_note.htm">note Element</N210ED>
+</N210D4>
+</N210C8>
+</N21061>
+<N210F7 u="spss-output-1.8_elems_textblock.htm">textBlock Element<N21103 u="spss-output-1.8_elems_textblock_line.htm">line Element</N21103>
+</N210F7>
+<N2110A u="spss-output-1.8_elems_treetitle.htm">treeTitle Element<N21119 u="spss-output-1.8_elems_treetitle_model.htm">model Element</N21119>
+<N21120 u="spss-output-1.8_elems_treetitle_treeview.htm">treeView Element</N21120>
+</N2110A>
+<N21127 u="spss-output-1.8_types.htm">Extended Types<N2112B u="spss-output-1.8_types_nodetype.htm">NodeType Type<N2113B u="spss-output-1.8_types_nodetype_footnote.htm">footnote Element<N2114A u="spss-output-1.8_types_nodetype_footnote_marker.htm">marker Element</N2114A>
+<N21154 u="spss-output-1.8_types_nodetype_footnote_note.htm">note Element</N21154>
+</N2113B>
+</N2112B>
+</N21127>
+</N20EE8>
+</N207A0>
+<N21161 u="">Schema Version 1.7<N218A9 u="">Elements<N218AF u="spss-output-1.7_elems_category.htm">category Element<N218C1 u="spss-output-1.7_elems_category_footnote.htm">footnote Element<N218D0 u="spss-output-1.7_elems_category_footnote_marker.htm">marker Element</N218D0>
+<N218DA u="spss-output-1.7_elems_category_footnote_note.htm">note Element</N218DA>
+</N218C1>
+<N218E4 u="spss-output-1.7_elems_category_cell.htm">cell Element<N218F3 u="spss-output-1.7_elems_category_cell_footnote.htm">footnote Element<N21902 u="spss-output-1.7_elems_category_cell_footnote_marker.htm">marker Element</N21902>
+<N2190C u="spss-output-1.7_elems_category_cell_footnote_note.htm">note Element</N2190C>
+</N218F3>
+<N21916 u="spss-output-1.7_elems_category_cell_sig.htm">sig Element</N21916>
+</N218E4>
+</N218AF>
+<N2191D u="spss-output-1.7_elems_charttitle.htm">chartTitle Element<N2192F u="spss-output-1.7_elems_charttitle_chart.htm">chart Element</N2192F>
+<N21936 u="spss-output-1.7_elems_charttitle_shapearray.htm">shapeArray Element</N21936>
+<N2193D u="spss-output-1.7_elems_charttitle_objectarray.htm">objectArray Element</N2193D>
+</N2191D>
+<N21944 u="spss-output-1.7_elems_dimension.htm">dimension Element<N21956 u="spss-output-1.7_elems_dimension_footnote.htm">footnote Element<N21965 u="spss-output-1.7_elems_dimension_footnote_marker.htm">marker Element</N21965>
+<N2196F u="spss-output-1.7_elems_dimension_footnote_note.htm">note Element</N2196F>
+</N21956>
+</N21944>
+<N21979 u="spss-output-1.7_elems_group.htm">group Element<N2198B u="spss-output-1.7_elems_group_footnote.htm">footnote Element<N2199A u="spss-output-1.7_elems_group_footnote_marker.htm">marker Element</N2199A>
+<N219A4 u="spss-output-1.7_elems_group_footnote_note.htm">note Element</N219A4>
+</N2198B>
+</N21979>
+<N219AE u="spss-output-1.7_elems_heading.htm">heading Element</N219AE>
+<N219C9 u="spss-output-1.7_elems_modeltitle.htm">modelTitle Element<N219D8 u="spss-output-1.7_elems_modeltitle_model.htm">model Element</N219D8>
+<N219DF u="spss-output-1.7_elems_modeltitle_modelview.htm">modelView Element</N219DF>
+</N219C9>
+<N219E6 u="spss-output-1.7_elems_outputtree.htm">outputTree Element<N219F6 u="spss-output-1.7_elems_outputtree_command.htm">command Element</N219F6>
+<N21A11 u="spss-output-1.7_elems_outputtree_pagetitle.htm">pageTitle Element<N21A1B u="spss-output-1.7_elems_outputtree_pagetitle_line.htm">line Element</N21A1B>
+</N21A11>
+</N219E6>
+<N21A22 u="spss-output-1.7_elems_pivottable.htm">pivotTable Element<N21A37 u="spss-output-1.7_elems_pivottable_footnote.htm">footnote Element<N21A46 u="spss-output-1.7_elems_pivottable_footnote_marker.htm">marker Element</N21A46>
+<N21A50 u="spss-output-1.7_elems_pivottable_footnote_note.htm">note Element</N21A50>
+</N21A37>
+<N21A5A u="spss-output-1.7_elems_pivottable_caption.htm">caption Element<N21A66 u="spss-output-1.7_elems_pivottable_caption_footnote.htm">footnote Element<N21A75 u="spss-output-1.7_elems_pivottable_caption_footnote_marker.htm">marker Element</N21A75>
+<N21A7F u="spss-output-1.7_elems_pivottable_caption_footnote_note.htm">note Element</N21A7F>
+</N21A66>
+</N21A5A>
+<N21A89 u="spss-output-1.7_elems_pivottable_cornertext.htm">cornerText Element<N21A95 u="spss-output-1.7_elems_pivottable_cornertext_footnote.htm">footnote Element<N21AA4 u="spss-output-1.7_elems_pivottable_cornertext_footnote_marker.htm">marker Element</N21AA4>
+<N21AAE u="spss-output-1.7_elems_pivottable_cornertext_footnote_note.htm">note Element</N21AAE>
+</N21A95>
+</N21A89>
+</N21A22>
+<N21AB8 u="spss-output-1.7_elems_textblock.htm">textBlock Element<N21AC4 u="spss-output-1.7_elems_textblock_line.htm">line Element</N21AC4>
+</N21AB8>
+<N21ACB u="spss-output-1.7_elems_treetitle.htm">treeTitle Element<N21ADA u="spss-output-1.7_elems_treetitle_model.htm">model Element</N21ADA>
+<N21AE1 u="spss-output-1.7_elems_treetitle_treeview.htm">treeView Element</N21AE1>
+</N21ACB>
+<N21AE8 u="spss-output-1.7_types.htm">Extended Types<N21AEC u="spss-output-1.7_types_nodetype.htm">NodeType Type<N21AFC u="spss-output-1.7_types_nodetype_footnote.htm">footnote Element<N21B0B u="spss-output-1.7_types_nodetype_footnote_marker.htm">marker Element</N21B0B>
+<N21B15 u="spss-output-1.7_types_nodetype_footnote_note.htm">note Element</N21B15>
+</N21AFC>
+</N21AEC>
+</N21AE8>
+</N218A9>
+</N21161>
+<N21B22 u="">Schema Version 1.6<N2226A u="">Elements<N22270 u="spss-output-1.6_elems_category.htm">category Element<N22282 u="spss-output-1.6_elems_category_footnote.htm">footnote Element<N22291 u="spss-output-1.6_elems_category_footnote_marker.htm">marker Element</N22291>
+<N2229B u="spss-output-1.6_elems_category_footnote_note.htm">note Element</N2229B>
+</N22282>
+<N222A5 u="spss-output-1.6_elems_category_cell.htm">cell Element<N222B4 u="spss-output-1.6_elems_category_cell_footnote.htm">footnote Element<N222C3 u="spss-output-1.6_elems_category_cell_footnote_marker.htm">marker Element</N222C3>
+<N222CD u="spss-output-1.6_elems_category_cell_footnote_note.htm">note Element</N222CD>
+</N222B4>
+<N222D7 u="spss-output-1.6_elems_category_cell_sig.htm">sig Element</N222D7>
+</N222A5>
+</N22270>
+<N222DE u="spss-output-1.6_elems_charttitle.htm">chartTitle Element<N222EA u="spss-output-1.6_elems_charttitle_chart.htm">chart Element</N222EA>
+</N222DE>
+<N222F1 u="spss-output-1.6_elems_dimension.htm">dimension Element<N22303 u="spss-output-1.6_elems_dimension_footnote.htm">footnote Element<N22312 u="spss-output-1.6_elems_dimension_footnote_marker.htm">marker Element</N22312>
+<N2231C u="spss-output-1.6_elems_dimension_footnote_note.htm">note Element</N2231C>
+</N22303>
+</N222F1>
+<N22326 u="spss-output-1.6_elems_group.htm">group Element<N22338 u="spss-output-1.6_elems_group_footnote.htm">footnote Element<N22347 u="spss-output-1.6_elems_group_footnote_marker.htm">marker Element</N22347>
+<N22351 u="spss-output-1.6_elems_group_footnote_note.htm">note Element</N22351>
+</N22338>
+</N22326>
+<N2235B u="spss-output-1.6_elems_heading.htm">heading Element</N2235B>
+<N22376 u="spss-output-1.6_elems_modeltitle.htm">modelTitle Element<N22385 u="spss-output-1.6_elems_modeltitle_model.htm">model Element</N22385>
+<N2238C u="spss-output-1.6_elems_modeltitle_modelview.htm">modelView Element</N2238C>
+</N22376>
+<N22393 u="spss-output-1.6_elems_outputtree.htm">outputTree Element<N223A3 u="spss-output-1.6_elems_outputtree_command.htm">command Element</N223A3>
+<N223BE u="spss-output-1.6_elems_outputtree_pagetitle.htm">pageTitle Element<N223C8 u="spss-output-1.6_elems_outputtree_pagetitle_line.htm">line Element</N223C8>
+</N223BE>
+</N22393>
+<N223CF u="spss-output-1.6_elems_pivottable.htm">pivotTable Element<N223E4 u="spss-output-1.6_elems_pivottable_footnote.htm">footnote Element<N223F3 u="spss-output-1.6_elems_pivottable_footnote_marker.htm">marker Element</N223F3>
+<N223FD u="spss-output-1.6_elems_pivottable_footnote_note.htm">note Element</N223FD>
+</N223E4>
+<N22407 u="spss-output-1.6_elems_pivottable_caption.htm">caption Element</N22407>
+<N22411 u="spss-output-1.6_elems_pivottable_cornertext.htm">cornerText Element</N22411>
+</N223CF>
+<N2241B u="spss-output-1.6_elems_textblock.htm">textBlock Element<N22427 u="spss-output-1.6_elems_textblock_line.htm">line Element</N22427>
+</N2241B>
+<N2242E u="spss-output-1.6_elems_treetitle.htm">treeTitle Element<N2243D u="spss-output-1.6_elems_treetitle_model.htm">model Element</N2243D>
+<N22444 u="spss-output-1.6_elems_treetitle_treeview.htm">treeView Element</N22444>
+</N2242E>
+<N2244B u="spss-output-1.6_types.htm">Extended Types<N2244F u="spss-output-1.6_types_nodetype.htm">NodeType Type<N2245F u="spss-output-1.6_types_nodetype_footnote.htm">footnote Element<N2246E u="spss-output-1.6_types_nodetype_footnote_marker.htm">marker Element</N2246E>
+<N22478 u="spss-output-1.6_types_nodetype_footnote_note.htm">note Element</N22478>
+</N2245F>
+</N2244F>
+</N2244B>
+</N2226A>
+</N21B22>
+<N22485 u="">Schema Version 1.5<N22BCD u="">Elements<N22BD3 u="spss-output-1.5_elems_category.htm">category Element<N22BE5 u="spss-output-1.5_elems_category_footnote.htm">footnote Element<N22BF4 u="spss-output-1.5_elems_category_footnote_marker.htm">marker Element</N22BF4>
+<N22BFE u="spss-output-1.5_elems_category_footnote_note.htm">note Element</N22BFE>
+</N22BE5>
+<N22C08 u="spss-output-1.5_elems_category_cell.htm">cell Element<N22C17 u="spss-output-1.5_elems_category_cell_footnote.htm">footnote Element<N22C26 u="spss-output-1.5_elems_category_cell_footnote_marker.htm">marker Element</N22C26>
+<N22C30 u="spss-output-1.5_elems_category_cell_footnote_note.htm">note Element</N22C30>
+</N22C17>
+<N22C3A u="spss-output-1.5_elems_category_cell_sig.htm">sig Element</N22C3A>
+</N22C08>
+</N22BD3>
+<N22C41 u="spss-output-1.5_elems_charttitle.htm">chartTitle Element<N22C4D u="spss-output-1.5_elems_charttitle_chart.htm">chart Element</N22C4D>
+</N22C41>
+<N22C54 u="spss-output-1.5_elems_dimension.htm">dimension Element<N22C66 u="spss-output-1.5_elems_dimension_footnote.htm">footnote Element<N22C75 u="spss-output-1.5_elems_dimension_footnote_marker.htm">marker Element</N22C75>
+<N22C7F u="spss-output-1.5_elems_dimension_footnote_note.htm">note Element</N22C7F>
+</N22C66>
+</N22C54>
+<N22C89 u="spss-output-1.5_elems_group.htm">group Element<N22C9B u="spss-output-1.5_elems_group_footnote.htm">footnote Element<N22CAA u="spss-output-1.5_elems_group_footnote_marker.htm">marker Element</N22CAA>
+<N22CB4 u="spss-output-1.5_elems_group_footnote_note.htm">note Element</N22CB4>
+</N22C9B>
+</N22C89>
+<N22CBE u="spss-output-1.5_elems_heading.htm">heading Element</N22CBE>
+<N22CD9 u="spss-output-1.5_elems_modeltitle.htm">modelTitle Element<N22CE8 u="spss-output-1.5_elems_modeltitle_model.htm">model Element</N22CE8>
+<N22CEF u="spss-output-1.5_elems_modeltitle_modelview.htm">modelView Element</N22CEF>
+</N22CD9>
+<N22CF6 u="spss-output-1.5_elems_outputtree.htm">outputTree Element<N22D06 u="spss-output-1.5_elems_outputtree_command.htm">command Element</N22D06>
+<N22D21 u="spss-output-1.5_elems_outputtree_pagetitle.htm">pageTitle Element<N22D2B u="spss-output-1.5_elems_outputtree_pagetitle_line.htm">line Element</N22D2B>
+</N22D21>
+</N22CF6>
+<N22D32 u="spss-output-1.5_elems_pivottable.htm">pivotTable Element<N22D47 u="spss-output-1.5_elems_pivottable_footnote.htm">footnote Element<N22D56 u="spss-output-1.5_elems_pivottable_footnote_marker.htm">marker Element</N22D56>
+<N22D60 u="spss-output-1.5_elems_pivottable_footnote_note.htm">note Element</N22D60>
+</N22D47>
+<N22D6A u="spss-output-1.5_elems_pivottable_caption.htm">caption Element</N22D6A>
+<N22D74 u="spss-output-1.5_elems_pivottable_cornertext.htm">cornerText Element</N22D74>
+</N22D32>
+<N22D7E u="spss-output-1.5_elems_textblock.htm">textBlock Element<N22D8A u="spss-output-1.5_elems_textblock_line.htm">line Element</N22D8A>
+</N22D7E>
+<N22D91 u="spss-output-1.5_elems_treetitle.htm">treeTitle Element<N22DA0 u="spss-output-1.5_elems_treetitle_model.htm">model Element</N22DA0>
+<N22DA7 u="spss-output-1.5_elems_treetitle_treeview.htm">treeView Element</N22DA7>
+</N22D91>
+<N22DAE u="spss-output-1.5_types.htm">Extended Types<N22DB2 u="spss-output-1.5_types_nodetype.htm">NodeType Type<N22DC2 u="spss-output-1.5_types_nodetype_footnote.htm">footnote Element<N22DD1 u="spss-output-1.5_types_nodetype_footnote_marker.htm">marker Element</N22DD1>
+<N22DDB u="spss-output-1.5_types_nodetype_footnote_note.htm">note Element</N22DDB>
+</N22DC2>
+</N22DB2>
+</N22DAE>
+</N22BCD>
+</N22485>
+<N22DE8 u="">Schema Version 1.4<N23530 u="">Elements<N23536 u="spss-output-1.4_elems_category.htm">category Element<N23548 u="spss-output-1.4_elems_category_footnote.htm">footnote Element<N23557 u="spss-output-1.4_elems_category_footnote_marker.htm">marker Element</N23557>
+<N23561 u="spss-output-1.4_elems_category_footnote_note.htm">note Element</N23561>
+</N23548>
+<N2356B u="spss-output-1.4_elems_category_cell.htm">cell Element<N23577 u="spss-output-1.4_elems_category_cell_footnote.htm">footnote Element<N23586 u="spss-output-1.4_elems_category_cell_footnote_marker.htm">marker Element</N23586>
+<N23590 u="spss-output-1.4_elems_category_cell_footnote_note.htm">note Element</N23590>
+</N23577>
+</N2356B>
+</N23536>
+<N2359A u="spss-output-1.4_elems_charttitle.htm">chartTitle Element<N235A6 u="spss-output-1.4_elems_charttitle_chart.htm">chart Element</N235A6>
+</N2359A>
+<N235AD u="spss-output-1.4_elems_dimension.htm">dimension Element<N235BF u="spss-output-1.4_elems_dimension_footnote.htm">footnote Element<N235CE u="spss-output-1.4_elems_dimension_footnote_marker.htm">marker Element</N235CE>
+<N235D8 u="spss-output-1.4_elems_dimension_footnote_note.htm">note Element</N235D8>
+</N235BF>
+</N235AD>
+<N235E2 u="spss-output-1.4_elems_group.htm">group Element<N235F4 u="spss-output-1.4_elems_group_footnote.htm">footnote Element<N23603 u="spss-output-1.4_elems_group_footnote_marker.htm">marker Element</N23603>
+<N2360D u="spss-output-1.4_elems_group_footnote_note.htm">note Element</N2360D>
+</N235F4>
+</N235E2>
+<N23617 u="spss-output-1.4_elems_heading.htm">heading Element</N23617>
+<N23632 u="spss-output-1.4_elems_modeltitle.htm">modelTitle Element<N23641 u="spss-output-1.4_elems_modeltitle_model.htm">model Element</N23641>
+<N23648 u="spss-output-1.4_elems_modeltitle_modelview.htm">modelView Element</N23648>
+</N23632>
+<N2364F u="spss-output-1.4_elems_outputtree.htm">outputTree Element<N2365F u="spss-output-1.4_elems_outputtree_command.htm">command Element</N2365F>
+<N2367A u="spss-output-1.4_elems_outputtree_pagetitle.htm">pageTitle Element<N23684 u="spss-output-1.4_elems_outputtree_pagetitle_line.htm">line Element</N23684>
+</N2367A>
+</N2364F>
+<N2368B u="spss-output-1.4_elems_pivottable.htm">pivotTable Element<N236A0 u="spss-output-1.4_elems_pivottable_footnote.htm">footnote Element<N236AF u="spss-output-1.4_elems_pivottable_footnote_marker.htm">marker Element</N236AF>
+<N236B9 u="spss-output-1.4_elems_pivottable_footnote_note.htm">note Element</N236B9>
+</N236A0>
+<N236C3 u="spss-output-1.4_elems_pivottable_caption.htm">caption Element</N236C3>
+<N236CD u="spss-output-1.4_elems_pivottable_cornertext.htm">cornerText Element</N236CD>
+</N2368B>
+<N236D7 u="spss-output-1.4_elems_textblock.htm">textBlock Element<N236E3 u="spss-output-1.4_elems_textblock_line.htm">line Element</N236E3>
+</N236D7>
+<N236EA u="spss-output-1.4_elems_treetitle.htm">treeTitle Element<N236F9 u="spss-output-1.4_elems_treetitle_model.htm">model Element</N236F9>
+<N23700 u="spss-output-1.4_elems_treetitle_treeview.htm">treeView Element</N23700>
+</N236EA>
+<N23707 u="spss-output-1.4_types.htm">Extended Types<N2370B u="spss-output-1.4_types_nodetype.htm">NodeType Type<N2371B u="spss-output-1.4_types_nodetype_footnote.htm">footnote Element<N2372A u="spss-output-1.4_types_nodetype_footnote_marker.htm">marker Element</N2372A>
+<N23734 u="spss-output-1.4_types_nodetype_footnote_note.htm">note Element</N23734>
+</N2371B>
+</N2370B>
+</N23707>
+</N23530>
+</N22DE8>
+<N23747 u="legalnotices.htm">Notices</N23747>
+</es>

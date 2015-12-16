@@ -1,0 +1,111 @@
+/************************************************************************
+** Licensed Materials - Property of IBM
+**
+** IBM SPSS Products: Documentation Tools
+**
+** (C) Copyright IBM Corp. 2000, 2011
+**
+** US Government Users Restricted Rights - Use, duplication or disclosure
+** restricted by GSA ADP Schedule Contract with IBM Corp.
+************************************************************************/
+
+/* This stylesheet contains localizable formatting information
+   for online help. Other formatting information can be found
+   in help-core.css and help-base.css. 
+
+   This file is meant to be translated only once for each language
+   for each release of help tools. There should be no formatting
+   information that needs to be altered in any other CSS file.
+   Before translating this file,check to see if a translated
+   version already exists in z:\pubs\standards\online for the target
+   language and help tools version. */
+
+<!--
+
+H1, H2 {font-family:Arial,sans-serif;}
+BODY {font-family:Verdana,Arial,sans-serif; }
+TABLE, TD, TH {font-family:Verdana,Arial,sans-serif;}
+
+.link {}
+
+.tocindex {}  
+
+.index {} 
+
+.top {}
+
+.body {}
+
+.step {}
+
+.bullet {}
+
+.menuselection {}
+
+.codeblockbackground {}
+
+.codeblock { font-family:"Courier New",monospace; }
+
+.htmlblock { font-family:"Courier New",monospace; }
+
+.syntaxblock { font-family:"Courier New",monospace; }
+
+.syntaxcompactblock { font-family:"Courier New",monospace; }
+
+.imageblock {}
+
+.tagblock{}
+
+.mlcomment{}
+
+.slash{}
+
+.code {font-family:"Courier New",monospace;}
+
+.definedword {}
+
+.html {font-family:"Courier New",monospace;}
+
+.input {}
+
+.italic {font-style:italic}
+
+.label {font-style:italic}
+
+.name {font-style:italic}
+
+.runinhead {}
+
+.screen {font-family:Arial,sans-serif;}
+
+.superscript {}
+
+.subscript {}
+
+.symbol {font-family:Symbol}
+
+.syntax {font-family:"Courier New",monospace;}
+
+.parameter {font-style:italic}
+
+.code-highlight {}
+
+.code-required {}
+
+.tag {}
+
+.linkref {}
+
+.glossary-ref {}
+
+.glossary {}
+
+.glossary-term {}
+
+.glossary-definition {}
+
+.spss-citation {}
+
+.tablecaption {font-family:Verdana,Arial,sans-serif;}
+
+-->

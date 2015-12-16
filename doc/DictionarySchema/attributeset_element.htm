@@ -1,0 +1,89 @@
+<html xmlns:java="http://xml.apache.org/xslt/java">
+<head id="attributeSet_element">
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>attributeSet Element</title>
+<!--Generated with Help Tools v. 5.1.4x
+-->
+<script src="help.js" type="text/javascript"></script><script src="help-screen-reader.js" type="text/javascript"></script><script src="helploc.js" type="text/javascript"></script>
+<link href="help-core.css" rel="stylesheet">
+<link href="help-loc.css" rel="stylesheet">
+<link href="help-base.css" rel="stylesheet">
+<script type="text/javascript">if (typeof top.modulesLocation == "undefined") { top.modulesLocation = "../../modules.js"; }
+    </script><script type="text/javascript">document.write("<SCRIPT type='text/javascript' src='" + top.modulesLocation + "'><" + "/SCRIPT" + ">");
+</script>
+</head>
+<script type="text/javascript">
+<!--
+              if (parent == self) { //no parent, so need to create frameset
+                loadFrames('attributeset_element.htm');
+              }
+              //--></script>
+<body onload="javascript:sync_toc('N207C4')">
+<noscript>
+<div class="scripthelp">
+<table border="0" frame="0">
+<tr>
+<td style="vertical-align:top"><img alt="" src="images/warning.gif"></td><td>
+<p style="font-size:larger;">Note: your browser is configured to prevent scripts from running. This online documentation
+                  relies on scripts for navigation, table of contents, search, and other features. To make full
+                  use of the documentation, adjust your browser settings to allow scripts to run. See
+                  <a href="_script_help.htm" target="scripthelp">Adjusting browser settings</a> for more information.</p>
+</td>
+</tr>
+</table>
+</div>
+</noscript>
+<div class="navbuttons" id="navbuttons">
+<a accesskey="p" class="backbutton" id="backlayer" onMouseOut="document.getElementById('backbutton').src='images/help_back.png';" onMouseUp="document.getElementById('backbutton').src='images/help_back2.png';" onMouseDown="document.getElementById('backbutton').src='images/help_back3.png';" onMouseOver="document.getElementById('backbutton').src='images/help_back2.png';" href="variableset_element.htm">Previous<img alt="(P)revious: variableset_element" border="none" id="backbutton" src="images/help_back.png"></a>
+</div>
+<DIV id="navtrail" class="navtrail">
+<A HREF="dictionary_schema_intro.htm">Dictionary Schema Overview</A> &gt; </DIV>
+<h1>attributeSet Element</h1>
+<p class="body">The <span class="code">&lt;attributeSet&gt;</span> element
+contains information on variable and/or file attributes (typically
+defined with the <span class="syntax">VARIABLE ATTRIBUTE</span> and <span class="syntax">DATAFILE ATTRIBUTE</span> commands).</p>
+<p class="bullet">&bull;&nbsp;<span class="code">&lt;dictionary&gt;</span> and <span class="code">&lt;variable&gt;</span> elements
+can contain one or more optional <span class="code">&lt;attributeSet&gt;</span> elements.</p>
+<p class="bullet">&bull;&nbsp;If the element is a child of the <span class="code">&lt;dictionary&gt;</span> element, it is a file attribute set.</p>
+<p class="bullet">&bull;&nbsp;If the element is a child of the <span class="code">&lt;variable&gt;</span> element, it is a variable attribute
+set.</p>
+<p class="bullet">&bull;&nbsp;<span class="code">&lt;attributeSet&gt;</span> has one attribute, <span class="code">version</span>, that
+identifies the version number of the set (how many times the set has
+been modified).</p>
+<h2>Child Attributes</h2>
+<p class="bullet">&bull;&nbsp;The <span class="code">&lt;attributeSet&gt;</span> element has single child element, <span class="code">&lt;attribute&gt;</span>, which in turn has a single child element <span class="code">&lt;attributeValue/&gt;</span>. </p>
+<p class="bullet">&bull;&nbsp;<span class="code">&lt;attributeSet&gt;</span> contains one or more <span class="code">&lt;attribute&gt;</span> elements.</p>
+<p class="bullet">&bull;&nbsp;<span class="code">&lt;attribute&gt;</span> has two attributes: <span class="code">name</span> contains
+the name of the attribute, and <span class="code">type</span> identifies the type as "user" or "system".</p>
+<p class="bullet">&bull;&nbsp;<span class="code">&lt;attribute&gt;</span> contains one <span class="code">&lt;attributeValue/&gt;</span> element, with one attribute, <span class="code">value</span>, that contains the value of the attribute.</p>
+<h2>Example</h2>
+<pre class="codeblock">&lt;attributeSet version="1"&gt;
+  &lt;attribute name="dataAttribute1" type="user"&gt;
+    &lt;attributeValue value="A datafile attribute" /&gt; 
+  &lt;/attribute&gt;
+&lt;/attributeSet&gt;</pre>
+<div id="related_topics">
+<h2>Related Topics</h2>
+<div class="link">
+<a href="multipleresponseset_element.htm">multipleResponseSet Element</a>
+</div>
+<div class="link">
+<a href="multipleresponsesetcategorylabels_element.htm">multipleResponseSetCategoryLabels Element</a>
+</div>
+<div class="link">
+<a href="multipleresponsesetdichotomy_element.htm">multipleResponseSetDichtomy Element</a>
+</div>
+<div class="link">
+<a href="multipleresponsesetlabel_element.htm">multipleResponseSetLabel Element</a>
+</div>
+<div class="link">
+<a href="multipleresponsesetvariable_element.htm">multipleResponseSetVariable Element</a>
+</div>
+</div>
+<div class="copyright">&copy; Copyright IBM Corporation
+1989, 2013.</div>
+<script type="text/javascript">
+              filter_modules_topic();
+            </script>
+</body>
+</html>
