@@ -62,7 +62,14 @@ getErrTable <- function(language,lib,pkg)
     if(bindingIsLocked("with_message", asNamespace(spssNamespace)))
 		unlockBinding("with_message", asNamespace(spssNamespace))
 		
-	isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+    if(!spsspkg.IsBackendReady())
+    {
+        isUnicodeOn <- TRUE
+    }
+    else
+    {
+        isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+    }
     for(line in lines)
     {
         if( nchar(line) == 0 )
@@ -111,10 +118,8 @@ getErrTable <- function(language,lib,pkg)
         errs <- unlist(strsplit(tmp[2],"="))
         errLevel <- as.integer(errs[1])
         
-        #trim preceding space and tab
-        errMsg <- sub('[[:space:]]+','',errs[2])
         #trim trailing white space and tab
-        errMsg <- sub('[[:space:]]+$','',errMsg)
+        errMsg <- sub('[[:space:]]+$','',errs[2])
         
         oneErr <- c(errorType = errType,errorLevel = errLevel, errorMessage = errMsg)
         if(is.null(errTable))
@@ -142,7 +147,14 @@ getGeneralErr <- function(language,lib,pkg)
                   encoding="UTF-8") 
     for(line in lines)
     {
-        isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+        if(!spsspkg.IsBackendReady())
+        {
+            isUnicodeOn <- TRUE
+        }
+        else
+        {
+            isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+        }
         if (!isUnicodeOn )
         {
             if ( length(grep("darwin", R.Version()$os, ignore.case=TRUE)) > 0 )
@@ -195,9 +207,9 @@ getLanguage <- function()
 
     #Supports English only for this release.
     if("SChinese" == locale || "zh_CN" == locale)
-        lang <- "zh_cn"
+        lang <- "zh_CN"
     else if("TChinese" == locale || "zh_TW" == locale)
-        lang <- "zh_tw"
+        lang <- "zh_TW"
     else if("German" == locale || "de_DE" == locale)
         lang <- "de"
     else if("Spanish" == locale || "es_ES" == locale)
@@ -283,6 +295,14 @@ printSpssError <- function(err)
     #          translateMsg("error_code"),err,translateMsg("with_message"),spss.errMsg(err))
     gettextf("%s: %s '%s' %s '%s'",SPSS_Error,
               error_code,err,with_message,spss.errMsg(err))
+}
+
+printInvalidNameError <- function(err, varName)
+{
+    errMsg <- spss.errMsg(err)
+    errMsg <- substr(errMsg, 1, nchar(errMsg)-1)
+    gettextf("%s: %s '%s' %s '%s: %s'",SPSS_Error,
+              error_code,err,with_message,errMsg, varName)
 }
 
 printSpssWarning <- function(err)

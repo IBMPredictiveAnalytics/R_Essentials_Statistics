@@ -1,5 +1,5 @@
 \name{spsspivottable}
-\title{Displays R data as a IBM SPSS Statistics pivot table}
+\title{Displays R data as an IBM SPSS Statistics pivot table}
 \alias{spsspivottable}
 \alias{spsspivottable.Display}
 \alias{spsspkg.StartProcedure}
@@ -17,17 +17,17 @@ spsspivottable.Display(x,
                        hidecoldimtitle = TRUE,hidecoldimlabel = FALSE,
                        rowlabels = NULL,collabels = NULL,
                        format = default.format)
-spsspkg.StartProcedure(pName)
+spsspkg.StartProcedure(pName,omsId=pName)
 spsspkg.EndProcedure()
 }
 \arguments{
-  \item{x}{The data to be displayed as a IBM SPSS Statistics pivot table. It may be a data 
+  \item{x}{The data to be displayed as an IBM SPSS Statistics pivot table. It may be a data 
     frame, matrix, table, or any R object that can be converted to a data frame. 
     }
   \item{title}{\code{default.title} or a non-empty character title for the pivot
           table. The default title is "Rtable". 
     }
-  \item{templateName}{\code{default.title} or a non-empty character string 
+  \item{templateName}{\code{default.templateName} or a non-empty character string 
     specifying an OMS table subtype for the table. Must start with a letter 
     and be shorter than 64  bytes. The default is "Rtable". Unless you are 
     routing this pivot table with OMS or need to write an autoscript for this 
@@ -88,23 +88,29 @@ spsspkg.EndProcedure()
     }
   \item{format}{A character string or integer that specifies the numeric
     format. The value can be one of the formats provided below (as a string) 
-    or the corresponding integer code. The valid values are:\cr
+    or the corresponding integer code. The valid values are as follows:\cr
            formatSpec.Coefficient          0 \cr
            formatSpec.CoefficientSE        1 \cr
            formatSpec.CoefficientVar       2 \cr
            formatSpec.Correlation          3 \cr
            formatSpec.GeneralStat          4 \cr
+           formatSpec.Mean                 5 \cr
            formatSpec.Count                6 \cr
            formatSpec.Percent              7 \cr
            formatSpec.PercentNoSign        8 \cr
            formatSpec.Proportion           9 \cr
            formatSpec.Significance         10 \cr
            formatSpec.Residual             11 \cr
+           formatSpec.Variable             12 \cr
+           formatSpec.StdDev               13 \cr
+           formatSpec.Difference           14 \cr
+           formatSpec.Sum                  15 \cr
  
     The default format is formatSpec.GeneralStat. 
     }
-  \item{pName}{\code{procName} or a non-empty character procedure name for the pivot
-          table. The default pName is "R". 
+  \item{pName}{A string that is the name that appears in the outline pane of the Viewer associated with the output. If the optional argument omsId is omitted, then pName is also the command name associated with this output when routing it with OMS (Output Management System), as used in the COMMANDS keyword of the OMS command. The default pName is "R". 
+    }
+  \item{omsId}{A string that is the command name associated with this output when routing it with OMS (Output Management System), as used in the COMMANDS keyword of the OMS command. If omsId is omitted, then the value of the pName argument is used as the OMS identifier. omsId is only necessary when creating procedures with localized output so that the procedure name can be localized but not the OMS identifier.  
     }
 }
 \value{
@@ -114,30 +120,32 @@ spsspivottable.Display displays an R data structure (data frame,
 matrix, table, or any R object that can be converted to a 
 data frame) as a pivot table. The R data structure will be
 converted to a data frame before sending it to IBM SPSS Statistics.
-spsspkg.StartProcedure starts a procedure. spsspkg.EndProcedure
-should be called after calling spsspkg.StartProcedure.
-spsspkg.EndProcedure ends a procedure. spsspkg.StartProcedure
-should be called before calling spsspkg.EndProcedure.
+
+spsspkg.StartProcedure signals the beginning of pivot table or text block output. The StartProcedure-EndProcedure block is used to group output under a common heading, as is typical for output associated with an IBM SPSS Statistics procedure.
+
+spsspkg.EndProcedure signals the end of pivot table or text block output. spsspkg.EndProcedure
+must be called to end output initiated with spsspkg.StartProcedure.
 }
 \references{
 }
 \seealso{
-  \code{\link{spssdictionary}},
-  \code{\link{spssxmlworkspace}},
-  \code{\link{spssdata}},
   \code{\link{BasePivotTable}},
   \code{\link{CellText.VarName}},
   \code{\link{CellText.VarValue}},
   \code{\link{CellText.String}},
   \code{\link{CellText.Number}},
-  \code{\link{spss.Dimension}}.
+  \code{\link{spss.Dimension}},
+  \code{\link{extension}},
+  \code{\link{external}},
+  \code{\link{spssdata}},
+  \code{\link{spssdictionary}},
+  \code{\link{spsspkg}},
+  \code{\link{spssRGraphics}},
+  \code{\link{spssxmlworkspace}},
+  \code{\link{TextBlock}}
 }
 \examples{
-## These examples must be run from IBM SPSS Statistics. They cannot be run from R.
-
-*Example 1 -- display a data frame as a pivot table.
-get file="/data/demo.sav".
-begin program R.
+* Example 1 -- display a data frame as a pivot table
 var1 <- c(1,2,3)
 var2 <- c(1,2,3)
 var3 <- c(1,2,3)
@@ -145,39 +153,19 @@ x <- data.frame(var1,var2,var3)
 row.names(x) <- letters[1:3]
 names(x) <- LETTERS[1:3]
 spsspivottable.Display(x,title="dataframeTable",rowdim="row", coldim="column")
-end program.
 
-*Example 2 -- display a matrix as a pivot table.
-get file="/data/demo.sav".
-begin program R.
+
+* Example 2 -- display a matrix as a pivot table
 x <- as.matrix(1:10)
 spsspivottable.Display(x,,rowdim="row", coldim="column", caption = "my caption", format=formatSpec.Percent)
-end program.
 
-*Example 3 -- display an R table as a pivot table.
-get file="/data/demo.sav".
-begin program R.
+
+* Example 3 -- display an R table as a pivot table
 t <- table(rpois(5,5))
 spsspivottable.Display(t)
-end program.
 
-*Example 4 -- generate multiple pivot tables under the same outline.
-get file="/data/demo.sav".
-begin program R.
-var1 <- c(1,2,3)
-var2 <- c(1,2,3)
-var3 <- c(1,2,3)
-x <- data.frame(var1,var2,var3)
-row.names(x) <- letters[1:3]
-names(x) <- LETTERS[1:3]
-spsspkg.StartProcedure()
-spsspivottable.Display(x,title="dataframeTable1",outline = "outline1", rowdim="row", coldim="column")
-spsspivottable.Display(x,title="dataframeTable2",outline = "outline2", rowdim="row", coldim="column")
-spsspivottable.Display(x,title="dataframeTable3",outline = "outline1", rowdim="row", coldim="column")
-spsspkg.EndProcedure()
-end program.
 
-© Copyright IBM Corp. 1989, 2011
+© Copyright IBM Corp. 1989, 2015
 }
 \keyword{classes}
 \keyword{methods}

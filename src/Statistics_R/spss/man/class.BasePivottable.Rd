@@ -37,40 +37,44 @@
 \concept{BasePivotTable.DimensionFootnotes}
 \concept{BasePivotTable.CategoryFootnotes}
 
-\title{Class for IBM SPSS Statistics Pivot Table}
-\description{ The class BasePivotTable Provides the ability to create custom 
+\title{Class for IBM SPSS Statistics pivot tables}
+\description{ The BasePivotTable class provides the ability to create custom 
     pivot tables that can be displayed in the IBM® SPSS® Statistics Viewer or written 
     to an external file using the IBM SPSS Statistics Output Management System. }
 \section{Creating Objects}{
    \code{spss.BasePivotTable(title,templateName,outline="",isSplit=TRUE,caption="")}
-}
-\section{Slots}{
-   \describe{
-      \item{\code{title}:}{A string that specifies the title that appears with 
+
+   \var{title} -- A string that specifies the title that appears with 
         the table. Each table associated with a set of output (as specified in a
          StartProcedure-EndProcedure block) should have a unique title. Multiple
           tables within a given procedure can, however, have the same value of 
           the title argument as long as they have different values of the 
-          outline argument. }
-      \item{\code{templateName}:}{A string that specifies the OMS (Output 
+          outline argument.
+
+   \var{templateName} -- A string that specifies the OMS (Output 
         Management System) table subtype for this table. It must begin with a 
         letter and have a maximum of 64 characters. Unless you are routing this 
         pivot table with OMS, you will not need to keep track of this value, 
         although you do have to provide a value that meets the stated 
-        requirements. }
-      \item{\code{isSplit}:}{A logical value specifies whether to enable split 
+        requirements.
+		
+   \var{outline} -- A string that specifies a title, for the pivot table, that appears in the outline pane of the Viewer. The item for the table itself will be placed one level deeper than the item for the outline title. If omitted, the Viewer item for the table will be placed one level deeper than the root item for the output containing the table. 
+
+   \var{isSplit} -- A logical value that specifies whether to enable split 
         processing when creating pivot tables from data that have splits. Split 
         file processing refers to whether results from different split groups 
         are displayed in separate tables or in the same table but grouped by 
-        split, and is controlled by the SPLIT FILE command. }
-      \item{\code{dims}:}{A list of spss.Dimension objects that stores all the 
-        dimension categories objects, which are the row dimension and column 
-        dimension of pivot table.}
-      \item{\code{cells}:}{A list of CellText objects, which are the cell value 
-        of Pivot table. }                                                                         
-      \item{\code{caption}:}{A string that specifies a table caption.}
-      \item{\code{index}:}{A numeric variable to record the index of the 
-        BasePivotTable object.}
+        split, and is controlled by the SPLIT FILE command.
+
+   \var{caption} -- A string that specifies a table caption.		
+}
+\section{Slots}{
+   \describe{
+      \item{\code{dims}:}{A list of spss.Dimension objects that store all the 
+        dimension categories objects, which are the row and column 
+        dimensions of the pivot table.}
+      \item{\code{cells}:}{A list of CellText objects, which are the cell values 
+        of the pivot table. }                                                                         
    }
 }
 \section{Methods}{
@@ -97,14 +101,14 @@
       \item{\code{BasePivotTable.GetCellValue(object,categories)}:}{Gets the 
       value of the specified cell. The argument object is a reference to the 
       associated BasePivotTable object. The argument categories is the list of
-      the category values that specifies the cell¡ªone value for each of the 
+      the category values that specifies the cell--one value for each of the 
       dimensions in the pivot table. Category values must be specified as 
       CellText objects (one of CellText.Number, CellText.String, CellText.VarName,
        or CellText.VarValue).}  
       \item{\code{BasePivotTable.SetCellValue(object,categories, cell)}:}{Sets 
       the value of the specified cell. The argument object is a reference to the
       associated BasePivotTable object. The argument categories is the list of
-      the category values that specifies the cell¡ªone value for each of the 
+      the category values that specifies the cell--one value for each of the 
       dimensions in the pivot table. The argument cell is the cell value. 
       Category values and the cell value must be specified as CellText objects 
       (one of CellText.Number, CellText.String, CellText.VarName, or 
@@ -122,9 +126,9 @@
       dimension, and Dimension.Place.layer for a layer dimension. The argument
       dimName is a string that specifies the name used to label this dimension 
       in the displayed table. Each dimension must have a unique name. The argument
-      hideName specifies whether the dimension name is hidden¡ªby default, it 
+      hideName specifies whether the dimension name is hidden--by default, it 
       is displayed. Use hideName=TRUE to hide the name. The argument hideLabels 
-      specifies whether category labels for this dimension are hidden¡ªby 
+      specifies whether category labels for this dimension are hidden--by 
       default, they are displayed. Use hideLabels=TRUE to hide category labels.}   
       \item{\code{BasePivotTable.Append(object,place,dimName,hideName=FALSE, hideLabels=FALSE)}:}{
       Appends row, column, and layer dimensions to a pivot table. You use this 
@@ -135,9 +139,9 @@
       dimension, and Dimension.Place.layer for a layer dimension. The argument 
       dimName is a string that specifies the name used to label this dimension 
       in the displayed table. Each dimension must have a unique name. The argument 
-      hideName specifies whether the dimension name is hidden¡ªby default, it is
+      hideName specifies whether the dimension name is hidden--by default, it is
       displayed. Use hideName=TRUE to hide the name. The argument hideLabels 
-      specifies whether category labels for this dimension are hidden¡ªby default,
+      specifies whether category labels for this dimension are hidden--by default,
       they are displayed. Use hideLabels=TRUE to hide category labels.
       }
       \item{\code{BasePivotTable.SetCategories(object,dim,categories)}:}{
@@ -153,7 +157,7 @@
       Sets cell values for the row specified by a set of categories, one for each
       row dimension. The argument object is a reference to the associated 
       BasePivotTable object. The argument rowlabels specifies the set of categories
-      that defines the row¡ªa single value or a list. The argument cells is a list
+      that defines the row--a single value or a list. The argument cells is a list
       of cell values. Row categories and cell values must be specified as CellText
       objects (one of CellText.Number, CellText.String, CellText.VarName, or 
       CellText.VarValue).
@@ -162,7 +166,7 @@
       Sets cell values for the column specified by a set of categories, one for 
       each column dimension. The argument object is a reference to the associated
       BasePivotTable object. The argument collabels specifies the set of categories
-      that defines the column¡ªa single value or a list. The argument cells is a
+      that defines the column--a single value or a list. The argument cells is a
       list of cell values. Column categories and cell values must be specified as
       CellText objects (one of CellText.Number, CellText.String, CellText.VarName,
       or CellText.VarValue).
@@ -223,10 +227,8 @@
     function.
   }
 \examples{
-## These examples must be run from IBM SPSS Statistics. They cannot be run from R.
 
-*Example 1 -- Using cell values in expressions.
-begin program R.
+* Example 1 -- using cell values in expressions
 spsspkg.StartProcedure()
 table = spss.BasePivotTable("Table Title","OMS table subtype")
 rowdim=BasePivotTable.Append(table,Dimension.Place.row,"row dimension")
@@ -241,10 +243,9 @@ BasePivotTable.SetCellValue(table,list(row_cat1,col_cat1),spss.CellText.Number(1
 cellValue = CellText.toNumber(BasePivotTable.GetCellValue(table,list(row_cat1,col_cat1)))
 BasePivotTable.SetCellValue(table,list(row_cat2,col_cat2),spss.CellText.Number(2*cellValue))
 spsspkg.EndProcedure()
-end program.
 
-*Example 2 -- Setting cell values by row.
-begin program R.
+
+* Example 2 -- setting cell values by row
 spsspkg.StartProcedure("MyProcedure")
 table = spss.BasePivotTable("Table Title","OMS table subtype")
 rowdim=BasePivotTable.Append(table,Dimension.Place.row,"row dimension")
@@ -260,10 +261,9 @@ spss.CellText.Number(12)))
 BasePivotTable.SetCellsByRow(table,row_cat2,list(spss.CellText.Number(21),
 spss.CellText.Number(22)))
 spsspkg.EndProcedure()
-end program.
 
-*Example 3 -- Setting row dimension category footnotes.
-begin program R.
+
+* Example 3 -- setting row dimension category footnotes
 spsspkg.StartProcedure()
 table = spss.BasePivotTable("Table Title","OMS table subtype")
 rowdim=BasePivotTable.Append(table,Dimension.Place.row,"row dimension")
@@ -274,12 +274,16 @@ col_cat1 = spss.CellText.String("first column")
 col_cat2 = spss.CellText.String("second column")
 BasePivotTable.SetCategories(table,rowdim,list(row_cat1,row_cat2))
 BasePivotTable.SetCategories(table,coldim,list(col_cat1,col_cat2))
+BasePivotTable.SetCellsByRow(table,row_cat1,list(spss.CellText.Number(11),
+spss.CellText.Number(12)))
+BasePivotTable.SetCellsByRow(table,row_cat2,list(spss.CellText.Number(21),
+spss.CellText.Number(22)))
 BasePivotTable.CategoryFootnotes(table,Dimension.Place.row,"row dimension",
 row_cat1,"A category footnote")
 spsspkg.EndProcedure()
-end program.
 
-© Copyright IBM Corp. 1989, 2011
+
+© Copyright IBM Corp. 1989, 2015
 }  
 \keyword{methods}
 \keyword{classes}

@@ -3,7 +3,7 @@
 @REM
 @REM IBM SPSS Products: Statistics Common
 @REM
-@REM (C) Copyright IBM Corp. 1989, 2013
+@REM (C) Copyright IBM Corp. 1989, 2015
 @REM
 @REM US Government Users Restricted Rights - Use, duplication or disclosure
 @REM restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -72,8 +72,23 @@ copy /Y %2\Statistics_R\lang\ru\spssr.properties %SRCPKGPATH%\spss\inst\lang\ru
 copy /Y %2\Statistics_R\lang\zh_cn\spssr.properties %SRCPKGPATH%\spss\inst\lang\zh_cn
 copy /Y %2\Statistics_R\lang\zh_tw\spssr.properties %SRCPKGPATH%\spss\inst\lang\zh_tw
 copy /Y %2\Statistics_R\lang\pt_BR\spssr.properties %SRCPKGPATH%\spss\inst\lang\pt_BR
+copy /Y %2\Statistics_R\spss\spssxdcfg.ini %SRCPKGPATH%\spss\inst\spssxdcfg.ini
 
 rem install package.
 R CMD INSTALL --html --no-test-load --library="%R_HOME%\library" %SRCPKG%/spss
+
+rem build spssstatistics package.
+IF EXIST %SRCPKGPATH%\spssstatistics rd /S /Q %SRCPKGPATH%\spssstatistics
+IF not EXIST %SRCPKGPATH%\spssstatistics\R mkdir %SRCPKGPATH%\spssstatistics\R
+IF not EXIST %SRCPKGPATH%\spssstatistics\inst mkdir %SRCPKGPATH%\spssstatistics\inst
+IF not EXIST %SRCPKGPATH%\spssstatistics\man mkdir %SRCPKGPATH%\spssstatistics\man
+
+copy /Y %2\Statistics_R\spssstatistics\R\*.R %SRCPKGPATH%\spssstatistics\R
+copy /Y %2\Statistics_R\spssstatistics\inst\spssstatistics.ini %SRCPKGPATH%\spssstatistics\inst
+copy /Y %2\Statistics_R\spssstatistics\man\*.Rd %SRCPKGPATH%\spssstatistics\man
+copy /Y %2\Statistics_R\spssstatistics\DESCRIPTION %SRCPKGPATH%\spssstatistics\DESCRIPTION
+copy /Y %2\Statistics_R\spssstatistics\NAMESPACE %SRCPKGPATH%\spssstatistics\NAMESPACE
+
+R CMD INSTALL --html --no-test-load --library="%R_HOME%\library"  %SRCPKG%/spssstatistics
 
 rd /S /Q %SRCPKGPATH%

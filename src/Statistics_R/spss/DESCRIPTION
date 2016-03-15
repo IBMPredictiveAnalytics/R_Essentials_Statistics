@@ -1,7 +1,7 @@
-Package: spss220
+Package: spss230
 Type: Package
 Title: An interface to embed R in SPSS Statistics
-Version: 22.0.0.1
+Version: 23.0.0.0
 Author: IBM
 Maintainer: <xujincdl@cn.ibm.com>
 Description: An interface to embed R in SPSS Statistics

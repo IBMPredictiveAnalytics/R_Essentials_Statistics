@@ -170,6 +170,24 @@ int SPSS_PostSpssOutput(const char* text, int length)
     return DxHandle->PostSpssOutput(text, length);
 }
 
+int SPSS_GetNestLevel()
+{
+    assert(DxHandle);
+    return DxHandle->GetNestLevel();
+}
+
+void SPSS_IncreaseNestLayer()
+{
+    assert(DxHandle);
+    DxHandle->IncreaseNestLayer();
+}
+
+void SPSS_DecreaseNestLayer()
+{
+    assert(DxHandle);
+    DxHandle->DecreaseNestLayer();
+}
+
 
 int    isBrowse = 0;
 int    currBrowseMode = 0;
@@ -728,28 +746,47 @@ DLL_API int  stop_embedded_x()
 
 DLL_API int  pre_action()
 {   
-    DxRunning = 1;
-    return execute_x("library(spss220)\nprespss()");
+    int curnest = SPSS_GetNestLevel();
+    if(0 == curnest)
+    {
+        DxRunning = 1;
+        SPSS_SetSyntax("library(spss230)\nprespss()");
+    }
+    else
+    {
+        SPSS_IncreaseNestLayer();
+    }
+    
+    return 0;
 }
 
 DLL_API int post_action()
 {
+    int curnest = SPSS_GetNestLevel();
     int res = 0;
-    char post[128] = {0};
-    if (strcmp("+ ",tprompt) == 0)
+    if(0 == curnest)
     {
-        SPSS_PostSpssOutput("Error: unexpected end of input", 30);
-        exit(0);
+        char post[128] = {0};
+        if (strcmp("+ ",tprompt) == 0)
+        {
+            SPSS_PostSpssOutput("Error: unexpected end of input", 30);
+            exit(0);
+        }
+        if(isBrowse)
+            strcpy( post,"SetOutputFromBrowser(\"OFF\")\n");
+        strcat(post, "postspss()\n");
+        isBrowse = 0;
+        res = execute_x(post);
+        SPSS_StopConsole();
+        // run a blank syntax that make sure all syntax has been submitted and runned.
+        execute_x("\n");
+        DxRunning = 0;
     }
-    if(isBrowse)
-        strcpy( post,"SetOutputFromBrowser(\"OFF\")\n");
-    strcat(post, "postspss()\n");
-    isBrowse = 0;
-    res = execute_x(post);
-    SPSS_StopConsole();
-    // run a blank syntax that make sure all syntax has been submitted and runned.
-    execute_x("\n");
-    DxRunning = 0;
+    else
+    {
+        SPSS_DecreaseNestLayer();
+    }
+    
     return res;
 }
 

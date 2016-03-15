@@ -1,6 +1,6 @@
 #############################################
-# IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2012
+# IBM?SPSS?Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2014
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -41,18 +41,16 @@ spssdx_version <- NULL
 
 readSpssVersion <- function()
 {
-    spssprod_file <- NULL
-    
-    spssExePath <- Sys.getenv("SPSS_HOME")
+    spssExePath <- getOption("spssPath")
+    spssExePath <- file.path(dirname(spssExePath), basename(spssExePath))
     if ("windows" == .Platform$OS.type)
     {
-        spssExePath <- file.path(dirname(spssExePath), basename(spssExePath))
+        spssdxcfg <- file.path(spssExePath,"spssdxcfg.ini")
     }
     else
     {
-        spssExePath <- file.path(dirname(spssExePath), basename(spssExePath), "bin/")
+        spssdxcfg <- file.path(spssExePath,"bin/spssdxcfg.ini")
     }
-    spssdxcfg <- file.path(spssExePath,"spssdxcfg.ini")
     if(!file.exists(spssdxcfg))
     {
         spssExePath <- getwd()
@@ -66,6 +64,7 @@ readSpssVersion <- function()
     }        
     
     options(spssPath = spssExePath)
+    Sys.setenv(SPSS_HOME=spssExePath)
 
     lines <- scan(spssdxcfg,
                   what='character',
@@ -81,6 +80,29 @@ readSpssVersion <- function()
         ver <- gsub("(^ +)|( +$)", "", ver)
     }    
     ver
+}
+
+readXDPath <- function(lib, pkg)
+{
+    spssxdcfg <- file.path(lib, pkg, "spssxdcfg.ini")
+    if(!file.exists(spssxdcfg))
+    {
+        stop(gettextf("There is no 'spssxdcfg.ini' file in '%s'",file.path(lib, pkg)))
+    }
+    lines <- scan(spssxdcfg,
+                  what='character',
+                  blank.lines.skip=FALSE,
+                  sep='\n',
+                  skip=1,
+                  quiet=TRUE)
+                  
+    path <- ""
+    if(any(i <- grep("spssxd_path",lines,fixed = TRUE )))
+    {
+        path <- unlist(strsplit(lines[i],"="))[2]
+        path <- gsub("(^ +)|( +$)", "", path)
+    }
+    options(spssPath = path)
 }
 
 setenvs <- function()
@@ -136,7 +158,7 @@ spss.generalErr <- NULL
 spss_package <- NULL
 spss.lib <- NULL
 spss.pkg <- NULL
-spssNamespace <- "spss220"
+spssNamespace <- "spss230"
 spss.language <- NULL
 
 .onAttach <- function(lib, pkg)
@@ -168,8 +190,12 @@ spss.language <- NULL
         
     if(bindingIsLocked("spss.language", asNamespace(spssNamespace)))
 		unlockBinding("spss.language", asNamespace(spssNamespace))
+        
+    if(bindingIsLocked("last.SpssError", asNamespace(spssNamespace)))
+            unlockBinding("last.SpssError", asNamespace(spssNamespace))
     
     spss_package <<- pkg
+    readXDPath(lib, pkg)
     spssdx_version <<- readSpssVersion()
     plugin_version <<- readPkgVersion(lib, pkg)
 
@@ -196,4 +222,9 @@ spss.language <- NULL
     spss.errtable <<- getErrTable(spss.language,lib,pkg)
     spss.generalErr <<- getGeneralErr(spss.language,lib,pkg)
     extrapath(getOption("spssPath"))
+}
+
+.onDetach <- function(libpath)
+{
+    spsspkg.StopStatistics()
 }

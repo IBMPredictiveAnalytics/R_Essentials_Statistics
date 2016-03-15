@@ -1,56 +1,82 @@
 \name{spss-package}
 \alias{spss-package}
 \alias{spss}
+\alias{spsspkg}
+\alias{spsspkg.GetOutputLanguage}
+\alias{spsspkg.GetSPSSLocale}
+\alias{spsspkg.GetSPSSPlugInVersion}
+\alias{spsspkg.GetSPSSVersion}
+\alias{spsspkg.GetStatisticsPath}
+\alias{spsspkg.SetOutput}
+\alias{spsspkg.SetOutputLanguage}
+\alias{spsspkg.Version}
 \docType{package}
 \title{
-An interface to embed R in IBM SPSS Statistics
+An interface to use R with IBM SPSS Statistics
 }
 \description{
-An interface to embed R in IBM® SPSS® Statistics
+This package provides an interface to use R with IBM® SPSS® Statistics. You can run IBM SPSS Statistics from an external R process, such as an R IDE or the R interpreter. In this mode, the R program starts up a new instance of the IBM SPSS Statistics processor without an associated instance of the IBM SPSS Statistics client. You can also run R code from within IBM SPSS Statistics by wrapping the code in BEGIN PROGRAM R - END PROGRAM blocks of command syntax.  
+
+The help for the spss package is organized into the following topics, in addition to the functions described in this help file:\cr
+
+\code{\link{spssdata}} - functions for exchanging data between IBM SPSS Statistics and R\cr
+\code{\link{spssdictionary}} - functions for retrieving dictionary information from the active dataset and for creating new datasets in IBM SPSS Statistics\cr
+\code{\link{spsspivottable}} - functions for creating IBM SPSS Statistics pivot tables\cr
+\code{\link{spssRGraphics}} - functions for displaying R graphics in the IBM SPSS Statistics Viewer (does not apply when driving IBM SPSS Statistics from R)\cr
+\code{\link{spssxmlworkspace}} - functions for retrieving output from IBM SPSS Statistics commands, and dictionary information from the active dataset\cr
+\code{\link{TextBlock}} - function to create and populate a text block item in IBM SPSS Statistics output\cr
+\code{\link{external}} - functions for running IBM SPSS Statistics from R\cr
+\code{\link{extension}} - functions for creating R extension commands in IBM SPSS Statistics\cr
+
+Detailed help is available in the IBM SPSS Statistics help system under "Integration Plug-in for R Help", in addition to the R-style help that is installed with this package.
 }
 \details{
 \tabular{ll}{
-Package: \tab SPSS\cr
+Package: \tab spss\cr
 Type: \tab Package\cr
-Version: \tab 22.0\cr
-Date: \tab 2009-01-12\cr
+Version: \tab 23.0\cr
+Date: \tab 2015-02-10\cr
 }
+spsspkg.GetOutputLanguage retrieves the output language of the IBM SPSS Statistics processor.\cr
 
-The function spsspkg.Version is used to get the detailed version infomation.
-It retrieves the major version, patch version and the bugfix version of the package.\cr
+spsspkg.GetSPSSLocale retrieves the locale of the IBM SPSS Statistics processor.\cr
 
-The function spsspkg.GetSPSSLocale is used to retrieve the locale of
-the IBM SPSS Statistics processor.\cr
-The function spsspkg.SetOutputLanguage is used to set the output language
-of the IBM SPSS Statistics processor.\cr
-The function spsspkg.GetOutputLanguage is used to retrieve the output language of
-the IBM SPSS Statistiscs processor.\cr
-The function spsspkg.GetStatisticsPath is used to retrieve the installation path
-of the IBM SPSS Statistics processor.\cr
+spsspkg.GetSPSSPlugInVersion gets the IBM SPSS Statistics-R Integration Plug-in version. It replaces the function GetSPSSPlugInVersion, which is deprecated.\cr
 
-The function spsspkg.GetSPSSVersion and GetSPSSVersion are used to get the IBM SPSS Statistics version. 
-However, the function GetSPSSVersion is deprecated.\cr
-The function spsspkg.GetSPSSPlugInVersion and GetSPSSPlugInVersion are used to get 
-the IBM SPSS Statistics-R Integration Plug-in version.
-However, the function GetSPSSPlugInVersion is deprecated.\cr
+spsspkg.GetSPSSVersion gets the IBM SPSS Statistics version. It replaces the function GetSPSSVersion, which is deprecated.\cr
+
+spsspkg.GetStatisticsPath retrieves the installation path of the IBM SPSS Statistics processor.\cr
+
+spsspkg.SetOutput specifies whether output from R is displayed in the IBM SPSS Statistics Viewer. This function has no effect when running IBM SPSS Statistics from R.\cr
+
+spsspkg.SetOutputLanguage sets the output language of the IBM SPSS Statistics processor.\cr
+
+spsspkg.Version gets detailed version information. It retrieves the major version, patch version and the bugfix version of the package.\cr
 }
 
 \value{
-spsspkg.Version returns a list.\cr
-spsspkg.GetSPSSLocale returns a character string.\cr
 spsspkg.GetOutputLanguage returns a character string.\cr
 spsspkg.GetStatisticsPath returns a character string.\cr
+spsspkg.GetSPSSLocale returns a character string.\cr
+spsspkg.Version returns a list.\cr
 }
 
 \references{
 }
-\keyword{ package }
-\seealso{
+\keyword{package}
+\seealso{\code{\link{spssstatistics}},
+  \code{\link{extension}},
+  \code{\link{external}},
+  \code{\link{spssdata}},
+  \code{\link{spssdictionary}},
+  \code{\link{spsspivottable}},
+  \code{\link{spssRGraphics}},
+  \code{\link{spssxmlworkspace}},
+  \code{\link{TextBlock}}
 }
 
 \usage{
 spsspkg.Version()
-
 spsspkg.GetSPSSLocale()
 spsspkg.SetOutputLanguage(lang)
 spsspkg.GetOutputLanguage()
@@ -58,8 +84,7 @@ spsspkg.GetStatisticsPath()
 spsspkg.SetOutput(output)
 }
 \arguments{
-    \item{lang}{ A character string specifying the output language. The list of 
-    available languages:
+    \item{lang}{ A character string specifying the output language.  Available languages:
         English
         French
         German
@@ -78,33 +103,29 @@ spsspkg.SetOutput(output)
     }
 }
 \examples{
-## These examples need to be run from IBM SPSS Statistics. They cannot be run from R.
-* Example 1 -- Get the version information for the IBM SPSS Statistics package.
-begin program R.
+* Example 1 -- get the version information for the IBM SPSS Statistics package
 ver <- spsspkg.Version()
 print(ver)
-end program.
 
-* Example 2 -- Get the locale of the IBM SPSS Statistics processor.
-begin program R.
+
+* Example 2 -- get the locale of the IBM SPSS Statistics processor
 loc <- spsspkg.GetSPSSLocale()
 print(loc)
-end program.
 
-* Example 3 -- Set the output language of the IBM SPSS Statistics processor.
-show olang.
-begin program R.
+
+* Example 3 -- set the output language of the IBM SPSS Statistics processor
 spsspkg.SetOutputLanguage("German")
-end program.
-show olang.
 
-* Example 4 -- Get the IBM SPSS Statistics and Plug-in version information.
-begin program R.
+
+* Example 4 -- get the IBM SPSS Statistics and Plug-in version information
 verspss <- spsspkg.GetSPSSVersion()
 print(verspss)
 verplugin <- spsspkg.GetSPSSPlugInVersion()
 print(verplugin)
-end program.
 
-© Copyright IBM Corp. 1989, 2012
+
+© Copyright IBM Corp. 1989, 2015
 }
+\note{
+To drive IBM SPSS Statistics from an external R process, call the spsspkg.StartStatistics function after loading the spssstatistics package. 
+You execute IBM SPSS Statistics command syntax with the spsspkg.Submit function (described in \code{\link{external}}). Tabular output from IBM SPSS Statistics is displayed as plain text in R. Graphical output from IBM SPSS Statistics is not displayed in R. Note that the spsspkg.Submit function starts up IBM SPSS Statistics if it is not already running.

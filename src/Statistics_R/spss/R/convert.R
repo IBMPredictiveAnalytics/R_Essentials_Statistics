@@ -1,6 +1,6 @@
 #############################################
-# IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2011
+# IBM?SPSS?Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2014
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -96,7 +96,7 @@ ParseVarName <- function(var, dsName = NULL)
        str <- paste(str, strTrim(comma[i]))
     }
     str <- strTrim(str)
-    space <- strsplit(str,"[[:space:]]")[[1]]
+    space <- strsplit(str,"[[:space:]]{1,}")[[1]]
     varlist <- unlist(space)
 
     #tolist <- grep("to", varlist, ignore.case = TRUE)
@@ -128,16 +128,23 @@ ParseVarName <- function(var, dsName = NULL)
             }
             else
             {
-                if(x > 2)
+                index <- match(x, tolist)
+                if((x > 2) && (1 == index))
                 {
                     result <- ParseVarList(varlist, 1, x-2, FALSE, dsName)
                 }
                 
                 result <- c(result,ParseVarList(varlist, x-1, x+1, TRUE, dsName))
                 
-                if(x+1 < length(varlist))
+                nextToIndex <- length(varlist)
+                if(length(tolist)>index)
                 {
-                    result <- c(result,ParseVarList(varlist, x+2, length(varlist), FALSE, dsName))
+                    nextToIndex <- tolist[[index+1]]-2
+                }
+                
+                if(x+1 < nextToIndex)
+                {
+                    result <- c(result,ParseVarList(varlist, x+2, nextToIndex, FALSE, dsName))
                 }
             }
         }
@@ -229,7 +236,7 @@ GetVarIndex <- function(var, dsName = NULL)
     {
         last.SpssError <<- 1010
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+            stop(printInvalidNameError(last.SpssError, var),call. = FALSE, domain = NA)
     }
     result
 }
@@ -325,11 +332,17 @@ unicodeConverterOutput <- function(x)
 spsspkg.GetSPSSLocale <- function()
 {
     spssError.reset()
+    
+    if( !spsspkg.IsBackendReady())
+    {
+        last.SpssError <<- 17
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+    }
     err <- 0
     out <- .C("ext_GetSPSSLocale",as.character(""),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]]
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
 
     locVar <- out[[1]]
     if("" == locVar)
@@ -340,23 +353,29 @@ spsspkg.GetSPSSLocale <- function()
 spsspkg.SetOutputLanguage <- function(lang)
 {
     spssError.reset()
+    
+    if( !spsspkg.IsBackendReady())
+    {
+        last.SpssError <<- 17
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+    }
     err <- 0
     lang <- unicodeConverterInput(lang)
     out <- .C("ext_SetOutputLanguage",as.character(lang),as.integer(err),PACKAGE=spss_package)
     supportlang <- c("English", "French","German", "Italian", "Japanese", "Korean", "Polish", "Russian", "Simplified Chinese", "Spanish", "Traditional Chinese", "SChinese", "TChinese", "BPortugu")
     last.SpssError <<- out[[2]]
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
     if( is.SpssWarning(last.SpssError))
     {
         if (out[[1]]%in%supportlang)
         {
-            warning(printSpssWarning(last.SpssError),call. = FALSE, domain = NA)
+            warning(printSpssWarning(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
         }
         else
         {
             last.SpssError <<-1074
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
         }
     }
 }
@@ -364,11 +383,17 @@ spsspkg.SetOutputLanguage <- function(lang)
 spsspkg.GetOutputLanguage <- function()
 {
     spssError.reset()
+    
+    if( !spsspkg.IsBackendReady())
+    {
+        last.SpssError <<- 17
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+    }
     err <- 0
     out <- .C("ext_GetOutputLanguage",as.character(""),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
     olang <- out[[1]]  
     if("" == olang)
         olang <- NULL
@@ -378,7 +403,13 @@ spsspkg.GetOutputLanguage <- function()
 spsspkg.GetStatisticsPath <- function()
 {
     spssError.reset()
-    path <- Sys.getenv("SPSS_HOME")
+    
+    if( !spsspkg.IsBackendReady())
+    {
+        last.SpssError <<- 17
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+    }
+    path <- getOption("spssPath")
     path <- as.vector(path)
     if("" == path)
         path <- NULL

@@ -1,15 +1,13 @@
-@REM ************************************************************************
-@REM IBM Confidential
-@REM
-@REM OCO Source Materials
-@REM
-@REM IBM SPSS Products: Statistics Common
-@REM
-@REM (C) Copyright IBM Corp. 1989, 2011
-@REM
-@REM The source code for this program is not published or otherwise divested of its trade secrets, 
-@REM irrespective of what has been deposited with the U.S. Copyright Office.
-@REM ************************************************************************
+@REM /***********************************************************************
+@REM * Licensed Materials - Property of IBM 
+@REM *
+@REM * IBM SPSS Products: Statistics Common
+@REM *
+@REM * (C) Copyright IBM Corp. 1989, 2014
+@REM *
+@REM * US Government Users Restricted Rights - Use, duplication or disclosure
+@REM * restricted by GSA ADP Schedule Contract with IBM Corp. 
+@REM ************************************************************************/
 
 @ECHO OFF
 

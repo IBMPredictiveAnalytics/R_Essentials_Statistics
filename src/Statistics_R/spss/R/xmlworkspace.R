@@ -1,6 +1,6 @@
 #############################################
-# IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2011
+# IBM?SPSS?Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2014
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -22,23 +22,33 @@
 
 spssxmlworkspace.CreateXPathDictionary <- function(handle)
 {
+    if( !spsspkg.IsBackendReady())
+    {
+        spsspkg.StartStatistics()
+    }
+    
     err <- 0
     handle <- unicodeConverterInput(handle)
     out <- .C("ext_CreateXPathDictionary",as.character(handle), as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
 }
 
 spssxmlworkspace.GetHandleList <- function()
 {
+    if( !spsspkg.IsBackendReady())
+    {
+        spsspkg.StartStatistics()
+    }
+    
     err <- 0
     out <- .Call("ext_GetHandleList",as.integer(err),PACKAGE=spss_package)
 
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
 
     if(1==n)
         result <- NULL
@@ -54,6 +64,11 @@ spssxmlworkspace.GetHandleList <- function()
 
 spssxmlworkspace.EvaluateXPath <- function(handle, context, expression)
 {
+    if( !spsspkg.IsBackendReady())
+    {
+        spsspkg.StartStatistics()
+    }
+    
     err <- 0
     handle <- unicodeConverterInput(handle)
     context <- unicodeConverterInput(context)
@@ -64,7 +79,7 @@ spssxmlworkspace.EvaluateXPath <- function(handle, context, expression)
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
 
     if(1==n)
         result <- NULL
@@ -79,11 +94,16 @@ spssxmlworkspace.EvaluateXPath <- function(handle, context, expression)
 
 spssxmlworkspace.DeleteXmlWorkspaceObject <- function(handle)
 {
+    if( !spsspkg.IsBackendReady())
+    {
+        spsspkg.StartStatistics()
+    }
+    
     err <- 0
     handle <- unicodeConverterInput(handle)
     
     out <- .C("ext_RemoveXPathHandle",as.character(handle), as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
 }

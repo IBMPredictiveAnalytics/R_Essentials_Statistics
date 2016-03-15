@@ -11,36 +11,32 @@
 \concept{CellText.toNumber}
 \concept{CellText.toString}
 
-\title{A Simple Class for Number }
-\description{ A class of objects designed to store the numeric variable.
-   It could be used in the cell values, dimension values, category values or
-   layer values of Pivot table. The CellText.Number consists of 2 objects. A
-   data slot containing type, value and format if any. The other slot is index
-   for indexing the object. }
+\title{A simple class for string values in pivot tables }
+\description{ A class of objects designed to store string values that are used in pivot tables. }
 \section{Creating Objects}{
-   \code{spss.CellText.String(value, formatSpec=NULL, VarIndex=NULL)}
+   \code{spss.CellText.String(value)}
+
+   \var{value} -- The string value.
 }
-\section{Slots}{
-   \describe{
-      \item{\code{data}:}{a list containing type, value and format of the stored numeric variable.}
-      \item{\code{index}:}{a numeric variable to record the index of the CellText.Number object.}
-   }
-}
+
 \section{Methods}{
    \describe{
-      \item{\code{CellText.toNumber(CellText.String)}:}{Used to access numeric value of the Object.}
-      \item{\code{CellText.toString(CellText.String)}:}{Convert the numeric value to character variable, and returned the character.}
+      \item{\code{CellText.toString(CellText.String)}:}{Returns the value of the string stored in the object.}
+      \item{\code{CellText.toNumber(CellText.String)}:}{Returns a numeric representation of the stored string value if the string value is a character representation of a numeric value.}
   }
 }
 \seealso{
-   \code{\link{spsspivottable}}
+   \code{\link{spsspivottable}},
+   \code{\link{BasePivotTable}},
+   \code{\link{CellText.Number}},
+   \code{\link{CellText.VarName}},
+   \code{\link{CellText.VarValue}}  
 
-© Copyright IBM Corp. 1989, 2011
+© Copyright IBM Corp. 1989, 2015
 }
 \details{
-  This class is used to store the numeric variable to represent in the
-  pivot table. It could be used in the cell values, dimension values,
-  category values, and layer values.
+   This class is used to define string values for cells, dimension values, category values or
+   layer values of a pivot table.
   }
 \keyword{methods}
 \keyword{classes}

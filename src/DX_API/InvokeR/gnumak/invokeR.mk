@@ -3,7 +3,7 @@
 # *
 # * IBM SPSS Products: Statistics Common
 # *
-# * (C) Copyright IBM Corp. 1989, 2012
+# * (C) Copyright IBM Corp. 1989, 2015
 # *
 # * US Government Users Restricted Rights - Use, duplication or disclosure
 # * restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -55,7 +55,11 @@ ifeq ($(MACHINE),Linux)
     ifeq ($(HARDWARE),s390x)
         DIRNAME= zlinux64
     else
-        DIRNAME= lintel64
+        ifeq ($(HARDWARE),ppc64le)
+            DIRNAME= plinux64le
+        else
+            DIRNAME= lintel64
+        endif
     endif
     INVOKE_NAME=libInvokeR.so
 endif
@@ -207,31 +211,47 @@ ifeq ($(MACHINE), HP-UX)
 endif
 
 ifeq ($(MACHINE),Linux)
-    CC=         g++
-    CXX=
-    LINKCC=     $(CC)
-    LIBS+=-lRblas -lRlapack -lrt
-    CFLAGS += -m64 \
-              -fPIC \
-              -O2 \
-              -fexceptions \
-              -pedantic \
-              -Wno-long-long \
-              -DUNIX \
-              -c \
-              -DLINUX \
-              -DLINUX_64 \
-              -DHAS_BOOL \
-              -Dunix
+    HARDWARE = $(shell uname -i)
+    ifeq ($(HARDWARE),ppc64le)
+        CC = xlc_r -q64
+        CXX = xlC_r -q64
+        CFLAGS = \
+                -DUNIX \
+                -Dunix \
+                -c \
+                -O2 \
+                -qstrict
+        LFLAGS = \
+                -qpic \
+                -shared \
+                -G
+    else
+        CC=         g++
+        CXX=
+        LINKCC=     $(CC)
+        LIBS+=-lRblas -lRlapack -lrt
+        CFLAGS += -m64 \
+                  -fPIC \
+                  -O2 \
+                  -fexceptions \
+                  -pedantic \
+                  -Wno-long-long \
+                  -DUNIX \
+                  -c \
+                  -DLINUX \
+                  -DLINUX_64 \
+                  -DHAS_BOOL \
+                  -Dunix
 
-    LFLAGS += -m64 \
-             -fPIC \
-             -O2 \
-             -fexceptions \
-             -pedantic \
-             --export-dynamic \
-             -shared \
-             -Wl,--hash-style=both
+        LFLAGS += -m64 \
+                 -fPIC \
+                 -O2 \
+                 -fexceptions \
+                 -pedantic \
+                 --export-dynamic \
+                 -shared \
+                 -Wl,--hash-style=both
+    endif
 endif
 
 ifeq ($(MACHINE),Darwin)
@@ -242,7 +262,7 @@ ifeq ($(MACHINE),Darwin)
 			 -I/usr/local/include \
 			 -I.
     LIB_PATH= \
-            -L$(R_HOME)/lib/x86_64 \
+            -L$(R_HOME)/lib \
             -L.
 	CC=         g++
 	CXX=

@@ -1,0 +1,11 @@
+Package: spssstatistics
+Type: Package
+Title: Top level package for driving SPSS Statistics from R
+Version: 1.0
+Author: IBM
+Maintainer: <xujincdl@cn.ibm.com>
+Description: By default, this package loads the latest version 
+  of the spss package for the current R version. 
+  A different version can be loaded by setting the value 
+  of statistics_version in spssstatistics.ini.
+License: GPL-2

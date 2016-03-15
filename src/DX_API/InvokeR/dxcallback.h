@@ -5,7 +5,7 @@
 **
 ** IBM SPSS Products: Statistics Common
 **
-** (C) Copyright IBM Corp. 1989, 2012
+** (C) Copyright IBM Corp. 1989, 2014
 **
 ** The source code for this program is not published or otherwise divested of its trade secrets, 
 ** irrespective of what has been deposited with the U.S. Copyright Office.
@@ -86,6 +86,12 @@ typedef void (*Fp_RecordBrowserOutput)(const char * buf, size_t len, FP_ConvertC
 // par length, message length
 typedef int (*Fp_PostSpssOutput)(const char* text, int length);
 
+//Increase nest layer 
+typedef void (*Fp_IncreaseNestLayer)();
+
+//Decrease nest layer
+typedef void (*Fp_DecreaseNestLayer)();
+
 #ifdef __cplusplus
 }
 #endif
@@ -105,6 +111,8 @@ typedef struct {
     Fp_ReadFromConsole      ReadFromConsole;
     Fp_RecordBrowserOutput  RecordBrowserOutput;
     Fp_PostSpssOutput       PostSpssOutput;
+    Fp_IncreaseNestLayer    IncreaseNestLayer;
+    Fp_DecreaseNestLayer    DecreaseNestLayer;
 
 } DXCallBack, *DXCallBackHandle;
 

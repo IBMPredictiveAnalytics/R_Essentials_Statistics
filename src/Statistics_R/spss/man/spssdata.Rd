@@ -20,12 +20,12 @@ spssdata.GetDataFromSPSS(variables=NULL, cases=NULL,
                          row.label=NULL, keepUserMissing = FALSE,
                          missingValueToNA = FALSE, factorMode = "none", 
                          rDate = "none", dateVar= NULL,
-                         asList=FALSE )
+                         asList=FALSE, orderedContrast="contr.treatment")
                          
 spssdata.GetSplitDataFromSPSS(variables=NULL, row.label=NULL, 
                               keepUserMissing = FALSE, missingValueToNA = FALSE, 
                               factorMode = "none", rDate = "none",
-                              dateVar = NULL)
+                              dateVar = NULL, orderedContrast="contr.treatment")
 
 spssdata.CloseDataConnection()
 
@@ -67,38 +67,23 @@ spssdata.GetFileHandles()
     to NaN, and user-missing values for string variables will be converted 
     to NA. The default is FALSE.
     }
-  \item{missingValueToNA}{\code{FALSE} or TRUE specifying whether to return NA 
-    or NaN regarding missing value returned from IBM SPSS Statistics.
+  \item{missingValueToNA}{\code{FALSE} or TRUE specifying whether missing values of numeric variables are 
+  converted to the R NA value. The default, FALSE, specifies that missing values (system and user) of numeric variables are converted to the R NaN value. 
     }  
-  \item{factorMode}{If returned variable 
-    is nonimal or ordidal category dictionary, user could specify the form of 
-    factor they want to get. If specifying "none", the category variable will not
-    return as factor(except for string value). if specifying "levels", 
-    it will return data values as factor, if specifying "labels" it will return
-    data labels as factor. default is "none".
+  \item{factorMode}{Specifies whether categorical variables from IBM SPSS Statistics(variables with a measurement level of nominal or ordinal) are converted to R factors. The value "none" is the default and specifies that categorical variables are not converted to factors. The value "levels" specifies that categorical variables are converted to factors whose levels are the values that occur in the data. The value "labels" specifies that categorical variables are converted to factors whose levels are the value labels of the variables. Values in the data for which value labels do not exist have a level equal to the value itself. Value labels whose associated value does not occur in the data are included as empty factor levels. Ordinal variables are converted to ordered factors and nominal variables are converted to unordered factors. 
     }
-  \item{rDate}{ User could specify how 
-    to return the data time value by choosing different rDate. for "none", the 
-    date will be returned as the second count from 1582-10-14:00:00:00 till now;
-    for "POSIXct" the date will be returned as POSIXct object;
-    for "POSIXlt", the date will be returned as POSIXlt object.
-    Default value is "none"
+  \item{rDate}{Specifies how variables in dateVar, with date or datetime formats, are converted to R date/time objects. The value "none" is the default and specifies that no conversion will be done. The value "POSIXct" specifies to convert to R POSIXct objects and "POSIXlt" specifies to convert to R POSIXlt objects.
     }
-  \item{dateVar}{\code{NULL} to specify which variables will be chosen return 
-    the rDate format if those are date time variable. It could be Null or a 
-    vector of integers specifying indices of variables in the IBM SPSS Statistics 
-    active dataset that will be retrieved (index values represent position in 
-    the dataset, starting with 0 for the first variable in file order). If the 
-    argument is NULL, all variables in the dataset will be retrieved.
+  \item{dateVar}{Specifies a set of IBM SPSS Statistics variables with date or datetime formats to convert to R date/time objects. The argument supports the same options for specifying variables as described for the variables argument. If the argument is omitted and rDate specifies a POSIXt object, then all variables with date or datetime formats are converted.
     }      
-  \item{asList}{\code{FALSE} to specifies whether the result from GetDataFromSPSS
+  \item{asList}{Specifies whether the result from GetDataFromSPSS
     is a list. The argument is boolean with a default of FALSE, which specifies 
     that the result is returned as a data frame. If asList is TRUE the result is 
     a list with an element for each retrieved variable. Setting asList to TRUE is
     most useful when retrieving large datasets since the list structure requires 
     less memory than the default data frame structure.
     }  
-  \item{datasetName}{A character string specifying the name of a IBM SPSS Statistics dataset 
+  \item{datasetName}{A character string specifying the name of an IBM SPSS Statistics dataset 
     to which the R data will be written. The dataset must have been created by 
     spssdictionary.SetDictionaryToSPSS. 
     }
@@ -111,16 +96,9 @@ spssdata.GetFileHandles()
     numeric or something that can be converted to numeric. Otherwise, an error
     will be thrown.
     }
-  \item{categoryDictionary}{\code{NULL} A list to record the value label information of the
-     categorical variable. It is used to support handling for categorical 
-     variables retrieved from IBM SPSS Statistics and factor variables written from R to IBM SPSS 
-     Statistics. A categoryDictionary could be constructed in the following way:
-          catedic0 <- list(levels=c("m","f"),labels=c("Male","Female"))
-          catedic1 <- list(levels=c(0,1,2,3),labels=c("missing","clergial","custodian","manager"))
-          catedic  <- list(name = c("gender","jobcat"), dictionary = list(catedic0, catedic1))
-     However, if users want to get categorial variables from IBM SPSS Statistics, it
-      is strongly recommended to get the information using function: 
-          spssdictionary.GetCategoricalDictionaryFromSPSS(variables = NULL) 
+  \item{orderedContrast}{Specifies a contrast function to associate with the ordered factors created from any ordinal variables retrieved from IBM SPSS Statistics. It only applies (to ordinal variables) in the case that factorMode is set to "levels" or "labels". You can specify any valid contrast function, as a quoted string, such as "contr.helmert". The default is "contr.treatment". 
+    }
+  \item{categoryDictionary}{Specifies the name of a category dictionary created with the spssdictionary.GetCategoricalDictionaryFromSPSS function. Category dictionaries are for use when retrieving categorical variables (variables with a measurement level of "nominal" or "ordinal") into labelled R factors, with the intention of writing those factors to a new dataset.
     }    
 }
 \value{
@@ -135,14 +113,14 @@ spssdata.GetFileHandles returns a list of currently defined file handles. \cr
 }
 
 \details{
-spssdata.GetDataFromSPSS gets data from the IBM SPSS Statistics active dataset, and returns 
+spssdata.GetDataFromSPSS gets data from the IBM SPSS Statistics active dataset and returns 
 an R data frame. If the active dataset has splits, this function only 
 retrieves data in the first split group. To iterate over split groups, use 
 spssdata.GetSplitDataFromSPSS. GetDataFromSPSS cannot be called while a  
 data connection for reading from split files (implicitly created by 
 GetSplitDataFromSPSS) is open.\cr
 
-spssdata.GetSplitDataFromSPSS starts a IBM SPSS Statistics data connection implicitly if 
+spssdata.GetSplitDataFromSPSS starts an IBM SPSS Statistics data connection implicitly if 
 there is none. This function is used to retrieve split 
 data, group by group. Each call returns the case data for the next split group 
 from the active dataset. The function spssdata.IsLastSplit indicates whether 
@@ -162,10 +140,13 @@ spssdata.GetDataSetList returns a character vector that indicates the names of
 all defined IBM SPSS Statistics datasets in the current session.\cr
 
 spssdata.GetOpenedDataSetList returns a character vector that indicates the 
-names of all open IBM SPSS Statistics datasets in the current session. Excluding the
- those not opened but defined datasets declared by DATASET DECLARE \cr
+names of all open IBM SPSS Statistics datasets in the current session. The function returns '*' for the active dataset if it is unnamed. 
+Datasets that have been declared (with DATASET DECLARE) but not yet opened are NOT included in the list. 
+To obtain the list of all defined datasets, use the GetDataSetList function.\cr
 
-spssdata.CloseDataConnection closes the IBM SPSS Statistics data connection if any.\cr
+spssdata.CloseDataConnection closes a data connection created by the GetSplitDataFromSPSS function. 
+This function only applies to data connections created to handle IBM SPSS Statistics datasets containing split groups. 
+CloseDataConnection should be called when done reading from such datasets. \cr
 
 spssdata.SetDataToSPSS sets data to the specified IBM SPSS Statistics dataset.\cr
 
@@ -177,95 +158,74 @@ if no encoding is specified. File handles are created with the FILE HANDLE comma
 }
 \references{
 }
-\seealso{
+\seealso{\code{\link{extension}},
+  \code{\link{external}},
   \code{\link{spssdictionary}},
+  \code{\link{spsspkg}},
+  \code{\link{spsspivottable}},
+  \code{\link{spssRGraphics}},
   \code{\link{spssxmlworkspace}},
-  \code{\link{spsspivottable}}.
+  \code{\link{TextBlock}}
 }
 \examples{
-## These examples must be run from IBM SPSS Statistics. They cannot be run from R.
+## These examples are intended to be run from R, with R driving IBM SPSS Statistics.
 
-*example 1 -- get filtered data from IBM SPSS Statistics.
-get file="/data/Employee data.sav".
+* Example 1 -- get filtered data from IBM SPSS Statistics.
 
-USE ALL.
-COMPUTE filter_$=(jobcat = 3).
-VARIABLE LABEL filter_$ 'jobcat = 3 (FILTER)'.
-VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.
-FORMAT filter_$ (f1.0).
-FILTER BY filter_$.
-EXECUTE .
-
-begin program R.
+spsspkg.Submit(c("get file='/data/Employee data.sav'.",
+                 "USE ALL.",
+                 "COMPUTE filter_$=(jobcat = 3).",
+                 "VARIABLE LABEL filter_$ 'jobcat = 3 (FILTER)'.",
+                 "VALUE LABELS filter_$  0 'Not Selected' 1 'Selected'.",
+                 "FORMAT filter_$ (f1.0).",
+                 "FILTER BY filter_$.",
+                 "EXECUTE."))
 x <- spssdata.GetDataFromSPSS(variables = c(1,4,5,8),cases = 4,row.label=0)
 print(x)
 print(summary(x))
-end program.
 
-*example 2 -- get split data from IBM SPSS Statistics.
-get file="/data/Employee data.sav".
+* Example 2 -- get split data from IBM SPSS Statistics.
 
-SORT CASES BY gender .
-SPLIT FILE
-  SEPARATE BY gender .
-
-begin program R.
-
+spsspkg.Submit(c("get file='/data/Employee data.sav'.",
+                 "SORT CASES BY gender.",
+                 "SPLIT FILE SEPARATE BY gender."))
 while(!spssdata.IsLastSplit())
 {
     x <- spssdata.GetSplitDataFromSPSS(variables = c(0,1,4,5,8))
     print(summary(x))
 }
 spssdata.CloseDataConnection()
-end program.
 
-*example 3 -- set data to IBM SPSS Statistics
 
-get file="/data/demo.sav".
+* Example 3 -- set data to IBM SPSS Statistics
+
+spsspkg.Submit("get file='/data/demo.sav'.")
 
 * Read the dictionary of the active dataset into R.
 * Set the modified dictionary to a new IBM SPSS Statistics dataset.
 * Set 2 cases to the new dataset.
 
-begin program R.
 x <- spssdictionary.GetDictionaryFromSPSS(variables = c(0,4))
 spssdictionary.SetDictionaryToSPSS("abc",x)
-
 case1 <- c(3,4)
 case2 <- c(5,6)
 x <- data.frame(case1,case2)
 spssdata.SetDataToSPSS("abc",x)
-end program.
-
-* Perform any operations on the new dataset in IBM SPSS Statistics.
-* ...
-
-* End the DataStep.
-begin program R.
 spssdictionary.EndDataStep()
-end program.
 
-* example 4 -- Deal with categorical variable with factor.
-get file="/data/Employee data.sav".
-begin program r.
+
+* Example 4 -- Create a new dataset based on the dictionary of a dataset with categorical variables, preserving the value labels
+
+spsspkg.Submit("get file='/data/Employee data.sav'.")
 dict <- spssdictionary.GetDictionaryFromSPSS("id TO jobcat")
 casedata <- spssdata.GetDataFromSPSS(variables="id TO jobcat", factorMode="labels")
-catedata <- spssdictionary.GetCategoricalDictionaryFromSPSS(variables ="id TO jobcat")
-if(spssdictionary.CategoryDictionaryValid(catedata))
-{
-    spssdictionary.SetDictionaryToSPSS("results2",dict, categoryDictionary=catedata)
-    spssdata.SetDataToSPSS("results2",casedata, categoryDictionary=catedata)
-}
+catdict <- spssdictionary.GetCategoricalDictionaryFromSPSS(variables ="id TO jobcat")
+spssdictionary.SetDictionaryToSPSS("results2",dict, categoryDictionary=catdict)
+spssdata.SetDataToSPSS("results2",casedata, categoryDictionary=catdict)
 spssdictionary.EndDataStep()
-end program.
 
-* example 5 -- Get the currently defined file handles
-get file="/data/Employee data.sav".
-begin program r.
-handles <- spssdata.GetFileHandles()
-end program.
 
-© Copyright IBM Corp. 1989, 2011
+© Copyright IBM Corp. 1989, 2015
 }
 \keyword{classes}
 \keyword{methods}

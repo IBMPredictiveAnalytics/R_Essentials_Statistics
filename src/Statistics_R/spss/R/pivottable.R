@@ -1,6 +1,6 @@
 #############################################
-# IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2012
+# IBM?SPSS?Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2014
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -47,7 +47,6 @@ default.coldim <- "column"
 default.format <- formatSpec.GeneralStat
 
 defaultMinDataColumnWidth <- 60
-defaultMaxDataColumnWidth <- 200
 
 spss.PivotTableMap <- list()
 spss.DimensionMap <- list()
@@ -983,10 +982,15 @@ setMethod("initialize", "BasePivotTable", function(.Object,title,templateName,ou
 
 spss.BasePivotTable<-function(title,templateName,outline="",isSplit=TRUE,caption="")
 {
-  obj<- new("BasePivotTable",title,templateName,outline,isSplit,caption)
-  
-  spss.AppendObjectMap(obj)
-  obj
+    if( !spsspkg.IsBackendReady())
+    {
+        last.SpssError <<- 17
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+    }
+    obj<- new("BasePivotTable",title,templateName,outline,isSplit,caption)
+
+    spss.AppendObjectMap(obj)
+    obj
 }
 
 setGeneric("BasePivotTable.Caption", function(object, caption) standardGeneric("BasePivotTable.Caption"))
@@ -1643,6 +1647,11 @@ spsspivottable.Display <- function(x,
                                    format = default.format)
 {
     spssError.reset()
+    
+    if( !spsspkg.IsBackendReady())
+    {
+        spsspkg.StartStatistics()
+    }
 
     title <- unicodeConverterInput(title)
     templateName <- unicodeConverterInput(templateName)
@@ -1706,21 +1715,6 @@ spsspivottable.Display <- function(x,
                                        PACKAGE=spss_package
                                        )
     last.SpssError <<- out[[6]] 
-    if( is.SpssError(last.SpssError))
-    {
-        if( !getOption("is.splitConnectionOpen") )
-            .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
-        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
-    }
-
-    out <- .C("ext_MaxDataColumnWidth",as.character(outline),
-                                       as.character(title),
-                                       as.character(templateName),
-                                       as.integer(isSplit),
-                                       as.integer(defaultMaxDataColumnWidth),
-                                       as.integer(err),
-                                       PACKAGE=spss_package
-                                       )
     if( is.SpssError(last.SpssError))
     {
         if( !getOption("is.splitConnectionOpen") )
@@ -1966,7 +1960,7 @@ spsspivottable.Display <- function(x,
                 }
                 else
                 {
-                    cell <- unicodeConverterInput(cell)
+                    cell <- unicodeConverterInput(as.character(cell))
                     out <- .C("ext_SetStringCell",as.character(outline),
                                                   as.character(title),
                                                   as.character(templateName),
@@ -1997,11 +1991,15 @@ spsspivottable.Display <- function(x,
     {
         if ( is.pvDisplayCreatedProc ) 
         {
-              out <- .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
-              last.SpssError <<- out[[1]] 
-              if( is.SpssError(last.SpssError))
-                  stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)              
-              is.pvDisplayCreatedProc <- FALSE
+            out <- .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
+            if(getOption("runStartStatistics") && getOption("statsOutputInR"))
+            {
+                postOutputToR()
+            }
+            last.SpssError <<- out[[1]] 
+            if( is.SpssError(last.SpssError))
+              stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)              
+            is.pvDisplayCreatedProc <- FALSE
         }
     }
 }
@@ -2009,6 +2007,11 @@ spsspivottable.Display <- function(x,
 
 spsspkg.StartProcedure <- function(pName=NULL, omsId=pName)
 {
+    if( !spsspkg.IsBackendReady())
+    {
+        spsspkg.StartStatistics()
+    }
+    
     if(is.null(getOption("procName"))) options(procName = "R")
     if(is.null(getOption("oldProcName"))) options(oldProcName = "R")
     if(is.null(getOption("oldOmsIdentifier"))) options(oldOmsIdentifier = "R")
@@ -2036,24 +2039,40 @@ spsspkg.StartProcedure <- function(pName=NULL, omsId=pName)
 
 spsspkg.EndProcedure <- function()
 {
-    status <- FALSE
-    if ( getOption("is.pvTableConnectionOpen") )
+    if( spsspkg.IsBackendReady())
     {
-        err <- 0
-        out <- .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
-        last.SpssError <<- out[[1]] 
-        if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
-    
-        options(is.pvTableConnectionOpen = FALSE)
-        options(procName = getOption("oldProcName"))
-        options(omsIdentifier = getOption("oldOmsIdentifier"))
-        status <- TRUE
+        if(!getOption("runStartStatistics") && getOption("toStatOutputView"))
+        {
+            postOutputToSpss()
+        }
+        status <- FALSE
+        if ( getOption("is.pvTableConnectionOpen") )
+        {
+            err <- 0
+            out <- .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
+            if(getOption("runStartStatistics") && getOption("statsOutputInR"))
+            {
+                postOutputToR()
+            }
+            last.SpssError <<- out[[1]] 
+            if( is.SpssError(last.SpssError))
+                stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        
+            options(is.pvTableConnectionOpen = FALSE)
+            options(procName = getOption("oldProcName"))
+            options(omsIdentifier = getOption("oldOmsIdentifier"))
+            status <- TRUE
+        }
     }
 }
 
 spss.TextBlock<- function(name, content, outline="")
 {
+    if( !spsspkg.IsBackendReady())
+    {
+        last.SpssError <<- 17
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+    }
     obj <- new("TextBlock", name, content, outline)
     obj
 }

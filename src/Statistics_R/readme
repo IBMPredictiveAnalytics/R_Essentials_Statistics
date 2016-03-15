@@ -1,19 +1,19 @@
 Building and Installing the IBM® SPSS® Statistics-R Package
-May, 2013
+January, 2015
 
 
 Introduction
 ------------
 This directory is used to build and install the IBM SPSS Statistics-R package for the following platforms:
     - Windows
-    - UNIX (Linux64, MacOS, AIX64, SunOS64, ZLinux64)
+    - UNIX (Linux64, MacOS, AIX64, SunOS64, ZLinux64, PLinux64)
 
 Prerequisites
 -------------
     Visual Studio 2008 has to be installed (For Windows platform)
     Rtools has to be installed (For Windows platform. You can download it from http://www.murdoch-sutherland.com/Rtools)
     HTML Help Workshop has to be installed (For Windows platform)
-    R 2.15.* has to be installed (For Windows, Linux64, MacOS, AIX64, SunOS64 and ZLinux64 platforms)
+    R 3.1.* has to be installed (For Windows, Linux64, MacOS, AIX64, SunOS64, ZLinux64 and PLinux64 platforms)
 
 Environment variables
 ---------------------
@@ -46,6 +46,11 @@ The following environment variables must be set prior to building the IBM SPSS S
         SPSS_HOME - must be defined as the location of your IBM SPSS Statistics installation
         Add <SPSS_HOME>/lib and <R_HOME>/lib/R/lib to LD_LIBRARY_PATH.
         Add <R_HOME>/bin to PATH.
+    PLinux64:
+        R_HOME - must be defined as the location of your R installation
+        SPSS_HOME - must be defined as the location of your IBM SPSS Statistics installation
+        Add <SPSS_HOME>/lib and <R_HOME>/lib/R/lib to LD_LIBRARY_PATH.
+        Add <R_HOME>/bin to PATH.
 
 
 
@@ -63,5 +68,11 @@ Building and installing the IBM SPSS Statistics-R package using buildpkgUnix.sh 
 Usage Synopsis:
 Creating the IBM SPSS Statistics-R source package and installing it:
   ./buildpkgUnix.sh
+  
+Notes
+-----
+After the build succeeds, spssxd_path needs to be changed in the file spssxdcfg.ini in order to run the package successfully.
+For windows this file should be located at R_HOME/library/spss230/spssxdcfg.ini,
+For UNIX it should be at R_HOME/lib/R/library/spss230/spssxdcfg.ini
 
-© Copyright IBM Corp. 1989, 2013
+© Copyright IBM Corp. 1989, 2015
