@@ -1,6 +1,6 @@
 #############################################
 # IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2011
+# (c) Copyright IBM Corp. 1989, 2013
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -189,9 +189,8 @@ spsspkg.processcmd<-function(oobj,myArgs,f="",excludedargs=NULL, lastchancef = N
         }        
     }
     if(length(omittedArgs) > 0) {
-        missingArgsErr<-"The following required parameters were not supplied: "
-        for(i in 1:length(omittedArgs)) paste(missingArgsErr,omittedArgs[i],sep=",")
-        stop(missingArgsErr)
+        stop(paste("The following required parameters were not supplied:",
+            paste(omittedArgs, collapse=", "), collapse=""))
     }
     ##call the extension procedure, end user need to implement the f method.
     return(do.call(f,oobj@parsedparams))

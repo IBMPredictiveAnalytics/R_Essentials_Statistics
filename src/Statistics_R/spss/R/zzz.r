@@ -136,7 +136,7 @@ spss.generalErr <- NULL
 spss_package <- NULL
 spss.lib <- NULL
 spss.pkg <- NULL
-spssNamespace <- "spss210"
+spssNamespace <- "spss220"
 spss.language <- NULL
 
 .onAttach <- function(lib, pkg)

@@ -17,8 +17,6 @@
 #
 # USAGE SYNOPSIS:
 #       (g)make -f [path]invokeR.mk
-#        if you need 64 bit lib on linux,use 
-#       (g)make -f [path]invokeR.mk PLATFORM=64
 #
 # PREREQUISITES: Environment variables which must be set prior to the
 #       calling of this makefile.
@@ -55,17 +53,9 @@ endif
 ifeq ($(MACHINE),Linux)
     HARDWARE = $(shell uname -i)
     ifeq ($(HARDWARE),s390x)
-        ifeq ($(PLATFORM),64)
-            DIRNAME= zlinux64
-        else
-            DIRNAME= zlinux
-        endif
+        DIRNAME= zlinux64
     else
-        ifeq ($(PLATFORM),64)
-            DIRNAME= lintel64
-        else
-            DIRNAME= lintel
-        endif
+        DIRNAME= lintel64
     endif
     INVOKE_NAME=libInvokeR.so
 endif
@@ -79,8 +69,8 @@ ifeq ($(MACHINE),Darwin)
     DIRNAME= macosx
     INVOKE_NAME=libInvokeR.dylib
     CFLAGS += -DUNX_MACOSX
-#   --  Define Mac machine type i386, it will be assigned a value only on Mac platform.
-    MAC_ARCH_I386= -arch i386
+#   --  Define Mac machine type x86_64, it will be assigned a value only on Mac platform.
+    MAC_ARCH_X64= -arch x86_64
 endif
 
 OBJECT_NAME=embedded.o 
@@ -111,109 +101,109 @@ LIBS =  -lR -lm -ldl
 
 #   -- Define compile and link options for different platform
 ifeq ($(MACHINE), AIX)
-        MACROS = \
-        		-D_LARGE_FILES \
-        		-DAIX \
-        		-DVA40 \
-        		-DUNIX \
-        		-Dunix \
-        		-D_BIG_ENDIAN \
-        		-D_BigEndian \
-        		-DREQUIRE_LOGIN \
-        		-DLP64
+    MACROS = \
+            -D_LARGE_FILES \
+            -DAIX \
+            -DVA40 \
+            -DUNIX \
+            -Dunix \
+            -D_BIG_ENDIAN \
+            -D_BigEndian \
+            -DREQUIRE_LOGIN \
+            -DLP64
 
-        CC = xlC_r -q64
-        CXX= xlC_r
-        CFLAGS+= \
-        		-qlanglvl=extc99 \
-        		-qopt=3 \
-        		-qstrict \
-        		$(MACROS) \
-        		-c \
-        		-O \
-        		-qrtti=all \
-        		-qlibansi \
-        		-qthreaded \
-        		-qstaticinline \
-        		-qlonglong \
-        		-qtmplparse=no \
-        		-qdollar \
-        		-qalign=power
+    CC = xlC_r -q64
+    CXX= xlC_r
+    CFLAGS+= \
+            -qlanglvl=extc99 \
+            -qopt=3 \
+            -qstrict \
+            $(MACROS) \
+            -c \
+            -O \
+            -qrtti=all \
+            -qlibansi \
+            -qthreaded \
+            -qstaticinline \
+            -qlonglong \
+            -qtmplparse=no \
+            -qdollar \
+            -qalign=power
 
-        LFLAGS+= \
-        		-b64 \
-        		-q64 \
-        		-qrtti=all \
-        		-Wl,-brtl \
-        		-Wl,-blibpath:/usr/lib/threads:/usr/lib:/lib \
-        		-Wl,-bexpall \
-        		-Wl,-bnoentry \
-        		-Wl,-bf \
-        		-Wl,-G
+    LFLAGS+= \
+            -b64 \
+            -q64 \
+            -qrtti=all \
+            -Wl,-brtl \
+            -Wl,-blibpath:/usr/lib/threads:/usr/lib:/lib \
+            -Wl,-bexpall \
+            -Wl,-bnoentry \
+            -Wl,-bf \
+            -Wl,-G
 endif
 
 ifeq ($(MACHINE), SunOS)
 #   --  Pick up the libraries files
-LIB_PATH+= \
-            -L/usr/local/lib/sparcv9
+    LIB_PATH+= \
+                -L/usr/local/lib/sparcv9
 
-LIBS = -lR -ldl -lm -lsocket -lposix4 -lm9x -lnsl -lstdc++ -lCstd -lCrun -lc -lsunmath -lfsu -lgen
-MACROS = \
-	-D__sparc__ \
-	-D__sunos__ \
-	-D__OSVERSION__=5 \
-	-DHAS_BOOL \
-	-mt \
-	-D_BigEndian \
-	-DLP64 \
-	-DSOLARIS \
-	-DUNIX \
-	-DREQUIRE_LOGIN \
-	-DODBC64 \
-	-DSPSS_U8_OR_CP \
-	-KPIC
+    LIBS = -lR -ldl -lm -lsocket -lposix4 -lm9x -lnsl -lstdc++ -lCstd -lCrun -lc -lsunmath -lfsu -lgen
+    MACROS = \
+        -D__sparc__ \
+        -D__sunos__ \
+        -D__OSVERSION__=5 \
+        -DHAS_BOOL \
+        -mt \
+        -D_BigEndian \
+        -DLP64 \
+        -DSOLARIS \
+        -DUNIX \
+        -DREQUIRE_LOGIN \
+        -DODBC64 \
+        -DSPSS_U8_OR_CP \
+        -KPIC
 
-MACROS2 = \
-	-z muldefs
-	#  \
-	#  -z defs
-	CC=	CC
-	CXX=
-	LINKCC=	$(CC)
-	CFLAGS+= \
-		-c \
-		-xO4 \
-		-xarch=v9 \
-		-PIC \
-		$(MACROS)
+    MACROS2 = \
+        -z muldefs
+        #  \
+        #  -z defs
+        CC=	CC
+        CXX=
+        LINKCC=	$(CC)
+        CFLAGS+= \
+            -c \
+            -xO4 \
+            -xarch=v9 \
+            -PIC \
+            $(MACROS)
 
 
-	LFLAGS+= \
-		-xO4 \
-		-xarch=v9 \
-		-PIC \
-		-mt \
-		-G \
-		$(MACROS2)
+        LFLAGS+= \
+            -xO4 \
+            -xarch=v9 \
+            -PIC \
+            -mt \
+            -G \
+            $(MACROS2)
 endif
 
 ifeq ($(MACHINE), HP-UX)
-            LIBS= -lR -ldl -ldld -lm -lnsl -lc -lgen -lxnet -lCsup -lrt
-            CC=aCC
-            CXX=aCC
-            CFLAGS +=   -c \
-        				+DD64 \
-                        +Z \
-                        -AA \
-                        -mt \
-                        -DNDEBUG
-            LFLAGS +=  \
-                        -b \
-                        +DD64 \
-                        -AA
+    LIBS= -lR -ldl -ldld -lm -lnsl -lc -lgen -lxnet -lCsup -lrt
+    CC=aCC
+    CXX=aCC
+    CFLAGS +=   -c \
+                +DD64 \
+                +Z \
+                -AA \
+                -mt \
+                -DNDEBUG
+    LFLAGS +=  \
+                -b \
+                +DD64 \
+                -AA
 
-            LIB_PATH += \
-                        -L/usr/lib/hpux64
+    LIB_PATH += \
+                -L/usr/lib/hpux64
 endif
 
 ifeq ($(MACHINE),Linux)
@@ -221,50 +211,27 @@ ifeq ($(MACHINE),Linux)
     CXX=
     LINKCC=     $(CC)
     LIBS+=-lRblas -lRlapack -lrt
-    ifeq ($(PLATFORM),64)
-        CFLAGS += -m64 \
-                  -fPIC \
-                  -O2 \
-                  -fexceptions \
-                  -pedantic \
-                  -Wno-long-long \
-                  -DUNIX \
-                  -c \
-                  -DLINUX \
-                  -DLINUX_64 \
-                  -DHAS_BOOL \
-                  -Dunix
+    CFLAGS += -m64 \
+              -fPIC \
+              -O2 \
+              -fexceptions \
+              -pedantic \
+              -Wno-long-long \
+              -DUNIX \
+              -c \
+              -DLINUX \
+              -DLINUX_64 \
+              -DHAS_BOOL \
+              -Dunix
 
-        LFLAGS += -m64\
-                 -fPIC \
-                 -O2 \
-                 -fexceptions \
-                 -pedantic \
-                 --export-dynamic \
-                 -shared \
-                 -Wl,--hash-style=both
-    else
-        CFLAGS += -m32 \
-                  -fPIC \
-                  -O2 \
-                  -fexceptions \
-                  -pedantic \
-                  -Wno-long-long \
-                  -DUNIX \
-                  -c \
-                  -DLINUX \
-                  -DHAS_BOOL \
-                  -Dunix
-
-        LFLAGS += -m32 \
-                 -fPIC \
-                 -O2 \
-                 -fexceptions \
-                 -pedantic \
-                 --export-dynamic \
-                 -shared \
-                 -Wl,--hash-style=both
-    endif
+    LFLAGS += -m64 \
+             -fPIC \
+             -O2 \
+             -fexceptions \
+             -pedantic \
+             --export-dynamic \
+             -shared \
+             -Wl,--hash-style=both
 endif
 
 ifeq ($(MACHINE),Darwin)
@@ -275,7 +242,7 @@ ifeq ($(MACHINE),Darwin)
 			 -I/usr/local/include \
 			 -I.
     LIB_PATH= \
-            -L$(R_HOME)/lib/i386 \
+            -L$(R_HOME)/lib/x86_64 \
             -L.
 	CC=         g++
 	CXX=
@@ -287,8 +254,8 @@ ifeq ($(MACHINE),Darwin)
               -O2 \
               -c \
               -Dunix \
-              -isysroot /Developer/SDKs/MacOSX10.6.sdk \
-              -mmacosx-version-min=10.6
+              -isysroot /Developer/SDKs/MacOSX10.7.sdk \
+              -mmacosx-version-min=10.7
 
 	LFLAGS += \
               -dynamiclib \
@@ -296,8 +263,8 @@ ifeq ($(MACHINE),Darwin)
               -Wno-long-long \
               -trigraphs \
               -fPIC \
-              -Wl,-syslibroot,/Developer/SDKs/MacOSX10.6.sdk \
-              -mmacosx-version-min=10.6 \
+              -Wl,-syslibroot,/Developer/SDKs/MacOSX10.7.sdk \
+              -mmacosx-version-min=10.7 \
               -single_module
 endif
 
@@ -321,12 +288,12 @@ endef
 .PHONY:all
 all:$(INVOKE_NAME)
 $(INVOKE_NAME):$(OBJECT_NAME)
-	$(CC) $(LFLAGS) $(MAC_ARCH_I386) $(LIB_PATH) $(LIBS) -o $(OUT_DIR)/$(INVOKE_NAME) $(OUT_DIR)/embedded.o
+	$(CC) $(LFLAGS) $(MAC_ARCH_X64) $(LIB_PATH) $(LIBS) -o $(OUT_DIR)/$(INVOKE_NAME) $(OUT_DIR)/embedded.o
 	$(RM)  $(OUT_DIR)/embedded.o
 
 embedded.o: $(SRC_DIR)/embedded.cpp
 	$(CreateDir)
-	$(CC) $(CFLAGS) $(MAC_ARCH_I386) $(INC_PATH) -o $(OUT_DIR)/embedded.o $(SRC_DIR)/embedded.cpp
+	$(CC) $(CFLAGS) $(MAC_ARCH_X64) $(INC_PATH) -o $(OUT_DIR)/embedded.o $(SRC_DIR)/embedded.cpp
 
 #   -- Clean output files
 .PHONY:clean

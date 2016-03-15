@@ -13,24 +13,12 @@
 
 MACHINE=`uname`
 
-PLATFORM=$1
-if [ "${PLATFORM}" = "" ]; then
-    PLATFORM=64
-fi
-
-if [ $MACHINE = "HP-UX" ] ; then
-    VARFILE=Makevars.hp
-
-elif [ $MACHINE = "Darwin" ] ; then
+if [ $MACHINE = "Darwin" ] ; then
     VARFILE=Makevars.mac
 
 elif [ $MACHINE = "Linux" ] ; then
-    if [ "${PLATFORM}" = "32" ]; then
-        VARFILE=Makevars.lnx
-    fi
-
+    VARFILE=Makevars.lnx64
 fi
-
 
 SRCPKGPATH=$HOME/tmp
 
@@ -61,7 +49,7 @@ mkdir $SRCPKGPATH/tempr/spss/man
 mkdir $SRCPKGPATH/tempr/spss/R
 mkdir $SRCPKGPATH/tempr/spss/src
 
-# copy DESCRIPTION and NAMESPACE file.
+# copy DESCRIPTION file and update bugfix version in it.
 cp spss/DESCRIPTION $SRCPKGPATH/tempr/spss/
 cp spss/NAMESPACE $SRCPKGPATH/tempr/spss/
 
@@ -114,9 +102,7 @@ if [ "${VARFILE}" != "" ]; then
     cp spss/src/$VARFILE $SRCPKGPATH/tempr/spss/src/Makevars
 fi
 cd $SRCPKGPATH/tempr
-
-# Build and install package
 R CMD INSTALL --html --no-test-load ./spss
-
 cd ../..
+
 rm -fr $SRCPKGPATH/tempr

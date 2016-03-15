@@ -1,6 +1,6 @@
 #############################################
-# IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2011
+# IBM?SPSS?Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2014
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -15,6 +15,11 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 #############################################
+
+SPSS_Error <- NULL
+SPSS_Warning <- NULL
+error_code <- NULL
+with_message <- NULL
 
 getErrTable <- function(language,lib,pkg)
 {
@@ -38,27 +43,68 @@ getErrTable <- function(language,lib,pkg)
         stop(gettextf("SPSSError: Can not find error file '%s'", errfile))
     }
 
-    lines <- scan(errfile,
-                  what='character',
-                  blank.lines.skip=TRUE,
-                  sep='\n',
-                  skip=1,
-                  quiet=TRUE,
-                  encoding="UTF-8")
+    lines <- readLines(errfile,encoding="UTF-8")
+    #         scan(errfile,
+    #             what='character',
+    #              blank.lines.skip=TRUE,
+    #              sep='\n',
+    #              skip=1,
+    #              quiet=TRUE,
+    #              fileEncoding="UTF-8")
+    #              #encoding="UTF-8")
     errLevel <- 0
+    if(bindingIsLocked("SPSS_Error", asNamespace(spssNamespace)))
+		unlockBinding("SPSS_Error", asNamespace(spssNamespace))
+    if(bindingIsLocked("SPSS_Warning", asNamespace(spssNamespace)))
+		unlockBinding("SPSS_Warning", asNamespace(spssNamespace))
+    if(bindingIsLocked("error_code", asNamespace(spssNamespace)))
+		unlockBinding("error_code", asNamespace(spssNamespace))
+    if(bindingIsLocked("with_message", asNamespace(spssNamespace)))
+		unlockBinding("with_message", asNamespace(spssNamespace))
+		
+	isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
     for(line in lines)
     {
-        isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+        if( nchar(line) == 0 )
+            next
         if (!isUnicodeOn )
-            line <- iconv(line,from="UTF-8")
-
+        {
+            if ( length(grep("darwin", R.Version()$os, ignore.case=TRUE)) > 0 )
+            {
+                templine <- line
+                line <- iconv(line,from="UTF-8")
+                if(is.na(line))
+                    line <- iconv(templine, from="UTF-8", to="MAC")
+            }
+            else
+            {
+                line <- iconv(line,from="UTF-8")
+            }
+        }
         if( substr(line,1,1) == "#" )
             next
+        if( substr(line,1,9) == "SPSSError" )
+        {
+            SPSS_Error <<-substring(line, 11)
+        }
+        if( substr(line,1,11) == "SPSSWarning" )
+        {
+            SPSS_Warning <<-substring(line, 13)
+        }
+        if( substr(line,1,10) == "error_code" )
+        {
+            error_code <<-substring(line, 12)
+        }
+        if( substr(line,1,12) == "with_message" )
+        {
+            with_message <<-substring(line, 14)
+        }
         if( substr(line,1,1) != "[" )
             next
         
-        line <- .C("ext_TransCode", as.character(""), as.character(line), 
-                    as.integer(errLevel), PACKAGE=spss_package)[[1]]
+        #line <- .C("ext_TransCode", as.character(""), as.character(line), 
+        #            as.integer(errLevel), PACKAGE=spss_package)[[1]]
+        
         tmp <- unlist(strsplit(line,"\\]_"))
         
         errType <- unlist(strsplit(tmp[1],"\\["))[2]
@@ -98,7 +144,19 @@ getGeneralErr <- function(language,lib,pkg)
     {
         isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
         if (!isUnicodeOn )
-            line <- iconv(line,from="UTF-8")
+        {
+            if ( length(grep("darwin", R.Version()$os, ignore.case=TRUE)) > 0 )
+            {
+                templine <- line
+                line <- iconv(line,from="UTF-8")
+                if(is.na(line))
+                    line <- iconv(templine, from="UTF-8", to="MAC")
+            }
+            else
+            {
+                line <- iconv(line,from="UTF-8")
+            }
+        }
         if( substr(line,1,1) == "#" )
             next
         if( substr(line,1,1) == "[" )
@@ -221,14 +279,18 @@ spss.errMsg <- function(errCode)
 
 printSpssError <- function(err)
 {
-    gettextf("%s: %s '%s' %s '%s'",translateMsg("SPSSError"),
-              translateMsg("error_code"),err,translateMsg("with_message"),spss.errMsg(err))
+    #gettextf("%s: %s '%s' %s '%s'",translateMsg("SPSSError"),
+    #          translateMsg("error_code"),err,translateMsg("with_message"),spss.errMsg(err))
+    gettextf("%s: %s '%s' %s '%s'",SPSS_Error,
+              error_code,err,with_message,spss.errMsg(err))
 }
 
 printSpssWarning <- function(err)
 {
-    gettextf("%s: %s '%s' %s '%s'",translateMsg("SPSSWarning"),
-              translateMsg("error_code"),err,translateMsg("with_message"),spss.errMsg(err))
+    #gettextf("%s: %s '%s' %s '%s'",translateMsg("SPSSWarning"),
+    #          translateMsg("error_code"),err,translateMsg("with_message"),spss.errMsg(err))
+    gettextf("%s: %s '%s' %s '%s'",SPSS_Warning,
+              error_code,err,with_message,spss.errMsg(err))
 }
 
 options(warn=1)

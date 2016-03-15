@@ -12,7 +12,7 @@ An interface to embed R in IBM® SPSS® Statistics
 \tabular{ll}{
 Package: \tab SPSS\cr
 Type: \tab Package\cr
-Version: \tab 21.0\cr
+Version: \tab 22.0\cr
 Date: \tab 2009-01-12\cr
 }
 
@@ -106,5 +106,5 @@ verplugin <- spsspkg.GetSPSSPlugInVersion()
 print(verplugin)
 end program.
 
-© Copyright IBM Corp. 1989, 2011
+© Copyright IBM Corp. 1989, 2012
 }

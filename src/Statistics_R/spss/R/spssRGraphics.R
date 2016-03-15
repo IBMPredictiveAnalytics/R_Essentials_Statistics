@@ -1,5 +1,5 @@
 #############################################
-# IBM® SPSS® Statistics - Essentials for R
+# IBM?SPSS?Statistics - Essentials for R
 # (c) Copyright IBM Corp. 1989, 2013
 #
 #This program is free software; you can redistribute it and/or modify
@@ -56,7 +56,15 @@ spssRGraphics.SetOutput <- function(switch)
         {
             if (!getOption("spssRGraphics.displayTurnOn"))
             {
-                redirection()
+                if ("windows" == .Platform$OS.type)
+                {
+                    folder = getOption("graphicLabelCount")
+                    redirection(sprintf('%d',folder))
+                }
+                else
+                {
+                    redirection()
+                }
                 
                 options(spssRGraphics.displayTurnOn = TRUE)
             }

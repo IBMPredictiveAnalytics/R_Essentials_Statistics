@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2013
+# (c) Copyright IBM Corp. 1989, 2014
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -135,6 +135,47 @@ getCodePageMap <- function(myLocale)
     }
 }
 
+getLanguageLocale <- function(lang)
+{
+     resLang <-lang
+     if(lang == "SChinese")
+        resLang <- "CHS"
+     else if(lang == "TChinese")
+        resLang <- "CHT"
+     else if(lang == "BPortugu")
+        resLang <- "Portuguese"
+     resLang
+}
+
+getOutputLanguageMap<- function(olang)
+{
+    if("windows"!=.Platform$OS.type)
+    {
+        langMap <- list(
+
+            olang = c("German","English","Spanish","French", "Italian", "Japanese", 
+                    "Korean", "Polish", "Russian", "TChinese", "SChinese", "BPortugu"),
+            locale  = c("de_DE", "en_US", "es_ES", "fr_FR", "it_IT", "ja_JP", "ko_KR",
+                    "pl_PL", "ru_RU", "zh_TW", "zh_CN", "pt_BR"))
+    
+        matchResult<-match(olang, langMap$olang)
+        if(length(matchResult)==0)
+        {
+            last.SpssError <<-  1074
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)    
+        }
+        
+        resLang <- langMap$locale[[matchResult[[1]]]]
+        resLang <- paste(resLang, ".UTF-8", sep="")
+        
+        resLang
+    }
+    else
+    {
+        getLanguageLocale(olang)
+    }
+}
+
 prespss <- function()
 {
     ##By default, the R output will be redirected to Stat output view
@@ -193,6 +234,11 @@ prespss <- function()
     if((!isUnicodeOn)&&("windows" != .Platform$OS.type))
     {
         Sys.setlocale("LC_ALL",getOption("spssLocale"))
+    }
+    else if(isUnicodeOn)
+    {
+        loc <- getOutputLanguageMap(getOption("spssOutputLanguage"))
+        Sys.setlocale("LC_ALL",loc)
     }
     else
     {
@@ -253,8 +299,8 @@ prespss <- function()
         }
     }
 
-    codepageName <- getCodePageMap(getOption("spssLocale"))    
-    if( isUnicodeOn )
+    codepageName <- getCodePageMap(getOption("spssLocale"))
+    if( isUnicodeOn || l10n_info()$'UTF-8')
         fp <- file(tempfullname, open="at", encoding="UTF-8")
     else
     {
@@ -302,6 +348,7 @@ prespss <- function()
     {
         stop(gettextf("There is no spssdxcfg.ini file in '%s'",getOption("spssPath")))
     }
+    spss.language <<- getLanguage()
     spss.errtable <<- getErrTable(spss.language,spss.lib,spss.pkg)
     spss.generalErr <<- getGeneralErr(spss.language,spss.lib,spss.pkg)
 }
@@ -622,6 +669,7 @@ extrapath <- function(spssPath)
     else
     {
         spss_app_path = file.path(Sys.getenv("HOME"), ".IBM/SPSS/Statistics")
+        spssPath <- dirname(spssPath)
     }
     spss_ext_app_path = file.path(spss_app_path, majorVer, "extensions")
     .libPaths(c(spss_ext_app_path, defaultlibpath))

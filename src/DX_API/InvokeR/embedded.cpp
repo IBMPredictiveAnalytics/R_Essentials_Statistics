@@ -1,6 +1,6 @@
 /************************************************************************
-** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2011
+** IBM?SPSS?Statistics - Essentials for R
+** (c) Copyright IBM Corp. 1989, 2014
 ** 
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -25,7 +25,8 @@ extern "C" {
     #define WIN32_LEAN_AND_MEAN 1
     #define	SIGBREAK 21
     #define Win32 1
-    #include <windows.h>    
+    #include <windows.h>		
+    #include <process.h> 
 #else
     #include "IBM_SPSS_Copyright.h"
 #endif
@@ -163,13 +164,24 @@ void SPSS_RecordBrowserOutput(const char * buf, size_t len, FP_ConvertCp2UTF8 fp
         DxHandle->RecordBrowserOutput(buf, len, fp_ConvertCp2UTF8);
 }
 
+int SPSS_PostSpssOutput(const char* text, int length) 
+{
+    assert(DxHandle);
+    return DxHandle->PostSpssOutput(text, length);
+}
+
 
 int    isBrowse = 0;
 int    currBrowseMode = 0;
 const  int dataLen = 1024;
 char   *browserOutputText = 0;
+static const char *tprompt;
 #ifdef MS_WINDOWS
 char UTF8in[4] = "\002\377\376", UTF8out[4] = "\003\377\376";
+static DWORD mainThreadId;
+HANDLE ReadWakeup;
+static char *tbuf;
+static  int tlen, thist, rLineCatch;
 
 static size_t enctowcs(wchar_t *wc, char *s, int n)
 {
@@ -195,12 +207,9 @@ static size_t enctowcs(wchar_t *wc, char *s, int n)
 }
 #endif
 
-
 #ifdef MS_WINDOWS
-static int myReadConsole_X(const char *prompt, char *buf, int len, int addtohistory)
-#else
-int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohistory)
-#endif
+
+static int appReadConsole(const char *prompt, char *buf, int len, int addtohistory)
 {
     char sinkSyntax[256];
 	int  errLevel = 0;
@@ -235,8 +244,7 @@ int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohi
         {
             currBrowseMode = 0;
             errLevel = SPSS_GetSyntaxLine((char*)buf,len);
-             
-#ifdef MS_WINDOWS
+
 			if(SPSS_IsUTF8mode())
 			{
 				bufSize = strlen(buf);
@@ -252,13 +260,13 @@ int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohi
 					}
 					else //non ascii code
 					{
-						sprintf(tmppointer,"\\u%x\0",((wchar_t*)buf)[i]);
+						sprintf(tmppointer,"\\u%04x\0",((wchar_t*)buf)[i]);
 					}
 					tmppointer = tmpbuf+strlen((char*)tmpbuf);
 				}
 				strcpy(buf, tmpbuf);
 			}
-#endif
+
             if(errLevel == 0)
             {
                 return 1;			    
@@ -311,7 +319,7 @@ int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohi
 	else
 	{
 		errLevel = SPSS_GetSyntaxLine((char*)buf,len);
-#ifdef MS_WINDOWS
+
         //SPSS_Trace(buf);
 		if(SPSS_IsUTF8mode())
 		{
@@ -328,13 +336,13 @@ int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohi
 				}
 				else //non ascii code
 				{
-					sprintf(tmppointer,"\\u%x\0",((wchar_t*)buf)[i]);
+					sprintf(tmppointer,"\\u%04x\0",((wchar_t*)buf)[i]);
 				}
 				tmppointer = tmpbuf+strlen((char*)tmpbuf);
 			}
 			strcpy(buf, tmpbuf);
 		}
-#endif
+
 	    //char bufSize = 0;
 		if(errLevel == 0)
         {
@@ -357,6 +365,152 @@ int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohi
     }
 }
 
+static void myReaderThread(void *unused)
+{
+    while(1) {
+	    WaitForSingleObject(ReadWakeup,INFINITE);
+	    tlen = appReadConsole(tprompt,tbuf,tlen,thist);
+	    rLineCatch = 1;
+	    PostThreadMessage(mainThreadId, 0, 0, 0);
+    }
+}
+
+static int myReadConsole_X(const char *prompt, char *buf, int len, int addtohistory)
+{
+    mainThreadId = GetCurrentThreadId();
+    rLineCatch = 0;
+    tprompt = prompt;
+    tbuf = buf;
+    tlen = len;
+    thist = addtohistory;
+    SetEvent(ReadWakeup);
+    while (1) {
+	    if ( !peekevent() ) 
+            WaitMessage();
+
+	    if ( rLineCatch ) 
+            break;
+
+	    doevent();
+    }
+    rLineCatch = 0;
+
+    return tlen;
+}
+
+#else
+int myReadConsole_X(const char *prompt, unsigned char *buf, int len, int addtohistory)
+{
+    char sinkSyntax[256];
+    int  errLevel = 0;
+    char *tempBuf;    
+    char data[1024];
+    size_t bufSize = 0;
+    char tmpbuf[1024];
+    int i,result;
+    char* tmppointer;
+    tprompt = prompt;
+
+    memset(sinkSyntax,'\0',256);
+    memset(tmpbuf,'\0',1024);
+    memset(buf,'\0',len); 
+    if(strcmp("Browse[1]> ",prompt) == 0 || strcmp("Browse[2]> ",prompt) == 0)
+    {
+        if(!isBrowse) 
+        {
+            strcpy(sinkSyntax,"SetOutputFromBrowser(\"ON\")\n");        
+        }
+        isBrowse = 1;
+        currBrowseMode = 1;                
+    }
+    //else if(strcmp("Selection: ",prompt) == 0)
+    //{
+        //buf[0] = '4';
+        //return 1;
+    //}
+		    
+    if(isBrowse && currBrowseMode)
+    {   	        
+        if(strcmp("> ",prompt) == 0)
+        {
+            currBrowseMode = 0;
+            errLevel = SPSS_GetSyntaxLine((char*)buf,len);
+             
+            if(errLevel == 0)
+            {
+                return 1;			    
+            }			
+            else
+            {
+                return 0;
+            }	
+        }
+        else
+        {
+            if(1 == SPSS_AppMode())
+            {
+                SPSS_WriteToConsole(prompt, strlen(prompt));	
+                memset(data,'\0',dataLen);
+                result = SPSS_ReadFromConsole(data, dataLen);               
+                
+                if(strlen(data) == 0 && result > 0)
+                {
+                    memset(buf,'\0',len);
+                    isBrowse = 0;
+                    buf[0] = 'c'; 
+                    buf[1] = '\n';
+                    buf[2] = '\0';
+                }
+                else
+                {
+                    //std::string tempCmd = TrimSpace(data);
+                    memset(buf,'\0',len);
+                    strcpy((char*)buf,sinkSyntax);
+                    tempBuf = (char*)buf;
+                    tempBuf += strlen(sinkSyntax);
+                    strcpy(tempBuf,data);		        
+                    buf[strlen((char*)buf)] = '\n';		        		   
+                }
+            }
+            else
+            {   
+                //for statistics server, don't start Browser.
+                //just continue to run
+                buf[0] = 'c'; 
+                buf[1] = '\n';
+                buf[2] = '\0';
+                isBrowse = 0;
+                currBrowseMode = 0;
+            }
+        }
+        return 1;	
+    }
+    else
+    {
+        errLevel = SPSS_GetSyntaxLine((char*)buf,len);
+
+	    //char bufSize = 0;
+        if(errLevel == 0)
+        {
+            
+            if(buf[0] == 26) //EOFKEY
+            {
+                return 0;
+            }
+            else
+            {
+                return 1;			    
+            }
+            
+            return 1;
+        }			
+        else
+        {
+            return 0;
+        }			
+    }
+}
+#endif
 
 
 int ConvertCp2UTF8(const char *inBuf, size_t inBufLen, char *outBuf, size_t outBufLen)
@@ -472,6 +626,12 @@ int Rf_initialize_R_X(int argc, char **argv)
     GA_initapp(0, 0);
     readconsolecfg();
 
+    if ( !(ReadWakeup = CreateEvent(NULL, FALSE, FALSE, NULL) ) ||
+	    ( _beginthread(myReaderThread, 0, NULL) == -1) ) {
+      //printf("impossible to create 'reader thread\n");
+	    return 3;
+    }
+
     return 0;
 }
 #endif
@@ -569,13 +729,18 @@ DLL_API int  stop_embedded_x()
 DLL_API int  pre_action()
 {   
     DxRunning = 1;
-    return execute_x("library(spss210)\nprespss()");
+    return execute_x("library(spss220)\nprespss()");
 }
 
 DLL_API int post_action()
 {
     int res = 0;
     char post[128] = {0};
+    if (strcmp("+ ",tprompt) == 0)
+    {
+        SPSS_PostSpssOutput("Error: unexpected end of input", 30);
+        exit(0);
+    }
     if(isBrowse)
         strcpy( post,"SetOutputFromBrowser(\"OFF\")\n");
     strcat(post, "postspss()\n");

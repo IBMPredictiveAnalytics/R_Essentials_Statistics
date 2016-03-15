@@ -3,7 +3,7 @@
 # *
 # * IBM SPSS Products: Statistics Common
 # *
-# * (C) Copyright IBM Corp. 1989, 2011
+# * (C) Copyright IBM Corp. 1989, 2013
 # *
 # * US Government Users Restricted Rights - Use, duplication or disclosure
 # * restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -19,9 +19,10 @@
 #   nmake -f [path]invokeR.mak PLATFORM=<platformname>
 #
 #   PLATFORM:  By setting the environment variable "PLATFORM", you can
-#   build 32-bit InvokeR.dll. The following values exist for
+#   build 32-bit or 64-bit InvokeR.dll. The following values exist for
 #   various platform:
 #       Win32(default)  - Build the 32-bit .dll
+#       Win64           - Build the 64-bit .dll for AMD64 or intel EMT64
 #
 #
 # EXAMPLE
@@ -30,13 +31,17 @@
 #
 #   nmake -f invokeR.mak
 #
+#   To build 64-bit InvokeR.dll.....
+#
+#   nmake -f invokeR.mak PLATFORM = Win64
+#
 #
 # PREREQUISITES:
 #
 #   Environment variables which must be set prior to the calling of this makefile.
 #     R_HOME - must be defined as the installation directory of R
 #
-#   Visual Studio 2008 must be installed for building 32-bit .dll
+#   Visual Studio 2008 must be installed for building 32-bit and 64-bit .dll
 #
 # OPTIONS: Environment variables which affect what invokeR.mak does
 #
@@ -48,7 +53,7 @@
 #   --  ensure all needed environment variables are set before beginning
 
 !if !defined(R_HOME)
-!       ERROR R_HOME - must be defined as the installation directory of R (ie R_HOME="C:\Program Files\R\R-2.14.1")
+!       ERROR R_HOME - must be defined as the installation directory of R (ie R_HOME="C:\Program Files\R\R-2.15.2")
 !endif
 R_HOME = "$(R_HOME)"
 
@@ -103,7 +108,7 @@ LIBS_LIST = Rdll.lib Rgraphapp.lib
 !endif
 
 LIBS_LIST = $(LIBS_LIST) \
-            advapi32.lib 
+            advapi32.lib User32.lib
 
 #   -- Define macros
 MACROS = -DINVOKER_EXPORTS \

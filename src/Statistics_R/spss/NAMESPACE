@@ -1,4 +1,4 @@
-useDynLib(spss210)
+useDynLib(spss220)
 
 export(
     prespss,

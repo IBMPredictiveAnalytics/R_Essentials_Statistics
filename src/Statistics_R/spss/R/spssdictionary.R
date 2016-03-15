@@ -1,6 +1,6 @@
 #############################################
 # IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2011
+# (c) Copyright IBM Corp. 1989, 2013
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -839,6 +839,11 @@ spssdictionary.EditCategoricalDictionary <- function(categoryDictionary, newName
 spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary = NULL, hidden=FALSE)
 {
     if(is.null(getOption("is.dataStepRunning"))) options(is.dataStepRunning = FALSE)
+    if(is.null(datasetName) || grepl(" ", datasetName))
+    {
+        last.SpssError <<- 87
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+    }
     datasetName <- unicodeConverterInput(datasetName)
     spssError.reset()
     if( getOption("is.splitConnectionOpen") )

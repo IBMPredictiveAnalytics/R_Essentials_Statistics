@@ -1,2 +1,0 @@
-PKG_CXXFLAGS=-DHPUX64 -Aa
-PKG_LIBS=-b +DD64 -lCsup -lstd_v2

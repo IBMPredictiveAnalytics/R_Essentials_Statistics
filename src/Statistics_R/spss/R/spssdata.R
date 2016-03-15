@@ -1,6 +1,6 @@
 #############################################
 # IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2012
+# (c) Copyright IBM Corp. 1989, 2013
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -260,9 +260,30 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
       varMeasurementLevel <- out[1:n-1] 
       j<-1
       for(i in variables){
+        emptyset <- c()
+        if(is.character(result[[j]]))
+        {
+            result[[j]] <- sub("\\s+$", "", result[[j]])
+        }
         if("nominal" == varMeasurementLevel[[j]]){
             valuelabel <- spssdictionary.GetValueLabels(i)
             uniqueset<- unique(result[[j]])
+            if(factorMode == "levels")
+            {
+                for (i in valuelabel$values)
+                {
+                    if (!(i%in%uniqueset))
+                    {
+                        emptyset<-append(emptyset, which(valuelabel$values == i))
+                    }
+                }
+                emptyset <- rev(emptyset)
+                for (i in emptyset)
+                {
+                    valuelabel$values <- valuelabel$values[-i]
+                    valuelabel$labels <- valuelabel$labels[-i]
+                }
+            }
             for(i in uniqueset)
             {                       
                 if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
@@ -271,7 +292,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
                     valuelabel$labels <- append(valuelabel$labels,i)  
                 }              
             }                                                
-            if(factorMode == "labels")     
+            if(factorMode == "labels")
                 result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels= valuelabel$labels, ordered = FALSE)
             else if(factorMode == "levels")
                 result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered = FALSE)
@@ -279,6 +300,22 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
         if("ordinal" == varMeasurementLevel[[j]]){
             valuelabel <- spssdictionary.GetValueLabels(i)
             uniqueset<- unique(result[[j]])
+            if(factorMode == "levels")
+            {
+                for (i in valuelabel$values)
+                {
+                    if (!(i%in%uniqueset))
+                    {
+                        emptyset<-append(emptyset, which(valuelabel$values == i))
+                    }
+                }
+                emptyset <- rev(emptyset)
+                for (i in emptyset)
+                {
+                    valuelabel$values <- valuelabel$values[-i]
+                    valuelabel$labels <- valuelabel$labels[-i]
+                }
+            }
             for(i in uniqueset)
             {                       
                 if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
@@ -521,6 +558,10 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
           
           j<-1
           for(i in variables){
+            if(is.character(result[[j]]))
+            {
+                result[[j]] <- sub("\\s+$", "", result[[j]])
+            }
             if("nominal" == varMeasurementLevel[[j]]){
               valuelabel <- spssdictionary.GetValueLabels(i)
               if(length(valuelabel$values)==0)
@@ -673,13 +714,6 @@ spssdata.GetDataSetList <- function()
 {
     spssError.reset()
     err <- 0
-    if( !getOption("is.dataStepRunning") )
-    {
-        out <- .C("ext_StartDataStep",as.integer(err),PACKAGE=spss_package)
-        last.SpssError <<- out[[1]] 
-        if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
-    }
 
     out <- .Call("ext_GetSpssDatasets",as.integer(err),PACKAGE=spss_package)
     n <- length(out)
@@ -695,14 +729,6 @@ spssdata.GetDataSetList <- function()
         for(i in 1:(n-1))
             result[[i]] <- unicodeConverterOutput(result[[i]])
         as.factor(result)
-    }
-
-    if( !getOption("is.dataStepRunning") )
-    {
-        out <- .C("ext_EndDataStep",as.integer(err),PACKAGE=spss_package)
-        last.SpssError <<- out[[1]] 
-        if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     result
@@ -780,15 +806,19 @@ spssdata.SetDataToSPSS <- function(datasetName,x, categoryDictionary = NULL)
           idx <- match(varName, categoryDictionary$name)
           if(!is.na(idx))
           {
-            indextemp <- as.numeric(x[[i]])
-            x[[i]]<- as.character(x[[i]])
+            levelscount <- nlevels(x[[i]])
             dictionary <- categoryDictionary$dictionary[[idx]]
-            len <- length(x[[i]])
-            for (j in 1:len)
+            if(levelscount == length(dictionary$levels))
             {
-                if(indextemp[j] <= length(dictionary$levels))
-                  x[[i]][j] <- dictionary$levels[indextemp[j]]
-            }            
+                indextemp <- as.numeric(x[[i]])
+                x[[i]]<- as.character(x[[i]])
+                len <- length(x[[i]])
+                for (j in 1:len)
+                {
+                    if(indextemp[j] <= length(dictionary$levels))
+                      x[[i]][j] <- dictionary$levels[indextemp[j]]
+                }
+            }
           }
         }
         if("POSIXt"%in%class(x[[i]]))

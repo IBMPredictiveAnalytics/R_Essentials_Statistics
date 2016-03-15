@@ -3,7 +3,7 @@
 @REM
 @REM IBM SPSS Products: Statistics Common
 @REM
-@REM (C) Copyright IBM Corp. 1989, 2012
+@REM (C) Copyright IBM Corp. 1989, 2013
 @REM
 @REM US Government Users Restricted Rights - Use, duplication or disclosure
 @REM restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -17,10 +17,9 @@ SET SRCPKGPATH=c:\temp\R
 rem for g++ compile because g++ don't support slash directory.
 SET SRCPKG=c:/temp/R
 
-rem SET R_HOME=C:\Program Files\R\R-2.14.0
 rem SET RTOOLS=c:\RTools
 rem SET HTMLHELP=C:\Progra~1\HTML Help Workshop
-SET PATH=%HTMLHELP%;%RTOOLS%\bin;%RTOOLS%\MinGW\bin;%RTOOLS%\MinGW64\bin;%Path%
+SET PATH=%HTMLHELP%;%RTOOLS%\bin;%RTOOLS%\gcc-4.6.3\bin;%Path%
 
 cd /d %SRCPKGPATH%
 IF EXIST spss rd /S /Q spss
