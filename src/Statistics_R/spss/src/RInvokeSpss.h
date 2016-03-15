@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2014
+** (c) Copyright IBM Corp. 1989, 2015
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -494,6 +494,8 @@ RINVOKESPSS_API void ext_IsBackendReady(int* isReady);
 RINVOKESPSS_API void ext_IsXDriven(int* isXdrive);
 
 
+//===================new APIs in 24.0=======================
+RINVOKESPSS_API void ext_IsDistributedMode(int* isRemote);
 
 //===================R initialize=========================
 

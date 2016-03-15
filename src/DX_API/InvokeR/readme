@@ -5,14 +5,14 @@ Introduction
 This SDK directory is used to:
     -- build InvokeR Library for Windows platforms, e.g. Win32, Win64
     -- build libInvokeR Library for UNIX platforms, e.g. AIX64, Linux64, 
-       SunOS64, ZLinux64, PLinux64 and MacOS  
+       ZLinux64, PLinux64 and MacOS  
 
 Prerequisites
 -------------
     Visual Studio 2008 has to be installed (for Windows platform).
-    R 3.1.* has to be installed (For Win32, Win64, AIX64, Linux64, SunOS64, MacOS, ZLinux64 and PLinux64 platforms)
+    R 3.2.* has to be installed (For Win32, Win64, AIX64, Linux64, MacOS, ZLinux64 and PLinux64 platforms)
     For Windows, Rtools has to be installed. You can download it from http://cran.r-project.org/bin/windows/Rtools.
-    For Windows, pexports.exe has to be copied into <R 3.1.* installation location>\bin\i386 and <R 3.1.* installation location>\bin\x64. You can download mingw-utils-0.46.tar.gz from http://sourceforge.net/projects/mingw/files/MinGW/Extension/pexports/ 
+    For Windows, pexports.exe has to be copied into <R 3.2.* installation location>\bin\i386 and <R 3.2.* installation location>\bin\x64. You can download mingw-utils-0.46.tar.gz from http://sourceforge.net/projects/mingw/files/MinGW/Extension/pexports/ 
     and extract pexports.exe from it.
 
 
@@ -85,8 +85,6 @@ Output files
      Output files will be put into the \...\DX_API\InvokeR\aix64 subdirectory.
   Linux64:
      Output files will be put into the \...\DX_API\InvokeR\lintel64 subdirectory.
-  SunOS64:
-     Output files will be put into the \...\DX_API\InvokeR\solaris_sparc64 subdirectory.
   ZLinux64:
      Output files will be put into the \...\DX_API\InvokeR\zlinux64 subdirectory.
   MacOS:

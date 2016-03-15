@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM?SPSS?Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2014
+** (c) Copyright IBM Corp. 1989, 2015
 ** 
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -609,7 +609,7 @@ int Rf_initialize_R_X(int argc, char **argv)
     structRstart rp;
     Rstart Rp = &rp;
     char Rversion[25], *RHome;
-    snprintf(Rversion, 25, "%s.%s", R_MAJOR, R_MINOR);
+    sprintf(Rversion, "%s.%s", R_MAJOR, R_MINOR);
     if(strncmp(getDLLVersion(), Rversion, 3) != 0) {
 	    //printf("Error: R.DLL version does not match\n");
 	    return 1;
@@ -750,7 +750,7 @@ DLL_API int  pre_action()
     if(0 == curnest)
     {
         DxRunning = 1;
-        SPSS_SetSyntax("library(spss230)\nprespss()");
+        SPSS_SetSyntax("library(spss240)\nprespss()");
     }
     else
     {

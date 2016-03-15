@@ -62,19 +62,26 @@ FIELD_Type.fmt_CCD      <- 36
 FIELD_Type.fmt_CCE      <- 37
 FIELD_Type.fmt_EDATE    <- 38
 FIELD_Type.fmt_SDATE    <- 39
+FIELD_Type.fmt_MTIME    <- 85
+FIELD_Type.fmt_YMDHMS   <- 86
 
 ## format set which could be transformed into POSIXt 
 dateFormatSet <- c(FIELD_Type.fmt_DATE, FIELD_Type.fmt_ADATE, 
                         FIELD_Type.fmt_JDATE, FIELD_Type.fmt_QYR,
                         FIELD_Type.fmt_MOYR, FIELD_Type.fmt_WKYR,
                         FIELD_Type.fmt_DATETIME, FIELD_Type.fmt_EDATE,
-                        FIELD_Type.fmt_SDATE)
+                        FIELD_Type.fmt_SDATE, FIELD_Type.fmt_MTIME,
+                        FIELD_Type.fmt_YMDHMS)
                         
 ## Convert an SPSS variable into a R data type based on the display format
 ## for the SPSS variable. Internal use only.
 
 spssdata.convert <- function(x, fmt)
 {
+    if (FIELD_Type.fmt_MTIME == fmt || FIELD_Type.fmt_YMDHMS == fmt)
+    {
+        return(as.double(x))
+    }
     switch(fmt,
            FIELD_Type.fmt_A         = as.character(x),
            FIELD_Type.fmt_AHEX      = as.character(x),
@@ -254,7 +261,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
       }
     }
     result <- unicodeConverterOutput(result)   
-
+    
     
     if(factorMode != "none"){
       out <- .Call("ext_GetVarMeasurementLevels",as.list(variables),as.integer(err),
@@ -324,10 +331,10 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
         stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
     varNames <- unicodeConverterOutput(out[1:length(out)-1])
     rm(out)
-
+    
     #force to do a garbage collection
     gc(verbose = FALSE)
-
+    
     if ( asList ){
         value <- result
         rm(result)
@@ -341,21 +348,22 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
     
         if( is.null(row.label) )
         {
-            value <- data.frame(result)
+            value <- result
+            names(value) <- varNames
+            value <- data.frame(value)
             rm(result)
             gc(verbose = FALSE)
-            names(value) <- varNames
             rm(varNames)
             gc(verbose = FALSE)
         }
         else
         {
-            value <- data.frame(result[1:length(result)-1])
-            gc(verbose = FALSE)
+            value <- result[1:length(result)-1]
+            names(value) <- varNames[1:length(varNames)-1]
+            value <- data.frame(value)
             row.names(value) <- result[[length(result)]]
             rm(result)
             gc(verbose = FALSE)
-            names(value) <- varNames[1:length(varNames)-1]
             rm(varNames)
             gc(verbose = FALSE)
         }
@@ -549,9 +557,9 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
               stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
           varMeasurementLevel <- out[1:n-1] 
           
-          
           j<-1
           for(i in variables){
+            emptyset <- c()
             if(is.character(result[[j]]))
             {
                 result[[j]] <- sub("\\s+$", "", result[[j]])
@@ -559,12 +567,23 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
             
             if("nominal" == varMeasurementLevel[[j]] || "ordinal" == varMeasurementLevel[[j]]){
                 valuelabel <- spssdictionary.GetValueLabels(i)
-                if(length(valuelabel$values)==0)
-                {
-                    valuelabel$values <- result[[j]]
-                    valuelabel$labels <- result[[j]]
-                }    
                 uniqueset<- sort(unique(result[[j]]))
+                if(factorMode == "levels")
+                {
+                    for (i in valuelabel$values)
+                    {
+                        if (!(i%in%uniqueset))
+                        {
+                            emptyset<-append(emptyset, which(valuelabel$values == i))
+                        }
+                    }
+                    emptyset <- rev(emptyset)
+                    for (i in emptyset)
+                    {
+                        valuelabel$values <- valuelabel$values[-i]
+                        valuelabel$labels <- valuelabel$labels[-i]
+                    }
+                }
                 for(i in uniqueset)
                 {
                     if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
@@ -600,14 +619,26 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
     
         if( is.null(row.label) )
         {
-            value <- data.frame(result, stringsAsFactors=TRUE)
+            value <- result
             names(value) <- varNames
+            value <- data.frame(value, stringsAsFactors=TRUE)
+            rm(result)
+            gc(verbose = FALSE)
+            rm(varNames)
+            gc(verbose = FALSE)
+
         }
         else
         {
-            value <- data.frame(result[1:length(result)-1],stringsAsFactors=TRUE)
-            row.names(value) <- result[[length(result)]]
+            value <- result[1:length(result)-1]
             names(value) <- varNames[1:length(varNames)-1]
+            value <- data.frame(value, stringsAsFactors=TRUE)
+            row.names(value) <- result[[length(result)]]
+            rm(result)
+            gc(verbose = FALSE)
+            rm(varNames)
+            gc(verbose = FALSE)
+
         }
         
         ## We want to predict whether the currect split is the last split.

@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2014
+# (c) Copyright IBM Corp. 1989, 2015
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -60,6 +60,8 @@ toSPSSFormat <- function(fmt)
                CCE      = FIELD_Type.fmt_CCE,
                EDATE    = FIELD_Type.fmt_EDATE,
                SDATE    = FIELD_Type.fmt_SDATE,
+               MTIME    = FIELD_Type.fmt_MTIME,
+               YMDHMS   = FIELD_Type.fmt_YMDHMS,
                )
     }         
 }

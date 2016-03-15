@@ -274,8 +274,8 @@ ifeq ($(MACHINE),Darwin)
               -O2 \
               -c \
               -Dunix \
-              -isysroot /Developer/SDKs/MacOSX10.7.sdk \
-              -mmacosx-version-min=10.7
+              -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk \
+              -mmacosx-version-min=10.8
 
 	LFLAGS += \
               -dynamiclib \
@@ -283,8 +283,8 @@ ifeq ($(MACHINE),Darwin)
               -Wno-long-long \
               -trigraphs \
               -fPIC \
-              -Wl,-syslibroot,/Developer/SDKs/MacOSX10.7.sdk \
-              -mmacosx-version-min=10.7 \
+              -Wl,-syslibroot,/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk \
+              -mmacosx-version-min=10.8 \
               -single_module
 endif
 

@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2014
+# (c) Copyright IBM Corp. 1989, 2015
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -158,7 +158,7 @@ spss.generalErr <- NULL
 spss_package <- NULL
 spss.lib <- NULL
 spss.pkg <- NULL
-spssNamespace <- "spss230"
+spssNamespace <- "spss240"
 spss.language <- NULL
 
 .onAttach <- function(lib, pkg)

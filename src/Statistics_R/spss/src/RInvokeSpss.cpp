@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2014
+** (c) Copyright IBM Corp. 1989, 2015
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -204,6 +204,8 @@ extern "C"{
     static R_NativePrimitiveArgType QueueCommandPartArgs[3] = {STRSXP,INTSXP,INTSXP};
     static R_NativePrimitiveArgType IsBackendReadyArgs[1] = {INTSXP};
     static R_NativePrimitiveArgType IsXDrivenArgs[1] = {INTSXP};
+    //===================new APIs in 24.0=======================
+    static R_NativePrimitiveArgType IsDistributedModeArgs[1] = {INTSXP};
     
     // The method of using .C from R
     static const R_CMethodDef cMethods[] = {
@@ -323,6 +325,7 @@ extern "C"{
         {"ext_QueueCommandPart",(DL_FUNC)&ext_QueueCommandPart,3,QueueCommandPartArgs},
         {"ext_IsBackendReady",(DL_FUNC)&ext_IsBackendReady,1,IsBackendReadyArgs},
         {"ext_IsXDriven",(DL_FUNC)&ext_IsXDriven,1,IsXDrivenArgs},
+        {"ext_IsDistributedMode",(DL_FUNC)&ext_IsDistributedMode,1,IsDistributedModeArgs},
         {0,0,0}
     };
 
@@ -665,6 +668,14 @@ extern "C"{
     static bool        (*IsBackendReady)() = 0;
     static bool        (*IsXDriven)() = 0;
     
+    //===================new APIs in 24.0=======================
+    static bool        (*IsDistributedMode)() = 0;
+    
+    //===================APIs for performance===================
+    static int         (*SetNCellValueFromCache)(const char* dsName, const int columnIndex, const double value) = 0;
+    static int         (*SetCCellValueFromCache)(const char* dsName, const int columnIndex, const char* value) = 0;
+    static int         (*SetCasePartValue)(const char* dsName, const int rowIndex, int* columnIndexList, bool isCache, int size) = 0;
+    
     //Initialize the function pointer
     void InitializeFP()
     {
@@ -887,6 +898,14 @@ extern "C"{
         QueueCommandPart = (int (*)(const char*, int))GETADDRESS(pLib, "QueueCommandPart");
         IsBackendReady = (bool (*)())GETADDRESS(pLib, "IsBackendReady");
         IsXDriven = (bool (*)())GETADDRESS(pLib, "IsXDriven");
+        
+        //===================new APIs in 24.0=======================
+        IsDistributedMode = (bool (*)())GETADDRESS(pLib, "IsDistributedMode");
+        
+        //===================APIs for performance===================
+        SetNCellValueFromCache = (int (*)(const char*, const int, const double))GETADDRESS(pLib, "SetNCellValueFromCache");
+        SetCCellValueFromCache = (int (*)(const char*, const int, const char*))GETADDRESS(pLib, "SetCCellValueFromCache");
+        SetCasePartValue = (int (*)(const char*, const int, int*, bool, int))GETADDRESS(pLib, "SetCasePartValue");
     }
 
     //load spssxd_p.dll
@@ -1124,6 +1143,14 @@ extern "C"{
         QueueCommandPart = 0;
         IsBackendReady = 0;
         IsXDriven = 0;
+        
+        //===================new APIs in 24.0=======================
+        IsDistributedMode = 0;
+        
+        //===================APIs for performance===================
+        SetNCellValueFromCache = 0;
+        SetCCellValueFromCache = 0;
+        SetCasePartValue = 0;
     }
 
     void ext_PostOutput(
@@ -2590,6 +2617,7 @@ extern "C"{
         int *cErr = INTEGER(errLevel);
         int varNum = LENGTH(data);
         int *varTypes = new int[varNum];
+        int *columnList = new int[varNum];
         double systemMissing,dValue;
         int caseNum, i;
         char *sValue;
@@ -2598,10 +2626,12 @@ extern "C"{
         for( i=0; i<varNum; ++i)
         {
             varTypes[i] = GetVarTypeInDS(datasetName,i,*cErr);
+            columnList[i] = i;
         }
         
         *cErr = GetSystemMissingValue(systemMissing);
         caseNum = LENGTH(VECTOR_ELT(data, 0));
+        
         for( i=0; i<caseNum; ++i)
         {
             *cErr = InsertCase(datasetName,i);
@@ -2622,7 +2652,7 @@ extern "C"{
                             dValue = REAL(elts)[i];
                         if(!R_finite(dValue))
                             dValue = systemMissing;
-                        *cErr = SetNCellValue(datasetName,i,j,dValue);
+                        *cErr = SetNCellValueFromCache(datasetName,j,dValue);
                     }
                     if( 0 != *cErr )
                         return errLevel;
@@ -2635,22 +2665,24 @@ extern "C"{
                     
                     R_CHAR_STAR sVal = CHAR(STRING_ELT(elts, i));
                     if(strcmp(sVal,"NA")== 0){
-                        *cErr = SetCCellValue(datasetName,i,j,"");
+                        *cErr = SetCCellValueFromCache(datasetName,j,"");
                     }
                     else{
                         sValue = new char[strlen(sVal)+1];
                         memset ( sValue, '\0', strlen(sVal)+1 );
                         strcpy(sValue, sVal);
-                        *cErr = SetCCellValue(datasetName,i,j,sValue);
+                        *cErr = SetCCellValueFromCache(datasetName,j,sValue);
                         delete []sValue;
                     }
                     if( 0 != *cErr )
                         return errLevel;
                 }
             }
+            SetCasePartValue(datasetName, i, columnList, false, varNum);
         }
         //CommitDataInDS(datasetName, varTypes, varNum, caseNum );
         delete []varTypes;
+        delete []columnList;
         return errLevel;
     }
       
@@ -3433,6 +3465,16 @@ extern "C"{
         }
     }
     
+    //===================new APIs in 24.0=======================
+    void ext_IsDistributedMode(int* isRemote)
+    {
+        int errCode = LoadLib();
+        if (LOAD_SUCCESS == errCode) {
+            *isRemote = IsDistributedMode();
+        } else {
+            *isRemote = 1;
+        }
+    }
     
     
 ///////////////////////===============================================

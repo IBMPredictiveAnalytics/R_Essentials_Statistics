@@ -1,4 +1,4 @@
-useDynLib(spss230)
+useDynLib(spss240)
 
 export(
     prespss,
@@ -126,5 +126,6 @@ export(
     spsspkg.SetStatisticsOutput,
     spsspkg.IsXDriven,
     spsspkg.IsUTF8mode,
-    spsspkg.IsBackendReady
+    spsspkg.IsBackendReady,
+    spsspkg.IsDistributedMode
 )

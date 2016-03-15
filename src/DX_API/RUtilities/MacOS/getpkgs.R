@@ -3,7 +3,7 @@
 # *
 # * IBM SPSS Products: Statistics Common
 # *
-# * (C) Copyright IBM Corp. 1989, 2013
+# * (C) Copyright IBM Corp. 1989, 2015
 # *
 # * US Government Users Restricted Rights - Use, duplication or disclosure
 # * restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -15,6 +15,13 @@ if ("" != Sys.getenv("SPSS_RPACKAGES_PATH")){
     spss_pkg_path = paste(unlist(spss_pkg_path), sep=",")
     .libPaths(c(spss_pkg_path, defaultlibpath))
 }
+if ("windows" == .Platform$OS.type){
+    if (!dir.exists(Sys.getenv("R_LIBS_USER"))){
+        dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
+        .libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()))
+    }
+}
+
 args<-commandArgs(TRUE)
 pkgs<-c()
 pkgstoget<-c()

@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2014
+# (c) Copyright IBM Corp. 1989, 2016
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -18,36 +18,38 @@
 
 spssRGraphics.Submit <- function(filename)
 {
-    if ( !spsspkg.IsXDriven())
+    if ( !spsspkg.IsBackendReady())
     {
-        errLevel <- 0
-
-        if (!file.exists(filename))
-        {
-            last.SpssError <<- 1014 
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
-            return("file name error")
-        }
-        spsstemplist <- toupper(unlist(strsplit(filename, "\\.")))
-        tempname <- spsstemplist[length(spsstemplist)]
-        if (is.na(tempname))
-        {
-            last.SpssError <<- 1015 
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
-            return("file format error")
-        }
-        if (tempname!="PNG" && tempname!="JPG" && tempname!="BMP")
-        {
-            last.SpssError <<- 1015 
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
-            return("file format error")
-        }
-        
-        out <- .C('ext_GetGraphic', as.character(unicodeConverterInput(filename)),
-                                 as.integer(errLevel),
-                                 PACKAGE=spss_package)
-        last.SpssError <<- out[[2]]
+        spsspkg.StartStatistics()
     }
+    
+    errLevel <- 0
+    
+    if (!file.exists(filename))
+    {
+        last.SpssError <<- 1014 
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        return("file name error")
+    }
+    spsstemplist <- toupper(unlist(strsplit(filename, "\\.")))
+    tempname <- spsstemplist[length(spsstemplist)]
+    if (is.na(tempname))
+    {
+        last.SpssError <<- 1015 
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        return("file format error")
+    }
+    if (tempname!="PNG" && tempname!="JPG" && tempname!="BMP")
+    {
+        last.SpssError <<- 1015 
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+        return("file format error")
+    }
+    
+    out <- .C('ext_GetGraphic', as.character(unicodeConverterInput(filename)),
+                             as.integer(errLevel),
+                             PACKAGE=spss_package)
+    last.SpssError <<- out[[2]]
 }
 
 spssRGraphics.SetOutput <- function(switch)

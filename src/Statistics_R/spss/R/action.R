@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2014
+# (c) Copyright IBM Corp. 1989, 2015
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -593,7 +593,7 @@ extrapath <- function(spssPath)
         profile_path = file.path(Sys.getenv("ALLUSERSPROFILE"), "IBM\\SPSS\\Statistics", majorVer, "extensions")
         .libPaths(c(profile_path, defaultlibpath))
     }
-
+    
     if ("" != Sys.getenv("SPSS_EXTENSIONS_PATH")){
         defaultlibpath = .libPaths()
         spss_ext_path = strsplit(Sys.getenv("SPSS_EXTENSIONS_PATH"), .Platform$path.sep)
@@ -601,6 +601,13 @@ extrapath <- function(spssPath)
         .libPaths(c(spss_ext_path, defaultlibpath))
     }
 
+    if ("" != Sys.getenv("SPSSEX_EXTENSIONS_PATH")){
+        defaultlibpath = .libPaths()
+        spss_ext_path = strsplit(Sys.getenv("SPSSEX_EXTENSIONS_PATH"), .Platform$path.sep)
+        spss_ext_path = paste(unlist(spss_ext_path), sep=",")
+        .libPaths(c(spss_ext_path, defaultlibpath))
+    }
+    
     if ("" != Sys.getenv("SPSS_RPACKAGES_PATH")){
         defaultlibpath = .libPaths()
         spss_pkg_path = strsplit(Sys.getenv("SPSS_RPACKAGES_PATH"), .Platform$path.sep)
@@ -1109,5 +1116,12 @@ spsspkg.IsBackendReady <- function()
     isReady <- .C("ext_IsBackendReady",as.logical(FALSE),PACKAGE=spss_package)[[1]]
     
     return (isReady)
+}
+
+spsspkg.IsDistributedMode <- function()
+{
+    isDistributed <- .C("ext_IsDistributedMode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+    
+    return (isDistributed)
 }
 

@@ -10,6 +10,7 @@
 \alias{spsspkg.SetOutput}
 \alias{spsspkg.SetOutputLanguage}
 \alias{spsspkg.Version}
+\alias{IsDistributedMode}
 \docType{package}
 \title{
 An interface to use R with IBM SPSS Statistics
@@ -34,7 +35,7 @@ Detailed help is available in the IBM SPSS Statistics help system under "Integra
 \tabular{ll}{
 Package: \tab spss\cr
 Type: \tab Package\cr
-Version: \tab 23.0\cr
+Version: \tab 24.0\cr
 Date: \tab 2015-02-10\cr
 }
 spsspkg.GetOutputLanguage retrieves the output language of the IBM SPSS Statistics processor.\cr
@@ -52,6 +53,8 @@ spsspkg.SetOutput specifies whether output from R is displayed in the IBM SPSS S
 spsspkg.SetOutputLanguage sets the output language of the IBM SPSS Statistics processor.\cr
 
 spsspkg.Version gets detailed version information. It retrieves the major version, patch version and the bugfix version of the package.\cr
+
+spsspkg.IsDistributedMode is used to determine if IBM SPSS Statistics is in distributed mode. The function returns TRUE if SPSS Statistics is in distributed mode, FALSE otherwise. spsspkg.IsDistributedMode always returns FALSE when SPSS Statistics is run from R.\cr
 }
 
 \value{
@@ -122,6 +125,10 @@ verspss <- spsspkg.GetSPSSVersion()
 print(verspss)
 verplugin <- spsspkg.GetSPSSPlugInVersion()
 print(verplugin)
+
+* Example 5 -- determine if SPSS Statistics is in distributed mode.
+isDistributed <- spsspkg.IsDistributedMode()
+print(isDistributed)
 
 
 © Copyright IBM Corp. 1989, 2015
