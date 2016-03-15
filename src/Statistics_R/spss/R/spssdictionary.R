@@ -1,6 +1,6 @@
 #############################################
-# IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2014
+# IBM® SPSS® Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2011
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -39,18 +39,12 @@ checkBaseInfo <- function(x)
 spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
-    
     err <- 0
     if(is.logical(variables))
     {
         last.SpssError <<- 1068 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)    
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)    
     }
     variables <- unlist(variables)
     if( is.null(variables) )
@@ -72,7 +66,7 @@ spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varName <- unicodeConverterOutput(out[1:n-1])
     
     out <- .Call("ext_GetVarLabels",as.list(variables),as.integer(err),
@@ -80,7 +74,7 @@ spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varLabel <- unicodeConverterOutput(out[1:n-1])
     
     out <- .Call("ext_GetVarTypes",as.list(variables),as.integer(err),
@@ -88,7 +82,7 @@ spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varType <- out[1:n-1]
     
     out <- .Call("ext_GetVarFormats",as.list(variables),as.integer(err),
@@ -96,7 +90,7 @@ spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varFormat <- out[1:n-1]
     
     out <- .Call("ext_GetVarMeasurementLevels",as.list(variables),as.integer(err),
@@ -104,7 +98,7 @@ spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varMeasurementLevel <- out[1:n-1]
 
     vars <- rbind(varName,varLabel,varType,varFormat,varMeasurementLevel)
@@ -116,12 +110,6 @@ spssdictionary.GetDictionaryFromSPSS <- function(variables=NULL)
 spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
-    
     err <- 0
     variables <- unlist(variables)
     if( is.null(variables) )
@@ -143,7 +131,7 @@ spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varName <- unicodeConverterOutput(out[1:n-1])
     
     out <- .Call("ext_GetVarLabels",as.list(variables),as.integer(err),
@@ -151,7 +139,7 @@ spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varLabel <- unicodeConverterOutput(out[1:n-1])
     
     out <- .Call("ext_GetVarTypes",as.list(variables),as.integer(err),
@@ -159,7 +147,7 @@ spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varType <- out[1:n-1]
     
     out <- .Call("ext_GetVarFormats",as.list(variables),as.integer(err),
@@ -167,7 +155,7 @@ spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varFormat <- out[1:n-1]
     
     out <- .Call("ext_GetVarMeasurementLevels",as.list(variables),as.integer(err),
@@ -175,7 +163,7 @@ spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varMeasurementLevel <- out[1:n-1]
 
     varValueLabels <- list()
@@ -210,19 +198,12 @@ spssdictionary.GetDetailedDictionaryFromSPSS <- function(variables=NULL)
 spssdictionary.GetUserMissingValues <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
     
@@ -243,7 +224,7 @@ spssdictionary.GetUserMissingValues <- function(variable)
                                              PACKAGE=spss_package)
         last.SpssError <<- out[[6]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         
         missingFormat <- out[[2]]
         result <- unlist(out)[3:5]
@@ -274,7 +255,7 @@ spssdictionary.GetUserMissingValues <- function(variable)
                                              PACKAGE=spss_package)
         last.SpssError <<- out[[6]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
         missingFormat <- out[[2]]
         result <- unlist(out)[3:5]
@@ -297,19 +278,12 @@ spssdictionary.GetUserMissingValues <- function(variable)
 spssdictionary.GetValueLabels <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -327,7 +301,7 @@ spssdictionary.GetValueLabels <- function(variable)
 
     last.SpssError <<- out[[3]][1]
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     result <- out[1:2]
     names(result) <- c("values","labels")
@@ -347,18 +321,11 @@ spssdictionary.IsWeighting <- function()
 spssdictionary.GetWeightVariable <- function()
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     out <- .C("ext_GetWeightVar",as.character(""),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     
     value <- out[[1]]
     if("" == value)
@@ -369,19 +336,12 @@ spssdictionary.GetWeightVariable <- function()
 spssdictionary.GetVariableAttributeNames <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -392,7 +352,7 @@ spssdictionary.GetVariableAttributeNames <- function(variable)
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -409,19 +369,12 @@ spssdictionary.GetVariableAttributeNames <- function(variable)
 spssdictionary.GetVariableAttributes <- function(variable, attrName)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -432,7 +385,7 @@ spssdictionary.GetVariableAttributes <- function(variable, attrName)
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -448,13 +401,7 @@ spssdictionary.GetVariableAttributes <- function(variable, attrName)
 spssdictionary.GetDataFileAttributeNames <- function()
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
+
     err <- 0
     out <- NULL
     out <- .Call("ext_GetDataFileAttributeNames",as.integer(err),PACKAGE=spss_package)
@@ -462,7 +409,7 @@ spssdictionary.GetDataFileAttributeNames <- function()
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -478,13 +425,7 @@ spssdictionary.GetDataFileAttributeNames <- function()
 spssdictionary.GetDataFileAttributes <- function(attrName)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
+
     err <- 0
     out <- NULL
     attrName <- unicodeConverterInput(attrName)
@@ -492,7 +433,7 @@ spssdictionary.GetDataFileAttributes <- function(attrName)
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -508,20 +449,13 @@ spssdictionary.GetDataFileAttributes <- function(attrName)
 spssdictionary.GetMultiResponseSetNames <- function()
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     out <- .Call("ext_GetMultiResponseSetNames",as.integer(err),PACKAGE=spss_package)
     
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -537,13 +471,7 @@ spssdictionary.GetMultiResponseSetNames <- function()
 spssdictionary.GetMultiResponseSet <- function(mrsetName)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
+
     err <- 0
     out <- NULL
     mrsetName <- unicodeConverterInput(mrsetName)
@@ -553,7 +481,7 @@ spssdictionary.GetMultiResponseSet <- function(mrsetName)
     n <- length(out)
     last.SpssError <<- out[[n]][1]
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -587,14 +515,14 @@ spssdictionary.CreateSPSSDictionary <- function(...)
     if(n <1){
         last.SpssError <<- 1002 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     
     if(length(value[,1]) != 5)
     {
         last.SpssError <<- 1002 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     
     row.names(value) <- baseInfo
@@ -605,19 +533,12 @@ spssdictionary.CreateSPSSDictionary <- function(...)
 spssdictionary.GetVariableFormatType <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -634,7 +555,7 @@ spssdictionary.GetVariableFormatType <- function(variable)
                                           PACKAGE=spss_package)
     last.SpssError <<- out[[5]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     format <- out[[2]]
     format
@@ -642,17 +563,11 @@ spssdictionary.GetVariableFormatType <- function(variable)
 
 spssdictionary.GetVariableCount <- function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     out <- .C("ext_GetVariableCount",as.integer(0), as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     columns <- out[[1]]
     columns
@@ -660,17 +575,11 @@ spssdictionary.GetVariableCount <- function()
 
 spssdictionary.GetVariableCountInDS <- function(dsName)
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     out <- .C("ext_GetVarCountInDS",as.character(dsName),as.integer(0),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[3]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     columns <- out[[2]]
     columns
@@ -679,13 +588,6 @@ spssdictionary.GetVariableCountInDS <- function(dsName)
 spssdictionary.GetVariableName <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     if( !is.numeric(variable) )
         stop("assert is.numeric(variable)")
     varIndex <- variable
@@ -695,7 +597,7 @@ spssdictionary.GetVariableName <- function(variable)
 
     last.SpssError <<- out[[3]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     varName <- out[[1]]
     varName <- unicodeConverterOutput(varName)
@@ -705,13 +607,6 @@ spssdictionary.GetVariableName <- function(variable)
 spssdictionary.GetVariableNameInDS <- function(dsName,variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     if( !is.numeric(variable) )
         stop("assert is.numeric(variable)")
     varIndex <- variable
@@ -721,7 +616,7 @@ spssdictionary.GetVariableNameInDS <- function(dsName,variable)
 
     last.SpssError <<- out[[4]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     varName <- out[[3]]
     varName <- unicodeConverterOutput(varName)
@@ -731,19 +626,12 @@ spssdictionary.GetVariableNameInDS <- function(dsName,variable)
 spssdictionary.GetVariableLabel <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -752,7 +640,7 @@ spssdictionary.GetVariableLabel <- function(variable)
 
     last.SpssError <<- out[[3]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     varLabel <- out[[1]]
     varLabel <- unicodeConverterOutput(varLabel)
@@ -762,19 +650,12 @@ spssdictionary.GetVariableLabel <- function(variable)
 spssdictionary.GetVariableType <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -783,7 +664,7 @@ spssdictionary.GetVariableType <- function(variable)
 
     last.SpssError <<- out[[3]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     varType <- out[[1]]
     varType
@@ -792,18 +673,11 @@ spssdictionary.GetVariableType <- function(variable)
 spssdictionary.GetVariableFormat <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -812,7 +686,7 @@ spssdictionary.GetVariableFormat <- function(variable)
 
     last.SpssError <<- out[[3]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     varFormat <- out[[1]]
     varFormat
@@ -821,19 +695,12 @@ spssdictionary.GetVariableFormat <- function(variable)
 spssdictionary.GetVariableMeasurementLevel <- function(variable)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     variable <- GetVarIndex(variable)
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -841,7 +708,7 @@ spssdictionary.GetVariableMeasurementLevel <- function(variable)
     out <- .C("ext_GetVariableMeasurementLevel",as.integer(0), as.integer(varIndex),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[3]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     varMeasurementLevel <- out[[1]]
     result <- switch(varMeasurementLevel,"unknown","nominal","ordinal","scale")
@@ -849,7 +716,7 @@ spssdictionary.GetVariableMeasurementLevel <- function(variable)
     {
         last.SpssError <<- 1004
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     result
 }
@@ -857,18 +724,11 @@ spssdictionary.GetVariableMeasurementLevel <- function(variable)
 spssdictionary.GetCategoricalDictionaryFromSPSS <- function(variables = NULL)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     if(typeof(variables)=="logical")
     {
       last.SpssError <<- 1073 
-      stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+      stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
     }    
     variables <- unlist(variables)
     if( is.null(variables) )
@@ -890,7 +750,7 @@ spssdictionary.GetCategoricalDictionaryFromSPSS <- function(variables = NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varName <- unicodeConverterOutput(out[1:n-1])    
     
     out <- .Call("ext_GetVarMeasurementLevels",as.list(variables),as.integer(err),
@@ -898,7 +758,7 @@ spssdictionary.GetCategoricalDictionaryFromSPSS <- function(variables = NULL)
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varMeasurementLevel <- out[1:n-1]
 
     idx<-NULL
@@ -927,12 +787,6 @@ spssdictionary.GetCategoricalDictionaryFromSPSS <- function(variables = NULL)
 
 spssdictionary.CategoryDictionaryValid <- function(categoryDictionary)
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     len <- length(categoryDictionary$dictionary)
     if(length(categoryDictionary$name) != len)
       return(FALSE)
@@ -951,27 +805,20 @@ spssdictionary.CategoryDictionaryValid <- function(categoryDictionary)
 spssdictionary.EditCategoricalDictionary <- function(categoryDictionary, newName = categoryDictionary$name)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     if(!is.null(categoryDictionary))
     {
         if(!spssdictionary.CategoryDictionaryValid(categoryDictionary))
         {
             last.SpssError <<- 1021
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
     }     
     len <- length(categoryDictionary$name)
     if(len != length(newName))
     {
         last.SpssError <<- 1020
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     result <- categoryDictionary
     offset <- 0
@@ -991,30 +838,19 @@ spssdictionary.EditCategoricalDictionary <- function(categoryDictionary, newName
 
 spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary = NULL, hidden=FALSE)
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     if(is.null(getOption("is.dataStepRunning"))) options(is.dataStepRunning = FALSE)
-    if(is.null(datasetName) || grepl(" ", datasetName))
-    {
-        last.SpssError <<- 87
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
     datasetName <- unicodeConverterInput(datasetName)
     spssError.reset()
     if( getOption("is.splitConnectionOpen") )
     {
         last.SpssError <<- 1001
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     
     if( !checkBaseInfo(x) )
     {
         last.SpssError <<- 1002
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }   
     
     if(!is.null(categoryDictionary))
@@ -1022,7 +858,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
         if(!spssdictionary.CategoryDictionaryValid(categoryDictionary))
         {
             last.SpssError <<- 1021
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
     }
     err <- 0
@@ -1031,7 +867,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
         out <- .C("ext_StartDataStep",as.integer(err),PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
         options(is.dataStepRunning = TRUE)
     }
@@ -1039,7 +875,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
     out <- .C("ext_CreateDataset",as.character(datasetName),as.logical(TRUE),as.logical(hidden), as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[4]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     i <- 0
     for(var in x)
@@ -1053,7 +889,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
                                        PACKAGE=spss_package)
         last.SpssError <<- out[[5]]   
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
         out <- .C("ext_SetVarLabelInDS",as.character(datasetName),
                                        as.integer(i),   
@@ -1062,7 +898,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
                                        PACKAGE=spss_package)
         last.SpssError <<- out[[4]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         
         # separate varFormat to formatType, formatWidth, and formatDecimal.
         format <- var[4]  #variable format
@@ -1095,7 +931,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
                                        PACKAGE=spss_package)
         last.SpssError <<- out[[6]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         
         out <- .C("ext_SetVarMeasurementLevelInDS",as.character(datasetName),
                                        as.integer(i),   
@@ -1104,7 +940,7 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
                                        PACKAGE=spss_package)
         last.SpssError <<- out[[4]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         
         if(!is.null(categoryDictionary))
         {
@@ -1124,46 +960,32 @@ spssdictionary.SetDictionaryToSPSS <- function(datasetName,x, categoryDictionary
 spssdictionary.SetActive <- function(datasetName)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
     
     if( !getOption("is.dataStepRunning") )
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     err <- 0
     out <- .C("ext_SetActive",as.character(datasetName),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 }
 
 spssdictionary.CloseDataset <- function(datasetName)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
     
     if( !getOption("is.dataStepRunning") )
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     err <- 0
@@ -1171,7 +993,7 @@ spssdictionary.CloseDataset <- function(datasetName)
 
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     #out <- .C("ext_EndDataStep",as.integer(err),PACKAGE=spss_package)
 }
@@ -1179,20 +1001,13 @@ spssdictionary.CloseDataset <- function(datasetName)
 spssdictionary.EndDataStep <- function()
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     if( getOption("is.dataStepRunning") )
     {
         err <- 0
         out <- .C("ext_EndDataStep",as.integer(err),PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     
         options(is.dataStepRunning = FALSE)
     }
@@ -1204,13 +1019,6 @@ names(missingFormat) <- c("Discrete","Range","Range Discrete")
 spssdictionary.SetUserMissing <- function(datasetName,variable,format=missingFormat["Discrete"],missings)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
     
     variable <- GetVarIndex(variable,datasetName)
@@ -1218,7 +1026,7 @@ spssdictionary.SetUserMissing <- function(datasetName,variable,format=missingFor
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     err <- 0
@@ -1252,7 +1060,7 @@ spssdictionary.SetUserMissing <- function(datasetName,variable,format=missingFor
 
         last.SpssError <<- out[[7]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     else
     {
@@ -1276,20 +1084,13 @@ spssdictionary.SetUserMissing <- function(datasetName,variable,format=missingFor
                                                  PACKAGE=spss_package)
         last.SpssError <<- out[[7]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 }
 
 spssdictionary.SetValueLabel <- function(datasetName,variable,values,labels)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
 
     variable <- GetVarIndex(variable,datasetName)
@@ -1297,14 +1098,14 @@ spssdictionary.SetValueLabel <- function(datasetName,variable,values,labels)
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -1328,7 +1129,7 @@ spssdictionary.SetValueLabel <- function(datasetName,variable,values,labels)
                                                   PACKAGE=spss_package)
             last.SpssError <<- out[[5]] 
             if( is.SpssError(last.SpssError))
-                stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+                stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
     }
     else
@@ -1345,7 +1146,7 @@ spssdictionary.SetValueLabel <- function(datasetName,variable,values,labels)
                                                   PACKAGE=spss_package)
             last.SpssError <<- out[[5]] 
             if( is.SpssError(last.SpssError))
-                stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+                stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
     }
 }
@@ -1353,13 +1154,6 @@ spssdictionary.SetValueLabel <- function(datasetName,variable,values,labels)
 spssdictionary.SetVariableAttributes <- function(datasetName,variable,...)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
 
     variable <- GetVarIndex(variable,datasetName)
@@ -1367,14 +1161,14 @@ spssdictionary.SetVariableAttributes <- function(datasetName,variable,...)
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     if( !is.numeric(variable) )
     {
         last.SpssError <<- 1008 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     varIndex <- variable
 
@@ -1399,27 +1193,20 @@ spssdictionary.SetVariableAttributes <- function(datasetName,variable,...)
                                                 PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 }
 
 spssdictionary.SetDataFileAttributes <- function(datasetName,...)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
 
     if( !getOption("is.dataStepRunning") )
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     err <- 0
@@ -1440,7 +1227,7 @@ spssdictionary.SetDataFileAttributes <- function(datasetName,...)
                                                 PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 }
 
@@ -1455,20 +1242,13 @@ spssdictionary.SetMultiResponseSet <- function(datasetName,
                                                elementaryVars)
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     datasetName <- unicodeConverterInput(datasetName)
 
     if( !getOption("is.dataStepRunning") )
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     err <- 0
@@ -1483,14 +1263,14 @@ spssdictionary.SetMultiResponseSet <- function(datasetName,
     {
         last.SpssError <<- 1012 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     
     if(codeAs == CodeAs.Dichotomies && is.null(countedValue))
     {
         last.SpssError <<- 1013 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     else if(codeAs == CodeAs.Categories && is.null(countedValue))
         countedValue = ""
@@ -1522,5 +1302,5 @@ spssdictionary.SetMultiResponseSet <- function(datasetName,
                                                PACKAGE=spss_package)
     last.SpssError <<- out[[1]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 }

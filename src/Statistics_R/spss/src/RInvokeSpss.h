@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2014
+** (c) Copyright IBM Corp. 1989, 2012
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -483,16 +483,7 @@ RINVOKESPSS_API void ext_SetDateCell( const char** outline,
                                       int* errLevel);
 RINVOKESPSS_API void ext_SetRecordBrowserOutput( const char** ,int*,int* );
 RINVOKESPSS_API void ext_TransCode(const char** dest, const char** orig, int* errLevel);  
-RINVOKESPSS_API void ext_SetGraphicsLabel(const char** displaylabel, const char** invariantdisplaylabel, int* errLevel);
-
-//===================new APIs in 23.0=======================
-RINVOKESPSS_API void ext_StartSpss(const char** commandline, int* errLevel);
-RINVOKESPSS_API void ext_StopSpss(int* errLevel);
-RINVOKESPSS_API void ext_Submit(const char** command, int* length, int* errLevel);
-RINVOKESPSS_API void ext_QueueCommandPart(const char** command, int* length, int* errLevel);
-RINVOKESPSS_API void ext_IsBackendReady(int* isReady);
-RINVOKESPSS_API void ext_IsXDriven(int* isXdrive);
-
+RINVOKESPSS_API void ext_SetGraphicsLabel(const char** displaylabel, const char** invariantdisplaylabel, int* errLevel);                 
 
 
 //===================R initialize=========================

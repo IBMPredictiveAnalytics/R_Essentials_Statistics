@@ -1,4 +1,4 @@
-useDynLib(spss230)
+useDynLib(spss210)
 
 export(
     prespss,
@@ -71,7 +71,6 @@ export(
     GetSPSSVersion,
     spsspkg.GetSPSSPlugInVersion,
     GetSPSSPlugInVersion,
-    spsspkg.helper,
     spsspkg.Syntax,
     spsspkg.Template,
     spsspkg.processcmd,
@@ -119,12 +118,5 @@ export(
     formatSpec.StdDev,
     formatSpec.Difference,
     formatSpec.Sum,
-    spss.CellText.VarName,
-    spsspkg.StartStatistics,
-    spsspkg.StopStatistics,
-    spsspkg.Submit,
-    spsspkg.SetStatisticsOutput,
-    spsspkg.IsXDriven,
-    spsspkg.IsUTF8mode,
-    spsspkg.IsBackendReady
+    spss.CellText.VarName
 )

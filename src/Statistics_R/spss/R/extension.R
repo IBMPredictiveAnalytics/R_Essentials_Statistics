@@ -1,6 +1,6 @@
 #############################################
 # IBM® SPSS® Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2015
+# (c) Copyright IBM Corp. 1989, 2011
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -15,9 +15,6 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
 #############################################
-
-# history
-# 21-nov-2014 fix problems with TO expansion and suppress call info in stops
 
 #define the VariableDict class
 #the type for variable dictionary of Statistics 
@@ -62,8 +59,7 @@ getvarlist <- function(value, islist, vardict)
 	if(!islist) {
         if(length(value) > 1)
         {
-            stop("More than one variable specified where only one is allowed",
-                call.=FALSE)
+            stop("More than one variable specified where only one is allowed")
         }
         else if(length(value) == 1) 
         {            
@@ -79,7 +75,7 @@ getvarlist <- function(value, islist, vardict)
         }
         else
         {
-            stop("Only one variable can be specified.", call.=FALSE)
+            stop("Needs to input one varibale.")
         }
     }	
 	else 
@@ -97,19 +93,14 @@ getvarlist <- function(value, islist, vardict)
             else if(tolower(value[[i]]) == "to")
             {
                 start = match(value[[i-1]],allVarNames)+1
-                end = match(value[[i+1]],allVarNames) - 1
-                if (start - end > 3) {
-                    stop("The form VARX to VARY to refer to a range of variables has been used incorrectly",
-                        call.=FALSE)
-                }
+                end = match(value[[i+1]],allVarNames) - 1     
                 if(start > end) 
-                    next            
+                    continue            
                 varNames <- append(varNames,allVarNames[start:end])
             }
             else
             {
-                stop(paste("invalid variable name: ",value[[i]],sep=""),
-                    call.=FALSE)
+                stop(paste("invalid variable name: ",value[[i]],sep=""))
             }
             
         }		
@@ -198,9 +189,9 @@ spsspkg.processcmd<-function(oobj,myArgs,f="",excludedargs=NULL, lastchancef = N
         }        
     }
     if(length(omittedArgs) > 0) {
-        stop(paste("The following required parameters were not supplied:",
-            paste(omittedArgs, collapse=", "), collapse=""),
-            call.=FALSE)
+        missingArgsErr<-"The following required parameters were not supplied: "
+        for(i in 1:length(omittedArgs)) paste(missingArgsErr,omittedArgs[i],sep=",")
+        stop(missingArgsErr)
     }
     ##call the extension procedure, end user need to implement the f method.
     return(do.call(f,oobj@parsedparams))
@@ -313,7 +304,7 @@ setMethod("parseitem","SyntaxClass", function(object,subc,item, vardict=NULL) {
                     errMsg <- paste(errMsg,key)
                     errMsg <- paste(errMsg,":",sep="")
                     errMsg <- paste(errMsg,v,sep="")
-					stop(errMsg, call.=FALSE)
+					stop(errMsg)
 				}
 			}
 		}
@@ -326,17 +317,7 @@ setMethod("parseitem","SyntaxClass", function(object,subc,item, vardict=NULL) {
 		    }
 		    else
 		    {
-                if(kw@islist) {
-                    value <- getvalue(value, kw@islist)
-                    result <- c()
-                    for (i in value[[1]]) {
-                        result <- c(result, i %in% list("true", "yes", NULL))
-                    }
-                    object@parsedparams[kw@var] <- list(result)
-                }
-                else {
-                    object@parsedparams[kw@var] <- getvalue(value, kw@islist) %in% list("true", "yes", NULL)
-                }
+		        object@parsedparams[kw@var] <- getvalue(value, kw@islist) %in% list("true", "yes", NULL)
     			if(is.null(unlist(object@parsedparams[kw@var]))) 
     			{
     			    object@parsedparams[kw@var] = TRUE	
@@ -357,7 +338,7 @@ setMethod("parseitem","SyntaxClass", function(object,subc,item, vardict=NULL) {
                 errMsg <- "Value for keyword:"
                 errMsg <- paste(errMsg,kw@kwd)
                 errMsg <- paste(errMsg,"is out of range")
-				stop(errMsg, call.=FALSE)
+				stop(errMsg)
 			}
 		}
 		object@parsedparams[kw@var] = getvalue(value, kw@islist)
@@ -384,11 +365,11 @@ setMethod("initialize","TemplateClass",function(.Object, kwd, subc="", var=NULL,
     {
         errMsg <- "option type must be in Template ktypes:"
         for(v in ktypes) errMsg <- paste(errMsg,v)
-        stop(errMsg, call.=FALSE)
+        stop(errMsg)
     }		
     if(is.null(var) || var == "") 
     {   
-        if(kwd == "") stop("If kwd is '', var must be specified.", call.=FALSE)
+        if(kwd == "") stop("if kwd is '', var must be specified.")
         else var <- tolower(kwd)
     }
         
@@ -485,7 +466,7 @@ checkrequiredparams <- function(implementingfunc, params, exclude=NULL)
     if(length(omittedArgs) > 0) {
         missingArgsErr<-"The following required parameters were not supplied: "
         for(i in 1:length(omittedArgs)) paste(missingArgsErr,omittedArgs[i],sep=",")
-        stop(missingArgsErr, call.=FALSE)
+        stop(missingArgsErr)
     }
 
 }
@@ -512,20 +493,4 @@ spsspkg.Syntax <- function(templ)
 }
 
 
-spsspkg.helper = function(cmdname, helpfile="markdown.html") {
-    # find the html help file and display in the default browser
-    # cmdname may have blanks that need to be converted to _ to match the file
-    # helpfile is the name of the html help file
-    # The help display will not be available in distributed mode
-    
-    # This function added for Statistics version 23.  To use
-    # this function in older versions, copy it to the extension command code.
-    
-    fn = gsub(" ", "_", cmdname, fixed=TRUE)
-    thefile = Find(file.exists, file.path(.libPaths(), fn, helpfile))
-    if (is.null(thefile)) {
-        print("Help file not found")
-    } else {
-        browseURL(paste("file://", thefile, sep=""))
-    }
-}
+

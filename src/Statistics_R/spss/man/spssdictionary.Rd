@@ -67,12 +67,14 @@ spssdictionary.CloseDataset(datasetName)
 spssdictionary.EndDataStep()
 }
 \arguments{
-  \item{variables}{A character vector or list specifying the variable names, a character string consisting of variable names separated by blanks, or a numeric vector or list of integers specifying the index values of the variables (index values represent position in the dataset, starting with 0 for the first variable in file order). Variable names must match case with the names as they exist in the active dataset's dictionary. If the argument is NULL, all variables in the dataset will 
+  \item{variables}{\code{NULL} or a vector of integers specifying indices of 
+    variables in the IBM SPSS Statistics active dataset that will be retrieved (index values 
+    represent position in the dataset, starting with 0 for the first variable 
+    in file order). If the argument is NULL, all variables in the dataset will 
     be retrieved. 
-	
-When specifying variable names, you can use TO to indicate a range of variables. For example, variables=c("age TO income") specifies age, income, and all variables between them in the active dataset's dictionary. You can also specify a range of values using index values, as in variables=c(2:4), which specifies the variables with index values 2 through 4.
     }
-  \item{variable}{A character string specifying the variable name or an integer specifying the index value of the variable (index values represent position in the dataset, starting with 0 for the first variable in file order). Variable names must match case with the names as they exist in the active dataset's dictionary. 
+  \item{variable}{ An integer specifying the index of a variable in the   
+    active dataset. 
     }
   \item{attrName}{ A character string specifying the attribute name.
     Variable attribute names can be retrieved with 
@@ -80,7 +82,7 @@ When specifying variable names, you can use TO to indicate a range of variables.
     Data file attribute names can be retrieved with 
     spssdictionary.GetDataFileAttributeNames.
     }
-  \item{datasetName}{ A character string specifying the name of an IBM SPSS Statistics 
+  \item{datasetName}{ A character string specifying the name of a IBM SPSS Statistics 
     dataset. A new IBM SPSS Statistics dataset can be created with 
     spssdictionary.SetDictionaryToSPSS. The names of all open datasets 
     can be retrieved with spssdata.GetDataSetList. 
@@ -195,13 +197,27 @@ When specifying variable names, you can use TO to indicate a range of variables.
     attribute value "1", and a data file attribute named "attr2" with attribute 
     value "2". 
     }
-  \item{categoryDictionary}{ Specifies the name of a category dictionary created with the GetCategoricalDictionaryFromSPSS function. Category dictionaries are for use when retrieving categorical variables (variables with a measurement level of "nominal" or "ordinal") into labelled R factors, with the intention of writing those factors to a new dataset. 
+  \item{categoryDictionary}{ A list to record the value label information of the
+     categorical variable. It is used to support handling for categorical 
+     variables retrieved from IBM SPSS Statistics and factor variables written from R to IBM SPSS 
+     Statistics. A categoryDictionary could be constructed in the following way:
+          catedic0 <- list(levels=c("m","f"),labels=c("Male","Female"))
+          catedic1 <- list(levels=c(0,1,2,3),labels=c("missing","clergial","custodian","manager"))
+          catedic  <- list(name = c("gender","jobcat"), dictionary = list(catedic0, catedic1))
+     However, if users want to get categorial variables from IBM SPSS Statistics, it
+      is strongly recommended to get the information using function: 
+          spssdictionary.GetCategoricalDictionaryFromSPSS(variables = NULL) 
     }
-  \item{hidden}{Specifies whether the Data Editor window 
+  \item{hidden}{\code{FALSE} or TRUE to specifies whether the Data Editor window 
     associated with the new dataset is hidden. By default, it is displayed. 
     Use hidden=TRUE to hide the associated Data Editor window.    
     }  
-  \item{newName}{A vector specifying the names of the variables in the category dictionary. It replaces the existing names, which are defined in the name attribute of the category dictionary, and must be the same length as the name attribute. The first element of newNames replaces the first element in the name attribute of the category dictionary, and so on. A value of NA means the corresponding element in categoryDictionary$name and categoryDictionary$dictionary will be deleted (see the example 15). 
+  \item{newName}{ A vector or list to assign the new name list of categoryDictionary$name.
+     the length of newName must be the same as the length of categoryDictionary$name. 
+     each element of name represent the new name replacing the original one, if 
+     the corresponding element is assigned as NA, it means the corresponding 
+     element in the categoryDictionary$name and categoryDictionary$dictionary 
+     will be deleted, see the example 16. 
      }    
   \item{mrsetName}{ A character string specifying the name of the multiple 
     response set. The mrsetName can be up to 63 bytes long. A dollar sign 
@@ -212,11 +228,21 @@ When specifying variable names, you can use TO to indicate a range of variables.
     multiple response set. The default value is an empty character string.
     }
   \item{codeAs}{ The variable coding. Must be either "Dichotomies" or 
-    "Categories". If codeAs is "dichotomies", countedValue must be present.
+    "Categories". If the codeAs is "dichotomies", countedValue must be present.
     }
-  \item{countedValue}{Specifies the value that indicates the presence of a response for a multiple dichotomy set. This is also referred to as the “counted” value. If the set type is numeric, the value can be an integer or a string representation of an integer. If the set type is string, the value, after trimming trailing blanks, cannot be wider than the narrowest elementary variable. countedValue is required if codeAs has the value "Dichotomies" and is ignored otherwise.
+  \item{countedValue}{\code{NULL} or an character string indicating which value 
+    you want to have counted if your variables are coded as dichotomies. If your 
+    variables are coded as categories, leave the countedValue by default. Numeric 
+    input for this argument will be converted to character string with as.character.
     }
-  \item{elementaryVars}{ A character vector specifying the list of elementary variables that define the set (the list must include at least two variables). Variables can be specified by name or index value (index values represent position in the dataset, starting with 0 for the first variable in file order). When specifying variable names, you can use TO to indicate a range of variables--for example, elementaryVars=c("age TO income") specifies age, income, and all variables between them in the active dataset's dictionary. Variable names must match case with the names as they exist in the active dataset's dictionary. All specified variables must be of the same type (numeric or string).
+  \item{elementaryVars}{ A vector of character specifying two or more variable 
+    names that will be included in the response set. Support TO construct. 
+    Variable indices will be also accepted instead of variable names. If 
+    variables refer to variable names, these names must match case with the 
+    IBM SPSS Statistics dictionary. The data type of the multiple response set will be 
+    determined with the type of variables in the elementaryVars, so all 
+    variables in the elementaryVars must have same data type ¨C all are numeric 
+    variables or all are string variables.
     }
 }
 \value{
@@ -230,9 +256,12 @@ spssdictionary.GetDataFileAttributeNames returns a character vector.\cr
 spssdictionary.GetDataFileAttributes returns a character vector.\cr
 spssdictionary.GetMultiResponseSetNames returns a character vector.\cr
 spssdictionary.GetMultiResponseSet returns a list.\cr
+
 spssdictionary.IsWeighting returns a logical.\cr
 spssdictionary.GetWeightVariable returns a character string.\cr
+
 spssdictionary.CreateSPSSDictionary returns a data frame.\cr
+
 spssdictionary.GetCategoricalDictionaryFromSPSS returns a list.\cr
 spssdictionary.CategoryDictionaryValid returns a logical.\cr
 spssdictionary.EditCategoricalDictionary returns a list.\cr
@@ -290,7 +319,14 @@ spssdictionary.GetMultiResponseSetNames gets the multiple response set names fro
 the active dataset. If the active dataset has no multiple response sets, 
 an empty vector will be returned. \cr
 
-spssdictionary.GetMultiResponseSet gets the details of the specified multiple-response set. The result is a list with the following named components: label (the label, if any, for the set), codeAs ("Dichotomies" or "Categories"), countedValue (the counted value--applies only to multiple dichotomy sets), type ("Numeric" or "String"), and vars (a vector of the elementary variables that define the set). 
+spssdictionary.GetMultiResponseSet gets the multiple-response set specifications 
+of the specified multiple-response set as a list. The elements in the 
+list indicate below specifications of the multiple-response set respectively:\cr
+      label \cr
+      coded as \cr
+      counted value \cr
+      data type \cr
+      elementary variables \cr 
 
 spssdictionary.IsWeighting indicates whether weighting is in effect for the 
 active dataset.  The result is TRUE if weighting is in effect, FALSE 
@@ -303,11 +339,16 @@ spssdictionary.CreateSPSSDictionary creates the structure for a new
 dictionary that can be set to IBM SPSS Statistics with SetDictionaryToSPSS. It returns a data 
 frame. The generated dictionary is editable until it is set to IBM SPSS Statistics.\cr
 
-spssdictionary.GetCategoricalDictionaryFromSPSS returns a structure containing the values and value labels of the specified categorical variables from the active dataset. This is a utility function for use when retrieving categorical variables (variables with a measurement level of "nominal" or "ordinal") into labeled R factors (factorMode="labels" in GetDataFromSPSS), with the intention of writing those factors to a new dataset. This is necessary because labeled factors in R do not preserve the original values. The structure returned by this function is referred to as a category dictionary.\cr
+spssdictionary.GetCategoricalDictionaryFromSPSS creates the structure categoryDictionary
+to record a set of categorical variables (nominal and ordinal). This structure 
+is used to write a data.frame containing labeled R factor into IBM SPSS Statistics.\cr
 
-spssdictionary.CategoryDictionaryValid checks if the specified category dictionary is valid.\cr
+spssdictionary.CategoryDictionaryValid is used to check if the passed categoryDictionary is valid.\cr
 
-spssdictionary.EditCategoricalDictionary changes the names of one or more variables in a category dictionary.\cr
+spssdictionary.EditCategoricalDictionary is used to change the name of categoryDictionary 
+so that the result category dictionary could be used in other task. the reason 
+for changing the name is that categoryDictionary$name is used to index the variable 
+in the function of spssdictionary.SetDictionaryToSPSS and spssdictionary.SetDataToSPSS.\cr
 
 spssdictionary.SetDictionaryToSPSS sets the dictionary for a new IBM SPSS Statistics dataset 
 and creates the dataset with the specified name. The resulting dataset is not 
@@ -315,7 +356,6 @@ set to be the active dataset. This function implicitly starts a data
 step, requiring spssdictionary.EndDataStep to be called after finishing all 
 data step related jobs. Data step related jobs include calls to the 
 following:\cr
-
       spssdictionary.SetDictionaryToSPSS\cr
       spssdictionary.SetActive\cr
       spssdictionary.CloseDataset\cr 
@@ -338,7 +378,7 @@ spssdictionary.SetDataFileAttributes sets data file attributes for the specified
 dataset.\cr
 
 spssdictionary.SetMultiResponseSet sets a multiple response set to the specified 
-dataset. \cr
+dataset. Only supports "Variable labels" for "Category Labels Source".\cr
 
 spssdictionary.SetActive makes the specified dataset the active dataset.\cr
 
@@ -351,78 +391,89 @@ SetDictionaryToSPSS.\cr
 \references{
 }
 \seealso{
-  \code{\link{extension}},
-  \code{\link{external}},
   \code{\link{spssdata}},
-  \code{\link{spsspkg}},
-  \code{\link{spsspivottable}},
-  \code{\link{spssRGraphics}},
   \code{\link{spssxmlworkspace}},
-  \code{\link{TextBlock}}
+  \code{\link{spsspivottable}}.
 }
 \examples{
-## These examples are intended to be run from R, with R driving IBM SPSS Statistics.
+## These examples must be run from IBM SPSS Statistics. They cannot be run from R.
 
-* Example 1 -- get the dictionary of the active dataset in IBM SPSS Statistics
-spsspkg.Submit("get file='/data/Employee data.sav'.")
+* Example 1 -- get dictionary from IBM SPSS Statistics.
+get file="/data/Employee data.sav".
+begin program R.
 x <- spssdictionary.GetDictionaryFromSPSS(variables = c(0,1,4,5,8))
 print(x)
+print(summary(x))
+end program.
 
-
-* Example 2 -- get any user-missing values from the active dataset in IBM SPSS Statistics
-spsspkg.Submit("get file='/data/Employee data.sav'.")
+* Example 2 -- get user-missing values from IBM SPSS Statistics.
+get file="/data/Employee data.sav".
+begin program R.
 varNum <- spssdictionary.GetVariableCount()-1
 for( i in 0:varNum )
 {
     x <- spssdictionary.GetUserMissingValues(variable = i)
     print(x)
 }
+end program.
 
-* Example 3 -- get any variable value labels from the active dataset in IBM SPSS Statistics
-spsspkg.Submit("get file='/data/Employee data.sav'.")
+* Example 3 -- get variable value labels from IBM SPSS Statistics.
+get file="/data/Employee data.sav".
+begin program R.
 varNum <- spssdictionary.GetVariableCount()-1
 for( i in 0:varNum )
 {
     x <- spssdictionary.GetValueLabels(variable = i)
     print(x)
 }
+end program.
 
-* Example 4 -- get variable attributes from the active dataset in IBM SPSS Statistics
-spsspkg.Submit(c("Data List free /x.",
-                 "Begin data",
-                 "1",
-                 "2",
-                 "3",
-                 "End data.",
-                 "Variable Attributes VARIABLES=x ATTRIBUTE=DemographicVars ('1')."))
-spssdictionary.EndDataStep()
+* Example 4 -- get variable attributes from IBM SPSS Statistics.
+Data List free /x.
+Begin data.
+1
+2
+3
+End data.
+
+Variable Attributes VARIABLES=x 
+  ATTRIBUTE=DemographicVars ('1').
+
+Begin program R.
 x <- spssdictionary.GetVariableAttributeNames(variable = 0)
 for( attr in x )
 {
-y <- spssdictionary.GetVariableAttributes(variable = 0,attrName = attr)
-print(y)
-}              
-spsspkg.Submit("Display attributes.")
+    y <- spssdictionary.GetVariableAttributes(variable = 0,attrName = attr)
+    print(y)
+}
+End program.
+
+Display attributes.
 
 
-* Example 5 -- get the weight variable, if any, from the active dataset in IBM SPSS Statistics
-spsspkg.Submit(c("get file='/data/Employee data.sav'.","WEIGHT  BY educ."))
-
+* Example 5 -- get weight variable from IBM SPSS Statistics.
+get file="/data/Employee data.sav".
+WEIGHT  BY educ .
+begin program R.
 x <- spssdictionary.GetWeightVariable()
 print(x)
 y <- spssdictionary.IsWeighting()
 cat("Is weighting on?", y, "\n")
+end program.
 
-
-* Example 6 -- create a dictionary and create a new dataset in IBM SPSS Statistics based on the dictionary
+* Example 6 -- create a dictionary and set it to IBM SPSS Statistics.
+get file="/data/Employee data.sav".
+begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 5, varFormat = "A5", varMeasurementLevel = "nominal")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
 spssdictionary.SetDictionaryToSPSS(datasetName = "newdataset1",dict)
 spssdictionary.EndDataStep()
+end program.
 
-
-* Example 7 -- create a new dataset in IBM SPSS Statistics and set variable value labels in the dataset
+* Example 7 -- set variable value labels.
+get file="/data/Employee data.sav".
+begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 5, varFormat = "A5", varMeasurementLevel = "nominal")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
@@ -437,9 +488,11 @@ labels = c("Male","Female")
 spssdictionary.SetValueLabel(datasetName = "newdataset1", 1, values, labels)
 
 spssdictionary.EndDataStep()
+end program.
 
-
-* Example 8 -- create a new dataset in IBM SPSS Statistics and set user-missing values in the dataset
+* Example 8 -- set user-missing values.
+get file="/data/Employee data.sav".
+begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 5, varFormat = "A5", varMeasurementLevel = "nominal")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
@@ -452,9 +505,11 @@ missing <- c("a","b")
 spssdictionary.SetUserMissing("newdataset1",1,missings = missing)
 
 spssdictionary.EndDataStep()
+end program.
 
-
-* Example 9 -- create a new dataset in IBM SPSS Statistics and set variable attributes in the dataset
+* Example 9 -- set variable attributes.
+get file="/data/Employee data.sav".
+begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 5, varFormat = "A5", varMeasurementLevel = "nominal")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
@@ -462,9 +517,11 @@ spssdictionary.SetDictionaryToSPSS(datasetName = "newdataset1",dict)
 
 spssdictionary.SetVariableAttributes(datasetName="newdataset1",variable=0,attr1=c("mm","ff"),attr2=c("mmm","fff"))
 spssdictionary.EndDataStep()
+end program.
 
-
-* Example 10 -- create a new dataset in IBM SPSS Statistics and set it as the active dataset
+* Example 10 -- set active dataset.
+get file="/data/Employee data.sav".
+begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 5, varFormat = "A5", varMeasurementLevel = "nominal")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
@@ -473,27 +530,32 @@ spssdictionary.SetDictionaryToSPSS(datasetName = "newdataset1",dict)
 spssdictionary.SetActive(datasetName = "newdataset1")
 spssdictionary.EndDataStep()
 
+end program.
 
-* Example 11 -- get any data file attributes for the active dataset from IBM SPSS Statistics
-spsspkg.Submit(c("Data List free /x.",
-                 "Begin data",
-                 "1",
-                 "2",
-                 "3",
-                 "End data.",
-                 "DATAFILE ATTRIBUTE ATTRIBUTE=OriginalVersion ('1')."))
+* Example 11 -- get data file attributes.
+Data List free /x.
+Begin data.
+1
+2
+3
+End data.
 
+DATAFILE ATTRIBUTE  
+  ATTRIBUTE=OriginalVersion ('1').
+
+Begin program R.
 x <- spssdictionary.GetDataFileAttributeNames()
 for( attr in x )
 {
     y <- spssdictionary.GetDataFileAttributes(attrName = attr)
     print(y)
 }
+End program.
+Display attributes.
 
-spsspkg.Submit("Display attributes.")
 
-
-* Example 12 -- create a new dataset in IBM SPSS Statistics and set data file attributes for it
+* Example 12 -- set data file attributes.
+Begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 5, varFormat = "A5", varMeasurementLevel = "nominal")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
@@ -501,20 +563,34 @@ spssdictionary.SetDictionaryToSPSS(datasetName = "newdataset1",dict)
 
 spssdictionary.SetDataFileAttributes(datasetName="newdataset1",version=1)
 spssdictionary.SetActive(datasetName = "newdataset1")
+End program.
+
+* Displays the file attributes.
+Display attributes.
+
+Begin program R.
 spssdictionary.EndDataStep()
-spsspkg.Submit("Display attributes.")
+End program.
 
 
-* Example 13 -- get any multiple response sets from the active dataset in IBM SPSS Statistics
-spsspkg.Submit(c("DATA LIST /Newspaper 1 TV 3 Web 5.",
-"Begin data",
-"1 1 1",
-"1 1 1",
-"1 1 1",
-"End data.",
-"MRSETS /MDGROUP NAME=$mltnews LABEL='News sources' VARIABLES=Newspaper TV Web VALUE=1.",
-"MRSETS /MCGROUP NAME=$abc LABEL='abc' VARIABLES=Newspaper TV."))
+* Example 13 -- get multiple responses sets.
+DATA LIST /Newspaper 1 TV 3 Web 5.
 
+Begin data.
+1 1 1
+1 1 1
+1 1 1
+End data.
+
+MRSETS
+  /MDGROUP NAME=$mltnews LABEL='News sources' 
+   VARIABLES=Newspaper TV Web 
+   VALUE=1.
+
+MRSETS
+  /MCGROUP NAME=$abc LABEL='abc' VARIABLES=Newspaper TV.
+
+Begin program R.
 x <- spssdictionary.GetMultiResponseSetNames()
 print(x)
 for( mrs in x )
@@ -522,17 +598,22 @@ for( mrs in x )
     y <- spssdictionary.GetMultiResponseSet(mrsetName = mrs)
     print(y)
 }
-spsspkg.Submit(c("MRSETS  /DISPLAY NAME=[$mltnews].","MRSETS  /DISPLAY NAME=[$abc]."))
+End program.
+
+MRSETS  /DISPLAY NAME=[$mltnews].
+MRSETS  /DISPLAY NAME=[$abc].
 
 
-* Example 14 -- create a new dataset in IBM SPSS Statistics and set multiple response sets for the dataset
-spsspkg.Submit(c("DATA LIST /Newspaper 1 TV 3 Web 5.",
-"Begin data",
-"1 1 1",
-"1 1 1",
-"1 1 1",
-"End data."))
+* Example 14 -- set multiple responses sets.
+DATA LIST /Newspaper 1 TV 3 Web 5.
 
+Begin data.
+1 1 1
+1 1 1
+1 1 1
+End data.
+
+Begin program R.
 var1 <- c(varName = "var1", varLabel = "label of var1", varType = 0, varFormat = "F8.2", varMeasurementLevel = "scale")
 var2 <- c(varName = "var2", varLabel = "label of var2", varType = 0, varFormat = "F5", varMeasurementLevel = "scale")
 dict <- spssdictionary.CreateSPSSDictionary(var1,var2)
@@ -542,23 +623,50 @@ spssdictionary.SetMultiResponseSet(datasetName = "newdataset1",mrsetName="$mrset
 spssdictionary.SetMultiResponseSet(datasetName = "newdataset1",mrsetName="$mrset2",codeAs = "Dichotomies",countedValue = "1",elementaryVars = c("var1","var2"))
 
 spssdictionary.SetActive(datasetName = "newdataset1")
-print("try to get mrset names...")
+print("trying to get mrset names...")
 x <- spssdictionary.GetMultiResponseSetNames()
 print(x)
+End program.
 
+Begin program R.
 spssdictionary.EndDataStep()
+End program.
 
+* Example 15 -- get detailed dictionary from IBM SPSS Statistics.
+get file="/data/Employee data.sav".
+begin program R.
+x <- spssdictionary.GetDetailedDictionaryFromSPSS(variables = c(0,1,4,5,8))
+print(x)
+end program.
 
-* Example 15 -- change the names of some of the variables in a category dictionary
-spsspkg.Submit("get file='/data/Employee data.sav'.")
+* Example 16 -- handling categorical dictionary
+get file="/data/Employee data.sav".
+begin program r.
 dict <- spssdictionary.GetDictionaryFromSPSS("id TO jobcat")
 casedata <- spssdata.GetDataFromSPSS(factorMode="labels")
-catdict <- spssdictionary.GetCategoricalDictionaryFromSPSS(variables ="id TO jobcat")
-catdict1<-spssdictionary.EditCategoricalDictionary(catdict, newName=c("sex",NA,"occupation"))
-print(catdict1)
+catedata <- spssdictionary.GetCategoricalDictionaryFromSPSS(variables ="id TO jobcat")
+if(spssdictionary.CategoryDictionaryValid(catedata))
+{
+				catedata1<-spssdictionary.EditCategoricalDictionary(catedata, newName=c("sex",NA,"occupation"))
+        print(catedata1)
+}
+end program.
 
+* Example 17 -- handling for categorical variables retrieved from IBM SPSS Statistics and factor variables written from R to IBM SPSS Statistics
+get file="/data/Employee data.sav".
+begin program r.
+dict <- spssdictionary.GetDictionaryFromSPSS("id TO jobcat")
+casedata <- spssdata.GetDataFromSPSS(variables="id TO jobcat", factorMode="labels")
+catedata <- spssdictionary.GetCategoricalDictionaryFromSPSS(variables ="id TO jobcat")
+if(spssdictionary.CategoryDictionaryValid(catedata))
+{
+				spssdictionary.SetDictionaryToSPSS("results2",dict, categoryDictionary=catedata)
+				spssdata.SetDataToSPSS("results2",casedata, categoryDictionary=catedata)
+}
+spssdictionary.EndDataStep()
+end program.
 
-© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2011
 }
 \keyword{classes}
 \keyword{methods}

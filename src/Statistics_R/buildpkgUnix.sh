@@ -5,7 +5,7 @@
 # *
 # * IBM SPSS Products: Statistics Common
 # *
-# * (C) Copyright IBM Corp. 1989, 2015
+# * (C) Copyright IBM Corp. 1989, 2013
 # *
 # * US Government Users Restricted Rights - Use, duplication or disclosure
 # * restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -13,12 +13,24 @@
 
 MACHINE=`uname`
 
-if [ $MACHINE = "Darwin" ] ; then
+PLATFORM=$1
+if [ "${PLATFORM}" = "" ]; then
+    PLATFORM=64
+fi
+
+if [ $MACHINE = "HP-UX" ] ; then
+    VARFILE=Makevars.hp
+
+elif [ $MACHINE = "Darwin" ] ; then
     VARFILE=Makevars.mac
 
 elif [ $MACHINE = "Linux" ] ; then
-    VARFILE=Makevars.lnx64
+    if [ "${PLATFORM}" = "32" ]; then
+        VARFILE=Makevars.lnx
+    fi
+
 fi
+
 
 SRCPKGPATH=$HOME/tmp
 
@@ -49,13 +61,11 @@ mkdir $SRCPKGPATH/tempr/spss/man
 mkdir $SRCPKGPATH/tempr/spss/R
 mkdir $SRCPKGPATH/tempr/spss/src
 
-# copy DESCRIPTION file and update bugfix version in it.
+# copy DESCRIPTION and NAMESPACE file.
 cp spss/DESCRIPTION $SRCPKGPATH/tempr/spss/
 cp spss/NAMESPACE $SRCPKGPATH/tempr/spss/
 
 cp spss/source.r $SRCPKGPATH/tempr/spss/
-
-cp spss/spssxdcfg.ini $SRCPKGPATH/tempr/spss/inst/
 
 cp lang/en/spssr.properties $SRCPKGPATH/tempr/spss/inst/lang/en/
 cp lang/de/spssr.properties $SRCPKGPATH/tempr/spss/inst/lang/de/
@@ -100,27 +110,13 @@ cp spss/R/zzz.r $SRCPKGPATH/tempr/spss/R/zzz.r
 cp spss/src/RInvokeSpss.cpp $SRCPKGPATH/tempr/spss/src/RInvokeSpss.cpp
 cp spss/src/RInvokeSpss.h $SRCPKGPATH/tempr/spss/src/RInvokeSpss.h
 
-#copy the spssstatistics package
-mkdir $SRCPKGPATH/tempr/spssstatistics
-mkdir $SRCPKGPATH/tempr/spssstatistics/inst
-mkdir $SRCPKGPATH/tempr/spssstatistics/R
-mkdir $SRCPKGPATH/tempr/spssstatistics/man
-
-cp spssstatistics/DESCRIPTION $SRCPKGPATH/tempr/spssstatistics/
-cp spssstatistics/NAMESPACE $SRCPKGPATH/tempr/spssstatistics/
-cp spssstatistics/inst/spssstatistics.ini $SRCPKGPATH/tempr/spssstatistics/inst/
-
-cp spssstatistics/R/statsPackages.R $SRCPKGPATH/tempr/spssstatistics/R/statsPackages.R
-cp spssstatistics/R/zzz.R $SRCPKGPATH/tempr/spssstatistics/R/zzz.R
-
-cp spssstatistics/man/spssstatistics-package.Rd $SRCPKGPATH/tempr/spssstatistics/man/spssstatistics-package.Rd
-
 if [ "${VARFILE}" != "" ]; then
     cp spss/src/$VARFILE $SRCPKGPATH/tempr/spss/src/Makevars
 fi
 cd $SRCPKGPATH/tempr
-R CMD INSTALL --html --no-test-load ./spss
-R CMD INSTALL --html --no-test-load ./spssstatistics
-cd ../..
 
+# Build and install package
+R CMD INSTALL --html --no-test-load ./spss
+
+cd ../..
 rm -fr $SRCPKGPATH/tempr

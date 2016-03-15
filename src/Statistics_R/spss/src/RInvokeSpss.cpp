@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2014
+** (c) Copyright IBM Corp. 1989, 2012
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -197,13 +197,6 @@ extern "C"{
     static R_NativePrimitiveArgType SetRecordBrowserOutputArgs[3] = {STRSXP,INTSXP,INTSXP};
     static R_NativePrimitiveArgType TransCodeArgs[3] = {STRSXP,STRSXP,INTSXP};
     static R_NativePrimitiveArgType SetGraphicsLabelArgs[3] = {STRSXP,STRSXP,INTSXP};
-    //===================new APIs in 23.0=======================
-    static R_NativePrimitiveArgType StartSpssArgs[2] = {STRSXP,INTSXP};
-    static R_NativePrimitiveArgType StopSpssArgs[1] = {INTSXP};
-    static R_NativePrimitiveArgType SubmitArgs[3] = {STRSXP,INTSXP,INTSXP};
-    static R_NativePrimitiveArgType QueueCommandPartArgs[3] = {STRSXP,INTSXP,INTSXP};
-    static R_NativePrimitiveArgType IsBackendReadyArgs[1] = {INTSXP};
-    static R_NativePrimitiveArgType IsXDrivenArgs[1] = {INTSXP};
     
     // The method of using .C from R
     static const R_CMethodDef cMethods[] = {
@@ -317,12 +310,6 @@ extern "C"{
         {"ext_SetRecordBrowserOutput",(DL_FUNC)&ext_SetRecordBrowserOutput,3,SetRecordBrowserOutputArgs},
         {"ext_TransCode",(DL_FUNC)&ext_TransCode,3,TransCodeArgs},
         {"ext_SetGraphicsLabel",(DL_FUNC)&ext_SetGraphicsLabel,3,SetGraphicsLabelArgs},
-        {"ext_StartSpss",(DL_FUNC)&ext_StartSpss,2,StartSpssArgs},
-        {"ext_StopSpss",(DL_FUNC)&ext_StopSpss,1,StopSpssArgs},
-        {"ext_Submit",(DL_FUNC)&ext_Submit,3,SubmitArgs},
-        {"ext_QueueCommandPart",(DL_FUNC)&ext_QueueCommandPart,3,QueueCommandPartArgs},
-        {"ext_IsBackendReady",(DL_FUNC)&ext_IsBackendReady,1,IsBackendReadyArgs},
-        {"ext_IsXDriven",(DL_FUNC)&ext_IsXDriven,1,IsXDrivenArgs},
         {0,0,0}
     };
 
@@ -657,14 +644,6 @@ extern "C"{
     static const char* (*TransCode)(const char* orig, int& errLevel)             = 0;
     static int         (*SetGraphicsLabel)(const char* displaylabel, const char* invariantdisplaylabel)    = 0;
     
-    //===================new APIs in 23.0=======================
-    static int         (*StartSpss)(const char* commandline) = 0;
-    static void        (*StopSpss)() = 0;
-    static int         (*Submit)(const char* command, int length) = 0;
-    static int         (*QueueCommandPart)(const char* command, int length) = 0;
-    static bool        (*IsBackendReady)() = 0;
-    static bool        (*IsXDriven)() = 0;
-    
     //Initialize the function pointer
     void InitializeFP()
     {
@@ -880,13 +859,6 @@ extern "C"{
         
         TransCode = (const char* (*)(const char* , int& ))GETADDRESS(pLib,"TransCode");
         SetGraphicsLabel = (int (*)(const char* , const char* ))GETADDRESS(pLib,"SetGraphicsLabel");
-        //===================new APIs in 23.0=======================
-        StartSpss = (int (*)(const char*))GETADDRESS(pLib, "StartSpss");
-        StopSpss = (void (*)())GETADDRESS(pLib, "StopSpss");
-        Submit = (int (*)(const char*, int))GETADDRESS(pLib, "Submit");
-        QueueCommandPart = (int (*)(const char*, int))GETADDRESS(pLib, "QueueCommandPart");
-        IsBackendReady = (bool (*)())GETADDRESS(pLib, "IsBackendReady");
-        IsXDriven = (bool (*)())GETADDRESS(pLib, "IsXDriven");
     }
 
     //load spssxd_p.dll
@@ -1117,13 +1089,6 @@ extern "C"{
         SetRecordBrowserOutput               = 0;
         TransCode                   = 0;
         SetGraphicsLabel                   = 0;
-        //===================new APIs in 23.0=======================
-        StartSpss = 0;
-        StopSpss = 0;
-        Submit = 0;
-        QueueCommandPart = 0;
-        IsBackendReady = 0;
-        IsXDriven = 0;
     }
 
     void ext_PostOutput(
@@ -3378,62 +3343,6 @@ extern "C"{
             *errLevel = SetGraphicsLabel(*displaylabel,*invariantdisplaylabel);            
         }
     }
-    
-    //===================new APIs in 23.0=======================
-    void ext_StartSpss(const char** commandline, int* errLevel)
-    {
-        *errLevel = LoadLib();
-        if( LOAD_SUCCESS == *errLevel ){
-            *errLevel = StartSpss(*commandline);
-        }
-    }
-    
-    void ext_StopSpss(int* errLevel)
-    {
-        *errLevel = LoadLib();
-        if( LOAD_SUCCESS == *errLevel ){
-            StopSpss();
-            FreeLib();
-        }
-    }
-    
-    void ext_IsBackendReady(int* isReady)
-    {
-        if(NULL == IsBackendReady) {
-            *isReady = 0;
-        } else {
-            *isReady = IsBackendReady();
-        }
-        
-    }
-    
-    void ext_IsXDriven(int* isXdrive)
-    {
-        int errCode = LoadLib();
-        if (LOAD_SUCCESS == errCode) {
-            *isXdrive = IsXDriven();
-        } else {
-            *isXdrive = 1;
-        }
-    }
-    
-    void ext_Submit(const char** command, int* length, int* errLevel)
-    {
-        *errLevel = LoadLib();
-        if( LOAD_SUCCESS == *errLevel ){
-            *errLevel = Submit(*command, *length);
-        }
-    }
-    
-    void ext_QueueCommandPart(const char** command, int* length, int* errLevel)
-    {
-        *errLevel = LoadLib();
-        if( LOAD_SUCCESS == *errLevel ){
-            *errLevel = QueueCommandPart(*command, *length);
-        }
-    }
-    
-    
     
 ///////////////////////===============================================
     void 

@@ -1,6 +1,6 @@
 #############################################
-# IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2015
+# IBM® SPSS® Statistics - Essentials for R
+# (c) Copyright IBM Corp. 1989, 2012
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -140,18 +140,12 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
                                       orderedContrast="contr.treatment")
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
-    
     err <- 0
     
     if( getOption("is.splitConnectionOpen") )
     {
         last.SpssError <<- 1001
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     
     variables <- unlist(variables)
@@ -174,14 +168,14 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
     {
         last.SpssError <<- 1019 
         if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
     }
      
     if( factorMode != "none" && factorMode != "labels" && factorMode != "levels")
     {
         last.SpssError <<- 1018 
         if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
     }
     
     if( !is.null(row.label))
@@ -197,7 +191,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varFormatTypes <- out[1:n-1]
 
     out <- .Call("ext_GetDataFromSPSS",as.list(variables),as.integer(cases),
@@ -208,7 +202,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     result <- out[1:(n-1)]
     rm(out)
@@ -227,7 +221,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
         {
           dateVar <- NULL
           last.SpssError <<- 1073 
-          stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+          stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
         }
         if(is.character(dateVar))
           dateVar <- ParseVarNames(dateVar)
@@ -262,35 +256,13 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
       n <- length(out)
       last.SpssError <<- out[n] 
       if( is.SpssError(last.SpssError))
-          stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+          stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
       varMeasurementLevel <- out[1:n-1] 
       j<-1
       for(i in variables){
-        emptyset <- c()
-        if(is.character(result[[j]]))
-        {
-            result[[j]] <- sub("\\s+$", "", result[[j]])
-        }
-        
-        if("nominal" == varMeasurementLevel[[j]] || "ordinal" == varMeasurementLevel[[j]]){
+        if("nominal" == varMeasurementLevel[[j]]){
             valuelabel <- spssdictionary.GetValueLabels(i)
-            uniqueset<- sort(unique(result[[j]]))
-            if(factorMode == "levels")
-            {
-                for (i in valuelabel$values)
-                {
-                    if (!(i%in%uniqueset))
-                    {
-                        emptyset<-append(emptyset, which(valuelabel$values == i))
-                    }
-                }
-                emptyset <- rev(emptyset)
-                for (i in emptyset)
-                {
-                    valuelabel$values <- valuelabel$values[-i]
-                    valuelabel$labels <- valuelabel$labels[-i]
-                }
-            }
+            uniqueset<- unique(result[[j]])
             for(i in uniqueset)
             {                       
                 if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
@@ -298,21 +270,29 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
                     valuelabel$values <- append(valuelabel$values,i)
                     valuelabel$labels <- append(valuelabel$labels,i)  
                 }              
-            }
-            orderedResult <- FALSE
-            if("nominal" == varMeasurementLevel[[j]]){
-                orderedResult <- FALSE
-            }
-            if("ordinal" == varMeasurementLevel[[j]]){       
-                options(contrasts=c(orderedContrast,orderedContrast))
-                orderedResult <- TRUE
-            }
-            if(factorMode == "labels")
-                result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels = valuelabel$labels, ordered = orderedResult)
+            }                                                
+            if(factorMode == "labels")     
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels= valuelabel$labels, ordered = FALSE)
             else if(factorMode == "levels")
-                result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered = orderedResult)
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered = FALSE)
         }
-        
+        if("ordinal" == varMeasurementLevel[[j]]){
+            valuelabel <- spssdictionary.GetValueLabels(i)
+            uniqueset<- unique(result[[j]])
+            for(i in uniqueset)
+            {                       
+                if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
+                {
+                    valuelabel$values <- append(valuelabel$values,i)
+                    valuelabel$labels <- append(valuelabel$labels,i)  
+                }              
+            }       
+            options(contrasts=c(orderedContrast,orderedContrast))        
+            if(factorMode == "labels")              
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels= valuelabel$labels, ordered=TRUE)
+            else if(factorMode == "levels")
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered=TRUE)
+        }
         j<-j+1
       }
     }   
@@ -321,7 +301,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
                                          PACKAGE=spss_package)
     last.SpssError <<- out[length(out)] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varNames <- unicodeConverterOutput(out[1:length(out)-1])
     rm(out)
 
@@ -369,17 +349,12 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
 spssdata.GetCaseCount <- 
     function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
-    
     err <- 0
     out <- .C("ext_GetCaseCount",as.integer(0), as.integer(err),PACKAGE=spss_package)
 
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         
     rows <- out[[1]]
     rows
@@ -399,12 +374,6 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
                                           orderedContrast="contr.treatment")
 {
     spssError.reset()
-    
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
-    
     err <- 0
     
     if(is.null(getOption("is.lastSplit"))) options(is.lastSplit = FALSE)
@@ -431,14 +400,14 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
     {
         last.SpssError <<- 1018 
         if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
     }
     
     if( rDate != "none" && rDate != "POSIXct" && rDate != "POSIXlt")
     {
         last.SpssError <<- 1019 
         if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
     }
         
     if( !is.null(row.label))
@@ -453,7 +422,7 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
       if(typeof(dateVar)=="logical")
       {
         last.SpssError <<- 1073 
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)        
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)        
       }      
       if(!is.null(dateVar))
       {
@@ -471,14 +440,14 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
     n <- length(out)
     last.SpssError <<- out[n] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     varFormatTypes <- out[1:n-1]
 
     if( getOption("is.lastSplit") )
     {
         value <- NULL
         last.SpssError <<- 1000
-        warning(printSpssWarning(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        warning(printSpssWarning(last.SpssError),call. = FALSE, domain = NA)
     }
     else
     {   
@@ -489,7 +458,7 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
             out <- .C("ext_StartProcedure",as.character(unicodeConverterInput(getOption("procName"))),as.character(unicodeConverterInput(getOption("omsIdentifier"))),as.integer(err),PACKAGE=spss_package)
             last.SpssError <<- out[[3]] 
             if( is.SpssError(last.SpssError))
-                stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+                stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
             }
             options(is.splitConnectionOpen = TRUE)
     
@@ -497,7 +466,7 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
             out <- .C("ext_MakeCaseCursor",as.character(accessType),as.integer(err),PACKAGE=spss_package)
             last.SpssError <<- out[[2]] 
             if( is.SpssError(last.SpssError))
-                stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+                stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
         
         out <- .Call("ext_GetSplitDataFromSPSS",as.character(unicodeConverterInput(getOption("omsIdentifier"))),
@@ -515,7 +484,7 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
             return(NULL) 
         }
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         
         result <- out[1:(n-1)]
         n <- length(result)
@@ -546,45 +515,54 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
           n <- length(out)
           last.SpssError <<- out[n] 
           if( is.SpssError(last.SpssError))
-              stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+              stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
           varMeasurementLevel <- out[1:n-1] 
           
           
           j<-1
           for(i in variables){
-            if(is.character(result[[j]]))
-            {
-                result[[j]] <- sub("\\s+$", "", result[[j]])
+            if("nominal" == varMeasurementLevel[[j]]){
+              valuelabel <- spssdictionary.GetValueLabels(i)
+              if(length(valuelabel$values)==0)
+              {
+                valuelabel$values <- result[[j]]
+                valuelabel$labels <- result[[j]]
+              }    
+              uniqueset<- unique(result[[j]])
+              for(i in uniqueset)
+              {
+                if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
+                {
+                  valuelabel$values <- append(valuelabel$values,i)
+                  valuelabel$labels <- append(valuelabel$labels,i)  
+                }
+              }                    
+              if(factorMode == "labels")     
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels= valuelabel$labels, ordered = FALSE)
+              else if(factorMode == "levels")
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered = FALSE)
             }
-            
-            if("nominal" == varMeasurementLevel[[j]] || "ordinal" == varMeasurementLevel[[j]]){
-                valuelabel <- spssdictionary.GetValueLabels(i)
-                if(length(valuelabel$values)==0)
+            if("ordinal" == varMeasurementLevel[[j]]){
+              valuelabel <- spssdictionary.GetValueLabels(i)
+              if(length(valuelabel$values)==0)
+              {
+                valuelabel$values <- result[[j]]
+                valuelabel$labels <- result[[j]]
+              }  
+              uniqueset<- unique(result[[j]])
+              for(i in uniqueset)
+              {
+                if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
                 {
-                    valuelabel$values <- result[[j]]
-                    valuelabel$labels <- result[[j]]
-                }    
-                uniqueset<- sort(unique(result[[j]]))
-                for(i in uniqueset)
-                {
-                    if(!(i%in%valuelabel$values)&&!(is.na(i)&&!is.nan(i)))
-                    {
-                        valuelabel$values <- append(valuelabel$values,i)
-                        valuelabel$labels <- append(valuelabel$labels,i)  
-                    }
+                  valuelabel$values <- append(valuelabel$values,i)
+                  valuelabel$labels <- append(valuelabel$labels,i)  
                 }
-                orderedResult <- FALSE
-                if("nominal" == varMeasurementLevel[[j]]){
-                    orderedResult <- FALSE
-                }
-                if("ordinal" == varMeasurementLevel[[j]]){          
-                    options(contrasts=c(orderedContrast,orderedContrast))
-                    orderedResult <- TRUE
-                }
-                if(factorMode == "labels")              
-                    result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels = valuelabel$labels, ordered = orderedResult)
-                else if(factorMode == "levels")
-                    result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered = orderedResult)
+              }                  
+              options(contrasts=c(orderedContrast,orderedContrast))                   
+              if(factorMode == "labels")              
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, labels= valuelabel$labels, ordered=TRUE)
+              else if(factorMode == "levels")
+                result[[j]] <- factor(result[[j]],levels = valuelabel$values, ordered=TRUE)
             }
             j<-j+1
           }
@@ -595,7 +573,7 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
                                              PACKAGE=spss_package)
         last.SpssError <<- out[length(out)] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         varNames <- unicodeConverterOutput(out[1:length(out)-1])
     
         if( is.null(row.label) )
@@ -622,25 +600,19 @@ spssdata.GetSplitDataFromSPSS <- function(variables=NULL,
 
 spssdata.CloseDataConnection <- function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     if(getOption("is.splitConnectionOpen"))
     {
         err <- 0
         out <- .C("ext_RemoveCaseCursor",as.integer(err),PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         if(!getOption("is.pvTableConnectionOpen"))
         {
           out <- .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
           last.SpssError <<- out[[1]] 
           if( is.SpssError(last.SpssError))
-              stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+              stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
         options(is.splitConnectionOpen = FALSE)
         options(is.lastSplit = FALSE)
@@ -651,17 +623,12 @@ spssdata.CloseDataConnection <- function()
 ## Internal function.
 spssdata.IsSplitEnd <- function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
     err <- 0
     splitEnd <- TRUE
     out <- .C("ext_IsEndSplit",as.logical(splitEnd),as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[[2]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     splitEnd <- out[[1]]
     splitEnd
@@ -669,11 +636,6 @@ spssdata.IsSplitEnd <- function()
 
 spssdata.IsLastSplit <- function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
     if(is.null(getOption("is.lastSplit"))) options(is.lastSplit = FALSE)
     getOption("is.lastSplit")
 }
@@ -686,17 +648,13 @@ spssdata.GetSplitVariableCount <- function()
 
 spssdata.GetSplitVariableNames <- function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
     err <- 0
     out <- .Call("ext_GetSplitVariableNames",as.integer(err),PACKAGE=spss_package)
 
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -714,55 +672,20 @@ spssdata.GetSplitVariableNames <- function()
 spssdata.GetDataSetList <- function()
 {
     spssError.reset()
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    err <- 0
-
-    out <- .Call("ext_GetSpssDatasets",as.integer(err),PACKAGE=spss_package)
-    n <- length(out)
-    last.SpssError <<- out[[n]] 
-    if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-
-    if(1==n)
-        result <- NULL
-    else
-    {
-        result <- out[1:(n-1)]
-        for(i in 1:(n-1))
-            result[[i]] <- unicodeConverterOutput(result[[i]])
-        as.factor(result)
-    }
-
-    result
-}
-
-spssdata.GetOpenedDataSetList <- function()
-{
-    spssError.reset()
-    if( !spsspkg.IsBackendReady())
-    {
-        last.SpssError <<- 17
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-    
     err <- 0
     if( !getOption("is.dataStepRunning") )
     {
         out <- .C("ext_StartDataStep",as.integer(err),PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
-    out <- .Call("ext_GetOpenedSpssDatasets",as.integer(err),PACKAGE=spss_package)
+    out <- .Call("ext_GetSpssDatasets",as.integer(err),PACKAGE=spss_package)
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL
@@ -779,7 +702,46 @@ spssdata.GetOpenedDataSetList <- function()
         out <- .C("ext_EndDataStep",as.integer(err),PACKAGE=spss_package)
         last.SpssError <<- out[[1]] 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+    }
+
+    result
+}
+
+spssdata.GetOpenedDataSetList <- function()
+{
+    spssError.reset()
+    err <- 0
+    if( !getOption("is.dataStepRunning") )
+    {
+        out <- .C("ext_StartDataStep",as.integer(err),PACKAGE=spss_package)
+        last.SpssError <<- out[[1]] 
+        if( is.SpssError(last.SpssError))
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+    }
+
+    out <- .Call("ext_GetOpenedSpssDatasets",as.integer(err),PACKAGE=spss_package)
+    n <- length(out)
+    last.SpssError <<- out[[n]] 
+    if( is.SpssError(last.SpssError))
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
+
+    if(1==n)
+        result <- NULL
+    else
+    {
+        result <- out[1:(n-1)]
+        for(i in 1:(n-1))
+            result[[i]] <- unicodeConverterOutput(result[[i]])
+        as.factor(result)
+    }
+
+    if( !getOption("is.dataStepRunning") )
+    {
+        out <- .C("ext_EndDataStep",as.integer(err),PACKAGE=spss_package)
+        last.SpssError <<- out[[1]] 
+        if( is.SpssError(last.SpssError))
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
 
     result
@@ -788,16 +750,11 @@ spssdata.GetOpenedDataSetList <- function()
 spssdata.SetDataToSPSS <- function(datasetName,x, categoryDictionary = NULL)
 {
     spssError.reset()
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
-    
     if( !getOption("is.dataStepRunning") )
     {
         last.SpssError <<- 1009 
         if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
     }
     datasetName <- unicodeConverterInput(datasetName)      
     if(!is.null(categoryDictionary))
@@ -805,7 +762,7 @@ spssdata.SetDataToSPSS <- function(datasetName,x, categoryDictionary = NULL)
         if(!spssdictionary.CategoryDictionaryValid(categoryDictionary))
         {
             last.SpssError <<- 1021
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
         }
     }
     x <- as.list(x)
@@ -823,30 +780,15 @@ spssdata.SetDataToSPSS <- function(datasetName,x, categoryDictionary = NULL)
           idx <- match(varName, categoryDictionary$name)
           if(!is.na(idx))
           {
-            levelscount <- nlevels(x[[i]])
+            indextemp <- as.numeric(x[[i]])
+            x[[i]]<- as.character(x[[i]])
             dictionary <- categoryDictionary$dictionary[[idx]]
-            if(levelscount >= length(dictionary$levels))
+            len <- length(x[[i]])
+            for (j in 1:len)
             {
-                len <- length(x[[i]])
-                indextemp <- match(x[[i]], dictionary$levels)
-                for (j in 1:len)
-                {
-                    if (is.na(indextemp[j]))
-                    {
-                        indextemp <- match(x[[i]], dictionary$labels)
-                        break
-                    }
-                }
-                x[[i]]<- as.character(x[[i]])
-                for (j in 1:len)
-                {
-                    if(!is.na(indextemp[j]))
-                    {
-                        if(indextemp[j] <= length(dictionary$levels))
-                            x[[i]][j] <- dictionary$levels[indextemp[j]]
-                    }
-                }
-            }
+                if(indextemp[j] <= length(dictionary$levels))
+                  x[[i]][j] <- dictionary$levels[indextemp[j]]
+            }            
           }
         }
         if("POSIXt"%in%class(x[[i]]))
@@ -876,22 +818,18 @@ spssdata.SetDataToSPSS <- function(datasetName,x, categoryDictionary = NULL)
     out <- .Call("ext_SetDataToSPSS",as.character(datasetName),x,as.integer(err),PACKAGE=spss_package)
     last.SpssError <<- out[1] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 }
 
 spssdata.GetFileHandles <- function()
 {
-    if( !spsspkg.IsBackendReady())
-    {
-        spsspkg.StartStatistics()
-    }
     err <- 0
     out <- .Call("ext_GetFileHandles",as.integer(err),PACKAGE=spss_package)
 
     n <- length(out)
     last.SpssError <<- out[[n]] 
     if( is.SpssError(last.SpssError))
-        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+        stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)
 
     if(1==n)
         result <- NULL

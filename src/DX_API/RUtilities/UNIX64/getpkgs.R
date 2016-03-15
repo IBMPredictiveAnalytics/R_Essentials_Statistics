@@ -1,19 +1,11 @@
-#/***********************************************************************
-# * Licensed Materials - Property of IBM 
-# *
-# * IBM SPSS Products: Statistics Common
-# *
-# * (C) Copyright IBM Corp. 1989, 2013
-# *
-# * US Government Users Restricted Rights - Use, duplication or disclosure
-# * restricted by GSA ADP Schedule Contract with IBM Corp. 
-# ************************************************************************/
-
+libPaths<-c()
 if ("" != Sys.getenv("SPSS_RPACKAGES_PATH")){
-    defaultlibpath = .libPaths()
     spss_pkg_path = strsplit(Sys.getenv("SPSS_RPACKAGES_PATH"), .Platform$path.sep)
     spss_pkg_path = paste(unlist(spss_pkg_path), sep=",")
-    .libPaths(c(spss_pkg_path, defaultlibpath))
+    libPaths <- c(spss_pkg_path)
+}else
+{
+    libPaths <- .libPaths()
 }
 args<-commandArgs(TRUE)
 pkgs<-c()
@@ -55,12 +47,12 @@ if (strsplit(Sys.getlocale("LC_CTYPE"),"_")[[1]][1] == "Chinese" || strsplit(Sys
 if (!is.null(pkgstoget)){
     pkgsfailed<-c()
     for (i in 1:length(pkgstoget)){
-        for (j in 1:length(.libPaths())){
-            res<-tryCatch(install.packages(pkgstoget[[i]], lib=.libPaths()[[j]], repos=downloadrepos),error=function(e){return(FALSE)})
-            res<-tryCatch(library(pkgstoget[[i]], character.only=TRUE),error=function(e){return(FALSE)})
-            if (!identical(res,FALSE)) break
-        }
-        if (identical(res,FALSE)){pkgsfailed<-c(pkgsfailed,pkgstoget[[i]])}
+       for (j in 1:length(libPaths)){
+           tryCatch(install.packages(pkgstoget[[i]], lib=libPaths[[j]], repos=downloadrepos))
+	   res<-tryCatch(library(pkgstoget[[i]], character.only=TRUE),error=function(e){return(FALSE)})
+	   if (!identical(res,FALSE)) break
+       }
+       if (identical(res,FALSE)){pkgsfailed<-c(pkgsfailed,pkgstoget[[i]])}
     }
     if(!is.null(pkgsfailed)){
        f<-file(description=path,open="w")
@@ -75,5 +67,5 @@ if (!is.null(pkgstoupdate)){
         packagestring <- paste("package:", pkgstoupdate[[i]], sep="")
         detach(packagestring, character.only=TRUE, force=TRUE)
     }
-    res<-tryCatch(update.packages(repos=downloadrepos, ask=FALSE,oldPkgs=pkgstoupdate),error=function(e){return(FALSE)})
+    update.packages(repos=downloadrepos, ask=FALSE,oldPkgs=pkgstoupdate)
 }

@@ -11,34 +11,46 @@
 \concept{CellText.toNumber}
 \concept{CellText.toString}
 
-\title{A simple class for variable values used in pivot tables}
-\description{ A class of objects designed to store variable values that are used in pivot tables.}
+\title{A Simple Class for Variable Value}
+\description{ A class of objects designed to specify that a category or cell in 
+    a pivot table is to be treated as a variable value. The CellText.VarValue 
+    consists of 2 objects. A data slot containing type ,VarID which records the 
+    variable index in Statistics data set and value which is a number (for a 
+    numeric variable) or string (for a string variable) representing the value 
+    of the CellText object. The other slot is index for indexing the object. }
 \section{Creating Objects}{
    \code{spss.CellText.VarValue(index, value)}
-
-   \var{index} -- the index of the variable whose value is to be stored. Index values represent position in the active dataset, starting with 0 for the first variable in file order.   
-   
-   \var{value} -- the value of the variable. The value is numeric for a numeric variable and string for a string variable.
 }
 \section{Slots}{
    \describe{
-      \item{\code{data}:}{contains the variable value and index value (varID) of the associated variable.}
+      \item{\code{data}:}{a list containing type, VarID which records the variable
+       index in Statistics data set and "value" which is a number (for a numeric
+        variable) or string (for a string variable) representing the value of 
+        the CellText object. The VarID values represent position in the active 
+        dataset, starting with 0 for the first variable in file order. }
+      \item{\code{index}:}{a numeric variable to record the index of the 
+      CellText.VarValue object.}
    }
 }
-
+\section{Methods}{
+   \describe{
+      \item{\code{CellText.toNumber(CellText.VarValue)}:}{It's not been implemented.}
+      \item{\code{CellText.toString(CellText.VarValue)}:}{It's not been implemented.}
+  }
+}
 \seealso{
-   \code{\link{spsspivottable}},
-   \code{\link{BasePivotTable}},
-   \code{\link{CellText.Number}} 
-   \code{\link{CellText.String}},
-   \code{\link{CellText.VarName}}
+   \code{\link{spsspivottable}}
 
-© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2011
 }
 \details{
-  This class is used to store variable values that are then used as cell values, dimension values, category values or
-  layer values of a pivot table. CellText.VarValue objects honor display settings 
-  for variable values in pivot tables (values, labels, or both).
+  This class is used to specify that a category or cell in a pivot table is to be
+  treated as a variable value. CellText.VarValue objects honor display settings 
+  for variable values in pivot tables (values, labels, or both). The argument 
+  index is the index value of the variable. Index values represent position in 
+  the active dataset, starting with 0 for the first variable in file order. The 
+  argument value is a number (for a numeric variable) or string (for a string variable)
+  representing the value of the CellText object.
   }
 \keyword{methods}
 \keyword{classes}

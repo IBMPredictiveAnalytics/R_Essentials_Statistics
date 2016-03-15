@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2014
+# (c) Copyright IBM Corp. 1989, 2013
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -18,19 +18,13 @@
 
 filename <- function()
 {
-    R_SPSSPath <- tempfile()
-    R_SPSSPath
-}
-
-filenameForSpssDriven <- function()
-{
     temppath <- tempdir()
     if (!file.exists(temppath))
     {
         dir.create(temppath, showWarnings = TRUE, recursive = FALSE)
     }
-    filename <- 'r_spss.tmp'
-    R_SPSSPath <- file.path(dirname(temppath), basename(temppath), filename)
+    filename <- 'r_spss.tmp'	    
+	R_SPSSPath <- file.path(dirname(temppath), basename(temppath), filename)
     R_SPSSPath
 }
 
@@ -83,7 +77,7 @@ getLC_ALLMap <- function(myLocale)
     {
         return (myLocale)
     }
-    isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+    isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]                      
     myLocale <- tolower(substr(myLocale,1,5))
     resultLocale<-NULL
     if(! isUnicodeOn)
@@ -141,52 +135,27 @@ getCodePageMap <- function(myLocale)
     }
 }
 
-getLanguageLocale <- function(lang)
-{
-     resLang <-lang
-     if(lang == "SChinese")
-        resLang <- "CHS"
-     else if(lang == "TChinese")
-        resLang <- "CHT"
-     else if(lang == "BPortugu")
-        resLang <- "Portuguese"
-     resLang
-}
-
-getOutputLanguageMap<- function(olang)
-{
-    if("windows"!=.Platform$OS.type)
-    {
-        langMap <- list(
-
-            olang = c("German","English","Spanish","French", "Italian", "Japanese", 
-                    "Korean", "Polish", "Russian", "TChinese", "SChinese", "BPortugu"),
-            locale  = c("de_DE", "en_US", "es_ES", "fr_FR", "it_IT", "ja_JP", "ko_KR",
-                    "pl_PL", "ru_RU", "zh_TW", "zh_CN", "pt_BR"))
-    
-        matchResult<-match(olang, langMap$olang)
-        if(length(matchResult)==0)
-        {
-            last.SpssError <<-  1074
-            stop(printSpssError(last.SpssError),call. = FALSE, domain = NA)    
-        }
-        
-        resLang <- langMap$locale[[matchResult[[1]]]]
-        resLang <- paste(resLang, ".UTF-8", sep="")
-        
-        resLang
-    }
-    else
-    {
-        getLanguageLocale(olang)
-    }
-}
-
 prespss <- function()
 {
     ##By default, the R output will be redirected to Stat output view
     ##for the first call R plug-in, the toStatOutputView will be set to TRUE.
-    initPackage()
+    if(is.null(getOption("toStatOutputView"))) options(toStatOutputView = TRUE)
+    if(is.null(getOption("is.splitConnectionOpen"))) options(is.splitConnectionOpen = FALSE)
+    if(is.null(getOption("is.pvTableConnectionOpen"))) options(is.pvTableConnectionOpen = FALSE)
+    if(is.null(getOption("spssRGraphics.displayTurnOn"))) options(spssRGraphics.displayTurnOn = TRUE)
+    if(is.null(getOption("is.dataStepRunning"))) options(is.dataStepRunning = FALSE)
+
+    if(bindingIsLocked("spss.PivotTableMap", asNamespace(spssNamespace)))
+		unlockBinding("spss.PivotTableMap", asNamespace(spssNamespace))
+        
+    if(bindingIsLocked("spss.DimensionMap", asNamespace(spssNamespace)))
+		unlockBinding("spss.DimensionMap", asNamespace(spssNamespace))
+        
+    if(bindingIsLocked("spss.CellTextMap", asNamespace(spssNamespace)))
+		unlockBinding("spss.CellTextMap", asNamespace(spssNamespace))
+        
+    if(bindingIsLocked("last.SpssError", asNamespace(spssNamespace)))
+		unlockBinding("last.SpssError", asNamespace(spssNamespace))
     
     options(hasBrowser = FALSE)
     spss.PivotTableMap <<- list()
@@ -225,11 +194,6 @@ prespss <- function()
     {
         Sys.setlocale("LC_ALL",getOption("spssLocale"))
     }
-    else if(isUnicodeOn)
-    {
-        loc <- getOutputLanguageMap(getOption("spssOutputLanguage"))
-        Sys.setlocale("LC_ALL",loc)
-    }
     else
     {
         withCallingHandlers(
@@ -257,12 +221,13 @@ prespss <- function()
     
     options(count = 0)
     outputWidth <- getWidth()
+    options("width"=outputWidth)
     if ("windows" == .Platform$OS.type)  
     {    
         closeAllConnections()
     }
-    
-    tempfullname <- filenameForSpssDriven()
+
+    tempfullname <- filename()
     
     # Remove the temp file if it is existing.
     if(file.exists(tempfullname))
@@ -288,8 +253,8 @@ prespss <- function()
         }
     }
 
-    codepageName <- getCodePageMap(getOption("spssLocale"))
-    if( isUnicodeOn || l10n_info()$'UTF-8')
+    codepageName <- getCodePageMap(getOption("spssLocale"))    
+    if( isUnicodeOn )
         fp <- file(tempfullname, open="at", encoding="UTF-8")
     else
     {
@@ -305,8 +270,6 @@ prespss <- function()
         sink(fp)
         sink(fp,type="message") 
     }
-    
-    options(filePosForSpssDriven = 0)
     
     if (redirectswitch())
     {
@@ -339,7 +302,6 @@ prespss <- function()
     {
         stop(gettextf("There is no spssdxcfg.ini file in '%s'",getOption("spssPath")))
     }
-    spss.language <<- getLanguage()
     spss.errtable <<- getErrTable(spss.language,spss.lib,spss.pkg)
     spss.generalErr <<- getGeneralErr(spss.language,spss.lib,spss.pkg)
 }
@@ -350,32 +312,122 @@ postspss <- function()
     {        
         return(NULL)
     }
-    
-    # Stop all existing error message diversion  if any.
-    if(sink.number(type = "message") > 0)
-    {
-        for( i in 1:sink.number(type = "message") )
-        {
-            sink(type = "message")
-        }
-    }
-    # Stop all existing output diversion if any.
-    if(sink.number() > 0)
-    {
-        for( i in 1:sink.number() )
-        {
-            sink()
-        }
-    }
-    
-    postOutputToSpss()
-    
+
     tryCatch(disconnection(),error = function(e) print(e))
     if (redirectswitch())
     {
         tryCatch(dev.off(),error = function(e) print(e))
     }
     options(spssRGraphics.displayTurnOn = TRUE)
+    tempfile <- filename()
+    linenum <- 0
+    tryCatch(
+      {
+
+        file(tempfile,"r")
+
+        isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+        myEncoding = "unknown"           
+        # Stop all existing error message diversion  if any.
+        if(sink.number(type = "message") > 0)
+        {
+            for( i in 1:sink.number(type = "message") )
+            {
+                sink(type = "message")
+            }
+        }
+        # Stop all existing output diversion if any.
+        if(sink.number() > 0)
+        {
+            for( i in 1:sink.number() )
+            {
+                sink()
+            }
+        }
+
+        checkoutput<-scan(tempfile,
+                          what='raw',
+                          blank.lines.skip=FALSE,
+                          sep='\n',
+                          skip=linenum,
+                          quiet=TRUE,
+                          encoding = myEncoding)        
+        unlink(tempfile)    
+      },
+      error=function(ex) 
+      {
+          checkoutput<-'File did not exist or invalid!'
+      }
+    )
+    
+    err <- 0
+    width <- 255
+    lines<-length(checkoutput)
+    if( lines > 0 )
+    {
+        if( is.null(checkoutput[lines]) || "" == checkoutput[lines])
+        {
+            lines <- lines - 1
+            checkoutput <- checkoutput[1:lines]
+        }
+        for( i in 1:lines )
+        {
+            if( is.null(checkoutput[i]) || "" == checkoutput[i])
+            {
+                text <- ""
+                out <- .C('ext_PostOutput',as.character((text)),
+                                           as.integer(1),
+                                           as.integer(err),
+                                           PACKAGE=spss_package)
+            }
+
+            else
+            {
+                text <- checkoutput[i]
+                isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
+                if( isUnicodeOn )  ##make sure the nchar() can be correctly calculated. 
+                    Encoding(text)<-"UTF-8"
+
+                if(!is.na(nchar(text, "chars", TRUE)))
+                { 
+                    loop <- as.integer(nchar(text)/(width))
+                    rm <- abs(nchar(text) - loop*(width))                  
+
+                    if(loop>0)
+                    {
+                        for( m in 1:loop )
+                        {
+                            subtext <- substr(text,as.integer((m-1)*width+1),as.integer(m*width))
+					        Encoding(subtext)<-"native.enc"
+                            out <- .C('ext_PostOutput',as.character((subtext)),
+                                                       as.integer(1),
+                                                       as.integer(err),
+                                                       PACKAGE=spss_package)
+                        }
+                    }
+
+                    if( rm >0 )
+                    {
+                        subtext <- substr(text,as.integer(loop*width+1),nchar(text))
+						Encoding(subtext)<-"native.enc"
+                        out <- .C('ext_PostOutput',as.character((subtext)),
+                                                   as.integer(1),
+                                                   as.integer(err),
+                                                   PACKAGE=spss_package)
+                    }
+                }
+
+                else    ## exception case: is.na(nchar(text, "chars", TRUE))
+                {
+                    Encoding(text)<-"native.enc"
+          					out <- .C('ext_PostOutput',as.character((text)),
+                                   as.integer(1),
+                                   as.integer(err),
+                                   PACKAGE=spss_package)
+                }
+            }
+        }
+    }
 
     closeAllConnections()
     options(error = oldErrorOpt)
@@ -383,11 +435,10 @@ postspss <- function()
 
     ## make sure all R temp files and directories to be deleted.    
     unlink(getgraphicpath(), recursive = TRUE)
-    unlink(filenameForSpssDriven())
+    unlink(filename())
     unlink(getGraphictmpPath())
     unlink(tempdir())
     spssdata.CloseDataConnection()
-    err <- 0
     if(out <- .C("ext_HasProcedure",as.integer(err),PACKAGE=spss_package)[[1]] == 1)
     {
         .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
@@ -586,13 +637,6 @@ extrapath <- function(spssPath)
         spssExtension = file.path(spssPath, "extensions" )
     }
     .libPaths(c(spssExtension, defaultlibpath))
-    
-    if ("windows" == .Platform$OS.type)
-    {
-        defaultlibpath = .libPaths()
-        profile_path = file.path(Sys.getenv("ALLUSERSPROFILE"), "IBM\\SPSS\\Statistics", majorVer, "extensions")
-        .libPaths(c(profile_path, defaultlibpath))
-    }
 
     if ("" != Sys.getenv("SPSS_EXTENSIONS_PATH")){
         defaultlibpath = .libPaths()
@@ -618,60 +662,58 @@ spsspkg.SetOutput <- function(output)
     myArg <- list("ON","OFF")
     if(output %in% myArg) 
     {
-        if ( !spsspkg.IsXDriven())
+        tempfullname <- filename()
+        if(output == "ON") 
         {
-            if(output == "ON") 
+            if(getOption("hasBrowser"))
             {
-                if(getOption("hasBrowser"))
-                {
-                    options(toStatOutputView = TRUE)
-                    ##record the original state of output
-                    options(originalOutputState = TRUE)
-                    .C('ext_SetRecordBrowserOutput', as.character(filenameForSpssDriven()),as.integer(1),as.integer(errLevel),PACKAGE=spss_package)
-                    spssRGraphics.SetOutput("ON")  
-                }
-
-                else if(!getOption("toStatOutputView"))
-                {   
-                    options(toStatOutputView = TRUE)
-                    fp <- getOption("toStatOutputFileHandle")
-                    sink(fp,append=TRUE)
-                    sink(fp,append=TRUE,type="message") 
-                    spssRGraphics.SetOutput("ON")  
-                }            
+                options(toStatOutputView = TRUE)
+                ##record the original state of output
+                options(originalOutputState = TRUE)
+                .C('ext_SetRecordBrowserOutput', as.character(filename()),as.integer(1),as.integer(errLevel),PACKAGE=spss_package)
+                spssRGraphics.SetOutput("ON")  
             }
 
-            else 
+            else if(!getOption("toStatOutputView"))
+            {   
+                options(toStatOutputView = TRUE)
+                fp <- getOption("toStatOutputFileHandle")
+                sink(fp,append=TRUE)
+                sink(fp,append=TRUE,type="message") 
+                spssRGraphics.SetOutput("ON")  
+            }            
+        }
+
+        else 
+        {
+            if(getOption("hasBrowser"))
             {
-                if(getOption("hasBrowser"))
-                {
-                    spssRGraphics.SetOutput("OFF")
-                    options(toStatOutputView = FALSE)
-                    .C('ext_SetRecordBrowserOutput', as.character(filenameForSpssDriven()),as.integer(0),as.integer(errLevel),PACKAGE=spss_package)
-                }
+                spssRGraphics.SetOutput("OFF")
+                options(toStatOutputView = FALSE)
+                .C('ext_SetRecordBrowserOutput', as.character(filename()),as.integer(0),as.integer(errLevel),PACKAGE=spss_package)
+            }
 
-                else if(getOption("toStatOutputView"))
+            else if(getOption("toStatOutputView"))
+            {
+                ## Stop all existing error message diversion  if any.
+                if(sink.number(type = "message") > 0)
                 {
-                    ## Stop all existing error message diversion  if any.
-                    if(sink.number(type = "message") > 0)
+                    for( i in 1:sink.number(type = "message") )
                     {
-                        for( i in 1:sink.number(type = "message") )
-                        {
-                            sink(type = "message")
-                        }
+                        sink(type = "message")
                     }
-
-                    ## Stop all existing output diversion  if any.
-                    if(sink.number() > 0)
-                    {
-                        for( i in 1:sink.number() )
-                        {
-                            sink()
-                        }
-                    }    
-                    spssRGraphics.SetOutput("OFF")              
-                    options(toStatOutputView = FALSE)
                 }
+
+                ## Stop all existing output diversion  if any.
+                if(sink.number() > 0)
+                {
+                    for( i in 1:sink.number() )
+                    {
+                        sink()
+                    }
+                }    
+                spssRGraphics.SetOutput("OFF")              
+                options(toStatOutputView = FALSE)
             }
         }
     }
@@ -715,13 +757,13 @@ SetOutputFromBrowser <- function(output)
                 }
             }    
             options(hasBrowser = TRUE)
-            .C('ext_SetRecordBrowserOutput', as.character(filenameForSpssDriven()),as.integer(1),as.integer(errLevel),PACKAGE=spss_package)
+            .C('ext_SetRecordBrowserOutput', as.character(filename()),as.integer(1),as.integer(errLevel),PACKAGE=spss_package)
             close(getOption("toStatOutputFileHandle"))
             options(toStatOutputFileHandle = NULL)
         }
         else if(output == "OFF" && getOption("hasBrowser"))
         {
-            .C('ext_SetRecordBrowserOutput', as.character(filenameForSpssDriven()),as.integer(0),as.integer(errLevel),PACKAGE=spss_package) 
+            .C('ext_SetRecordBrowserOutput', as.character(filename()),as.integer(0),as.integer(errLevel),PACKAGE=spss_package) 
             options(hasBrowser = FALSE)              
         }
     }
@@ -730,384 +772,5 @@ SetOutputFromBrowser <- function(output)
         stop("The argument of SetOutputFromBrowser should be ON or OFF")   
     }            
 
-}
-
-initPackage <- function()
-{
-    if(is.null(getOption("isInitialized"))) options(isInitialized = FALSE)
-    
-    if(!getOption("isInitialized"))
-    {
-        if(is.null(getOption("toStatOutputView"))) options(toStatOutputView = TRUE)
-        if(is.null(getOption("is.splitConnectionOpen"))) options(is.splitConnectionOpen = FALSE)
-        if(is.null(getOption("is.pvTableConnectionOpen"))) options(is.pvTableConnectionOpen = FALSE)
-        if(is.null(getOption("spssRGraphics.displayTurnOn"))) options(spssRGraphics.displayTurnOn = TRUE)
-        if(is.null(getOption("is.dataStepRunning"))) options(is.dataStepRunning = FALSE)
-
-        if(bindingIsLocked("spss.PivotTableMap", asNamespace(spssNamespace)))
-            unlockBinding("spss.PivotTableMap", asNamespace(spssNamespace))
-            
-        if(bindingIsLocked("spss.DimensionMap", asNamespace(spssNamespace)))
-            unlockBinding("spss.DimensionMap", asNamespace(spssNamespace))
-            
-        if(bindingIsLocked("spss.CellTextMap", asNamespace(spssNamespace)))
-            unlockBinding("spss.CellTextMap", asNamespace(spssNamespace))
-            
-        options(isInitialized = TRUE)
-        options(runStartStatistics = FALSE)
-        if(is.null(getOption("statsOutputInR"))) options(statsOutputInR = TRUE)
-        if(is.null(getOption("filePosForRDriven"))) options(filePosForRDriven = 0)
-        if(is.null(getOption("SPSSStatisticsTraceback"))) options(SPSSStatisticsTraceback = TRUE)
-    }
-}
-
-postOutputToSpss <- function()
-{
-    tempfile <- filenameForSpssDriven()
-    tryCatch(
-      {
-        isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-        if( isUnicodeOn )
-        {
-            myEncoding <- "UTF-8"
-        }
-        else
-        {
-            myEncoding <- "unknown"
-        }
-
-        checkoutput<-scan(tempfile,
-                          what='raw',
-                          blank.lines.skip=FALSE,
-                          sep='\n',
-                          skip=getOption("filePosForSpssDriven"),
-                          quiet=TRUE,
-                          encoding = myEncoding)
-      },
-      error=function(ex) 
-      {
-          checkoutput<-'File did not exist or invalid!'
-      }
-    )
-    
-    err <- 0
-    width <- 255
-    lines<-length(checkoutput)
-    if( lines > 0 )
-    {
-        if( is.null(checkoutput[lines]) || "" == checkoutput[lines])
-        {
-            lines <- lines - 1
-            checkoutput <- checkoutput[1:lines]
-        }
-        for( i in 1:lines )
-        {
-            if( is.null(checkoutput[i]) || "" == checkoutput[i])
-            {
-                text <- ""
-                out <- .C('ext_PostOutput',as.character((text)),
-                                           as.integer(1),
-                                           as.integer(err),
-                                           PACKAGE=spss_package)
-            }
-
-            else
-            {
-                text <- checkoutput[i]
-                isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-                if( isUnicodeOn )  ##make sure the nchar() can be correctly calculated. 
-                    Encoding(text)<-"UTF-8"
-
-                if(!is.na(nchar(text, "chars", TRUE)))
-                { 
-                    loop <- as.integer(nchar(text)/(width))
-                    rm <- abs(nchar(text) - loop*(width))                  
-
-                    if(loop>0)
-                    {
-                        for( m in 1:loop )
-                        {
-                            subtext <- substr(text,as.integer((m-1)*width+1),as.integer(m*width))
-					        Encoding(subtext)<-"native.enc"
-                            out <- .C('ext_PostOutput',as.character((subtext)),
-                                                       as.integer(1),
-                                                       as.integer(err),
-                                                       PACKAGE=spss_package)
-                        }
-                    }
-
-                    if( rm >0 )
-                    {
-                        subtext <- substr(text,as.integer(loop*width+1),nchar(text))
-						Encoding(subtext)<-"native.enc"
-                        out <- .C('ext_PostOutput',as.character((subtext)),
-                                                   as.integer(1),
-                                                   as.integer(err),
-                                                   PACKAGE=spss_package)
-                    }
-                }
-
-                else    ## exception case: is.na(nchar(text, "chars", TRUE))
-                {
-                    Encoding(text)<-"native.enc"
-          					out <- .C('ext_PostOutput',as.character((text)),
-                                   as.integer(1),
-                                   as.integer(err),
-                                   PACKAGE=spss_package)
-                }
-            }
-        }
-    }
-    tempLines <- getOption("filePosForSpssDriven") + lines
-    options(filePosForSpssDriven = tempLines)
-}
-
-postOutputToR <- function()
-{   
-    tryCatch(
-      { 
-        isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-        if( isUnicodeOn )
-        {
-            myEncoding <- "UTF-8"
-        }
-        else
-        {
-            myEncoding <- "unknown"
-        }
-        # Stop all existing error message diversion  if any.
-        if(sink.number(type = "message") > 0)
-        {
-            for( i in 1:sink.number(type = "message") )
-            {
-                sink(type = "message")
-            }
-        }
-        # Stop all existing output diversion if any.
-        if(sink.number() > 0)
-        {
-            for( i in 1:sink.number() )
-            {
-                sink()
-            }
-        }
-
-        checkoutput<-scan(getOption("RDrivenTempfile"),
-                          what='raw',
-                          blank.lines.skip=FALSE,
-                          sep='\n',
-                          skip=getOption("filePosForRDriven"),
-                          quiet=TRUE,
-                          encoding = myEncoding)        
-      },
-      error=function(ex) 
-      {
-          checkoutput<-'File did not exist or invalid!'
-      }
-    )
-    
-    err <- 0
-    lines<-length(checkoutput)
-    if( lines > 0 )
-    {
-        for( i in 1:lines )
-        {
-            result <- ""
-            if( is.null(checkoutput[i]) || "" == checkoutput[i])
-            {
-                result <- ""
-            }
-
-            else
-            {
-                result <- checkoutput[i]
-                isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-                if( isUnicodeOn )  ##make sure the nchar() can be correctly calculated.
-                {
-                    Encoding(result)<-"UTF-8"
-                }
-                else
-                {
-                    Encoding(result)<-"native.enc"
-                }
-            }
-            cat(result, "\n")
-        }
-    }
-    tempLines <- getOption("filePosForRDriven") + lines
-    options(filePosForRDriven = tempLines)
-}
-
-spsspkg.StartStatistics <- function(hide="", show="", nfc=TRUE, nl=TRUE)
-{
-    errLevel <- 0
-    initPackage()
-    isRDriven <- spsspkg.IsXDriven()
-    if(isRDriven)
-    {
-        isReady <- spsspkg.IsBackendReady()
-        if(!isReady)
-        {
-            cmd <- ""
-            if("" != hide)
-            {
-                cmd <- paste(cmd, "-hide", hide)
-            }
-            if("" != show)
-            {
-                cmd <- paste(cmd, "-show", show)
-            }
-            if(!nfc)
-            {
-                cmd <- paste(cmd, "-nfc")
-            }
-            if(!nl)
-            {
-                cmd <- paste(cmd, "-nl")
-            }
-            
-            tempfullname <- filename()
-            options(RDrivenTempfile = tempfullname)
-            
-            # Remove the temp file if it is existing.
-            if(file.exists(tempfullname))
-            {
-                unlink(tempfullname)
-            }
-            
-            commandLine <- paste("-out", tempfullname)
-            commandLine <- paste(commandLine, cmd, sep="")
-            out <- .C("ext_StartSpss", as.character(commandLine), as.integer(errLevel), PACKAGE=spss_package)
-            last.SpssError <<- out[[2]]
-            
-            spss.language <<- getLanguage()
-            spss.errtable <<- getErrTable(spss.language,spss.lib,spss.pkg)
-            spss.generalErr <<- getGeneralErr(spss.language,spss.lib,spss.pkg)
-            
-            if( is.SpssError(last.SpssError))
-                stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-                
-            options(runStartStatistics = TRUE)
-        }
-    }
-}
-
-spsspkg.StopStatistics <- function()
-{
-    errLevel <- 0
-    isReady <- spsspkg.IsBackendReady()
-    if(isReady)
-    {
-        isRDriven <- spsspkg.IsXDriven()
-        if(isRDriven)
-        {
-            out <- .C("ext_StopSpss", as.integer(errLevel), PACKAGE=spss_package)
-            last.SpssError <<- out[[1]]
-            if( is.SpssError(last.SpssError))
-                stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-            
-            unlink(getOption("RDrivenTempfile"))
-            options(filePosForRDriven = 0)
-        }
-    }
-}
-
-spsspkg.Submit <- function(commands)
-{
-    errLevel <- 0
-    isReady <- spsspkg.IsBackendReady()
-    if(!isReady)
-    {
-        spsspkg.StartStatistics()
-    }
-    if (is.vector(commands))
-    {
-        tempVec <- c()
-        commandCount<-length(commands)
-        if (commandCount>1)
-        {
-            for( i in 1:commandCount )
-            {
-                tempVec <- c(tempVec, commands[[i]])
-            }
-        }
-        else
-        {
-            commands <- strsplit(commands, "\n")[[1]]
-            cmdCount <- length(commands)
-            for ( i in 1:cmdCount )
-            {
-                tempVec <- c(tempVec, commands[[i]])
-            }
-        }
-        
-        tempLen <- length(tempVec)
-        if (tempLen > 1)
-        {
-            for ( command in tempVec[1:tempLen-1] )
-            {
-                cmdLength <- nchar(command)
-                out <- .C("ext_QueueCommandPart", as.character(command), as.integer(cmdLength), as.integer(errLevel), PACKAGE=spss_package)
-                last.SpssError <<- out[[3]]
-                if( is.SpssError(last.SpssError))
-                    stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-            }
-        }
-        
-        if(!getOption("runStartStatistics"))
-        {
-            postOutputToSpss()
-        }
-        
-        cmdLength <- nchar(tempVec[tempLen])
-        out <- .C("ext_Submit", as.character(tempVec[tempLen]), as.integer(cmdLength), as.integer(errLevel), PACKAGE=spss_package)
-        if(getOption("runStartStatistics") && getOption("statsOutputInR"))
-        {
-            postOutputToR()
-        }
-        last.SpssError <<- out[[3]]
-        if( is.SpssError(last.SpssError))
-            stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
-    }
-}
-
-spsspkg.SetStatisticsOutput <- function(output)
-{
-    errLevel <- 0
-    myArg <- list("ON","OFF")
-    if(toupper(output) %in% myArg) 
-    {
-        if(output == "ON") 
-        {
-            options(statsOutputInR = TRUE)
-        }
-
-        else 
-        {
-            options(statsOutputInR = FALSE)
-        }
-    }
-    else stop("The argument of SetStatisticsOutput should be OFF or ON ");
-}
-
-spsspkg.IsXDriven <- function()
-{
-    isRDriven <- .C("ext_IsXDriven",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-    
-    return (isRDriven)
-}
-
-spsspkg.IsUTF8mode <- function()
-{
-    isUnicodeOn <- .C("ext_IsUTF8mode",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-    
-    return (isUnicodeOn)
-}
-
-spsspkg.IsBackendReady <- function()
-{
-    isReady <- .C("ext_IsBackendReady",as.logical(FALSE),PACKAGE=spss_package)[[1]]
-    
-    return (isReady)
 }
 

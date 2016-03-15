@@ -1,12 +1,13 @@
 \name{spssxmlworkspace}
-\title{Functions to retrieve command output and dictionary information}
+\title{Access the IBM SPSS Statistics XML workspace}
 \alias{spssxmlworkspace}
 \alias{spssxmlworkspace.CreateXPathDictionary}
 \alias{spssxmlworkspace.GetHandleList}
 \alias{spssxmlworkspace.EvaluateXPath}
 \alias{spssxmlworkspace.DeleteXmlWorkspaceObject}
 \description{
-  These functions provides tools for working with the XML workspace--an in-memory workspace where you can store (and then retrieve) XML representations of output from IBM® SPSS® Statistics commands as well as an XML representation of the active dataset's dictionary. To route output from IBM SPSS Statistics commands to the XML workspace, use the OMS command. For a detailed example of routing and retrieving command output, see the topic "Retrieving Output from Syntax Commands" in the SPSS Statistics help system (under Integration Plug-in for R Help > Using the R Integration Package for IBM SPSS Statistics).
+  Supplies a set of methods to enable R programs to access the IBM® SPSS® Statistics XML 
+  workspace.
 }
 \usage{
 spssxmlworkspace.CreateXPathDictionary(handle)
@@ -63,37 +64,39 @@ spssxmlworkspace.DeleteXmlWorkspaceObject deletes the XML workspace object
 \references{
 }
 \seealso{
-  \code{\link{extension}},
-  \code{\link{external}},
-  \code{\link{spssdata}},
   \code{\link{spssdictionary}},
-  \code{\link{spsspkg}},
-  \code{\link{spsspivottable}},
-  \code{\link{spssRGraphics}},
-  \code{\link{TextBlock}}
+  \code{\link{spssdata}},
+  \code{\link{spsspivottable}}.
 }
 \examples{
-## This example is intended to be run from R, with R driving IBM SPSS Statistics.
+## This example must be run from IBM SPSS Statistics. It cannot be run from R.
 
-spsspkg.Submit("get file='/data/demo.sav'.")
+get file="/data/demo.sav".
+begin program R.
 handle <- "cars"
 spssxmlworkspace.CreateXPathDictionary(handle)
 context <- "/dictionary"
 xpath <- "variable/@name"
 result <- spssxmlworkspace.EvaluateXPath(handle,context,xpath)
+cat("test R\n")
 cat("result => ", result)
 
 spssxmlworkspace.CreateXPathDictionary("abc")
+spssxmlworkspace.CreateXPathDictionary("abcd")
 
+out <- spssxmlworkspace.GetHandleList()
+cat("\nhandle list => ", out)
+
+spssxmlworkspace.DeleteXmlWorkspaceObject("abcd")
 out <- spssxmlworkspace.GetHandleList()
 cat("\nhandle list => ", out)
 
 spssxmlworkspace.DeleteXmlWorkspaceObject("abc")
 out <- spssxmlworkspace.GetHandleList()
 cat("\nhandle list => ", out)
+end program.
 
-
-© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2011
 }
 \keyword{classes}
 \keyword{methods}
