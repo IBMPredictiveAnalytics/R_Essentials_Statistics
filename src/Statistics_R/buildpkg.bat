@@ -3,7 +3,7 @@
 @REM
 @REM IBM SPSS Products: Statistics Common
 @REM
-@REM (C) Copyright IBM Corp. 1989, 2015
+@REM (C) Copyright IBM Corp. 1989, 2019
 @REM
 @REM US Government Users Restricted Rights - Use, duplication or disclosure
 @REM restricted by GSA ADP Schedule Contract with IBM Corp. 

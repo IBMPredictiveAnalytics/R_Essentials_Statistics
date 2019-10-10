@@ -3,7 +3,7 @@
 # *
 # * IBM SPSS Products: Statistics Common
 # *
-# * (C) Copyright IBM Corp. 1989, 2015
+# * (C) Copyright IBM Corp. 1989, 2017
 # *
 # * US Government Users Restricted Rights - Use, duplication or disclosure
 # * restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -308,12 +308,12 @@ endef
 .PHONY:all
 all:$(INVOKE_NAME)
 $(INVOKE_NAME):$(OBJECT_NAME)
-	$(CC) $(LFLAGS) $(MAC_ARCH_X64) $(LIB_PATH) $(LIBS) -o $(OUT_DIR)/$(INVOKE_NAME) $(OUT_DIR)/embedded.o
+	$(CC) -o $(OUT_DIR)/$(INVOKE_NAME) $(OUT_DIR)/embedded.o $(LFLAGS) $(MAC_ARCH_X64) $(LIB_PATH) $(LIBS)
 	$(RM)  $(OUT_DIR)/embedded.o
 
 embedded.o: $(SRC_DIR)/embedded.cpp
 	$(CreateDir)
-	$(CC) $(CFLAGS) $(MAC_ARCH_X64) $(INC_PATH) -o $(OUT_DIR)/embedded.o $(SRC_DIR)/embedded.cpp
+	$(CC) -o $(OUT_DIR)/embedded.o $(SRC_DIR)/embedded.cpp $(CFLAGS) $(MAC_ARCH_X64) $(INC_PATH)
 
 #   -- Clean output files
 .PHONY:clean

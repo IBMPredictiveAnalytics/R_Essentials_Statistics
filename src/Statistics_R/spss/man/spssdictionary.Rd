@@ -214,7 +214,7 @@ When specifying variable names, you can use TO to indicate a range of variables.
   \item{codeAs}{ The variable coding. Must be either "Dichotomies" or 
     "Categories". If codeAs is "dichotomies", countedValue must be present.
     }
-  \item{countedValue}{Specifies the value that indicates the presence of a response for a multiple dichotomy set. This is also referred to as the “counted” value. If the set type is numeric, the value can be an integer or a string representation of an integer. If the set type is string, the value, after trimming trailing blanks, cannot be wider than the narrowest elementary variable. countedValue is required if codeAs has the value "Dichotomies" and is ignored otherwise.
+  \item{countedValue}{Specifies the value that indicates the presence of a response for a multiple dichotomy set. This is also referred to as the "counted" value. If the set type is numeric, the value can be an integer or a string representation of an integer. If the set type is string, the value, after trimming trailing blanks, cannot be wider than the narrowest elementary variable. countedValue is required if codeAs has the value "Dichotomies" and is ignored otherwise.
     }
   \item{elementaryVars}{ A character vector specifying the list of elementary variables that define the set (the list must include at least two variables). Variables can be specified by name or index value (index values represent position in the dataset, starting with 0 for the first variable in file order). When specifying variable names, you can use TO to indicate a range of variables--for example, elementaryVars=c("age TO income") specifies age, income, and all variables between them in the active dataset's dictionary. Variable names must match case with the names as they exist in the active dataset's dictionary. All specified variables must be of the same type (numeric or string).
     }
@@ -558,7 +558,7 @@ catdict1<-spssdictionary.EditCategoricalDictionary(catdict, newName=c("sex",NA,"
 print(catdict1)
 
 
-© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2016
 }
 \keyword{classes}
 \keyword{methods}

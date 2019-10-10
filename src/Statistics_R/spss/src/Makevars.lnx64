@@ -1,1 +1,1 @@
-PKG_LIBS=-Wl
+PKG_LIBS=-Wl,-export-dynamic

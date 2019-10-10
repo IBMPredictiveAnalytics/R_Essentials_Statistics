@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2015
+# (c) Copyright IBM Corp. 1989, 2018
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -82,7 +82,7 @@ readSpssVersion <- function()
     ver
 }
 
-readXDPath <- function(lib, pkg)
+readXDPathAndType <- function(lib, pkg)
 {
     spssxdcfg <- file.path(lib, pkg, "spssxdcfg.ini")
     if(!file.exists(spssxdcfg))
@@ -103,6 +103,14 @@ readXDPath <- function(lib, pkg)
         path <- gsub("(^ +)|( +$)", "", path)
     }
     options(spssPath = path)
+    
+    type <- "onPrem"
+    if(any(i <- grep("SpssxdVersionType",lines,fixed = TRUE )))
+    {
+        type <- unlist(strsplit(lines[i],"="))[2]
+        type <- gsub("(^ +)|( +$)", "", path)
+    }
+    options(spssType = type)
 }
 
 setenvs <- function()
@@ -158,7 +166,7 @@ spss.generalErr <- NULL
 spss_package <- NULL
 spss.lib <- NULL
 spss.pkg <- NULL
-spssNamespace <- "spss240"
+spssNamespace <- "spss260"
 spss.language <- NULL
 
 .onAttach <- function(lib, pkg)
@@ -195,7 +203,7 @@ spss.language <- NULL
             unlockBinding("last.SpssError", asNamespace(spssNamespace))
     
     spss_package <<- pkg
-    readXDPath(lib, pkg)
+    readXDPathAndType(lib, pkg)
     spssdx_version <<- readSpssVersion()
     plugin_version <<- readPkgVersion(lib, pkg)
 
@@ -221,7 +229,7 @@ spss.language <- NULL
     spss.pkg <<- pkg
     spss.errtable <<- getErrTable(spss.language,lib,pkg)
     spss.generalErr <<- getGeneralErr(spss.language,lib,pkg)
-    extrapath(getOption("spssPath"))
+    extrapath(getOption("spssPath"), getOption("spssType"))
 }
 
 .onDetach <- function(libpath)

@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2015
+# (c) Copyright IBM Corp. 1989, 2018
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -545,9 +545,16 @@ disconnection <- function()
 
           
 
-extrapath <- function(spssPath)
+extrapath <- function(spssPath, spssType)
 {
-    majorVer=unlist(strsplit(plugin_version[[1]],"\\."))[1]
+    if (spssType == "Subscription")
+    {
+        majorVer <- spssType
+    }
+    else
+    {
+        majorVer=unlist(strsplit(plugin_version[[1]],"\\."))[1]
+    }
     
     ##set spss application data path for extension
     defaultlibpath = .libPaths()
@@ -577,15 +584,12 @@ extrapath <- function(spssPath)
     
     #set spss default extension path 
     defaultlibpath = .libPaths()
-    if ( length(grep("darwin", R.Version()$os, ignore.case=TRUE)) > 0 )
-    {
-        spssExtension = file.path("/Library/Application Support/IBM/SPSS/Statistics", majorVer, "extensions")
-    }
-    else
+    if ( length(grep("darwin", R.Version()$os, ignore.case=TRUE)) <= 0 )
     {
         spssExtension = file.path(spssPath, "extensions" )
+        .libPaths(c(spssExtension, defaultlibpath))
     }
-    .libPaths(c(spssExtension, defaultlibpath))
+    
     
     if ("windows" == .Platform$OS.type)
     {
@@ -1053,8 +1057,13 @@ spsspkg.Submit <- function(commands)
         {
             for ( command in tempVec[1:tempLen-1] )
             {
-                cmdLength <- nchar(command)
-                out <- .C("ext_QueueCommandPart", as.character(command), as.integer(cmdLength), as.integer(errLevel), PACKAGE=spss_package)
+                tmpCmd <- unicodeConverterInput(command)
+                cmdLength <- nchar(tmpCmd)
+                if ("windows" != .Platform$OS.type)
+                {
+                    tmpCmd <- command
+                }
+                out <- .C("ext_QueueCommandPart", as.character(tmpCmd), as.integer(cmdLength), as.integer(errLevel), PACKAGE=spss_package)
                 last.SpssError <<- out[[3]]
                 if( is.SpssError(last.SpssError))
                     stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
@@ -1066,8 +1075,13 @@ spsspkg.Submit <- function(commands)
             postOutputToSpss()
         }
         
-        cmdLength <- nchar(tempVec[tempLen])
-        out <- .C("ext_Submit", as.character(tempVec[tempLen]), as.integer(cmdLength), as.integer(errLevel), PACKAGE=spss_package)
+        tmpCmd <- unicodeConverterInput(tempVec[tempLen])
+        cmdLength <- nchar(tmpCmd)
+        if ("windows" != .Platform$OS.type)
+        {
+            tmpCmd <- tempVec[tempLen]
+        }
+        out <- .C("ext_Submit", as.character(tmpCmd), as.integer(cmdLength), as.integer(errLevel), PACKAGE=spss_package)
         if(getOption("runStartStatistics") && getOption("statsOutputInR"))
         {
             postOutputToR()

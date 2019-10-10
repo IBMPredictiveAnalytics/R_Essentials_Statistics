@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM?SPSS?Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2015
+** (c) Copyright IBM Corp. 1989, 2018
 ** 
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -750,7 +750,7 @@ DLL_API int  pre_action()
     if(0 == curnest)
     {
         DxRunning = 1;
-        SPSS_SetSyntax("library(spss240)\nprespss()");
+        SPSS_SetSyntax("library(spss260)\nprespss()");
     }
     else
     {

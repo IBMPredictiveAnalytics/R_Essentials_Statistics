@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2015
+# (c) Copyright IBM Corp. 1989, 2018
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -297,7 +297,10 @@ unicodeConverterInput <- function(x)
             }
             Encoding(x[[i]])<-"native.enc"    
     		}else{
-    			Encoding(x[[i]])<-"native.enc"   
+                if(Encoding(x[[i]]) == "UTF-8")
+                    x[[i]] <- iconv(x[[i]], from="UTF-8")
+    			
+                Encoding(x[[i]])<-"latin1"   
     		}
   		}
 		}
