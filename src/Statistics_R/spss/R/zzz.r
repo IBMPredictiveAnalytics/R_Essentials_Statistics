@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2018
+# (c) Copyright IBM Corp. 1989, 2021
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -95,12 +95,23 @@ readXDPathAndType <- function(lib, pkg)
                   sep='\n',
                   skip=1,
                   quiet=TRUE)
-                  
+
     path <- ""
     if(any(i <- grep("spssxd_path",lines,fixed = TRUE )))
     {
         path <- unlist(strsplit(lines[i],"="))[2]
         path <- gsub("(^ +)|( +$)", "", path)
+    }
+    if (is.na(path) || path == "")
+    {
+        if (Sys.info()["sysname"] == "Darwin")
+        {
+            path <- file.path(dirname(dirname(dirname(lib))), "SPSS Statistics.app", "Contents")
+        }
+        else
+        {
+            path <- dirname(dirname(lib))
+        }
     }
     options(spssPath = path)
     
@@ -166,7 +177,7 @@ spss.generalErr <- NULL
 spss_package <- NULL
 spss.lib <- NULL
 spss.pkg <- NULL
-spssNamespace <- "spss260"
+spssNamespace <- "spssstatistics"
 spss.language <- NULL
 
 .onAttach <- function(lib, pkg)

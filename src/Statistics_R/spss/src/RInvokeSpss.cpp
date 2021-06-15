@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2015
+** (c) Copyright IBM Corp. 1989, 2021
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -50,8 +50,6 @@
   #define GETADDRESS       dlsym
   #ifdef DARWIN
    #define LIBNAME         "libspssxd_p.dylib"
-  #elif HPUX64
-   #define LIBNAME         "libspssxd_p.sl"
   #else
    #define LIBNAME         "libspssxd_p.so"
   #endif
@@ -206,6 +204,9 @@ extern "C"{
     static R_NativePrimitiveArgType IsXDrivenArgs[1] = {INTSXP};
     //===================new APIs in 24.0=======================
     static R_NativePrimitiveArgType IsDistributedModeArgs[1] = {INTSXP};
+    //===================new APIs in 28.0=======================
+    static R_NativePrimitiveArgType InitXProcessArgs[6] = {STRSXP,STRSXP,STRSXP,STRSXP,STRSXP,INTSXP};
+    static R_NativePrimitiveArgType StopReceiveXdApiThreadArgs[1] = {INTSXP};
     
     // The method of using .C from R
     static const R_CMethodDef cMethods[] = {
@@ -312,7 +313,7 @@ extern "C"{
         {"ext_SetFormatSpecSum",(DL_FUNC)&ext_SetFormatSpecSum,2,SetFormatSpecSumArgs},       
         {"ext_GetGraphic",(DL_FUNC)&ext_GetGraphic,2,GetGraphicArgs},
         {"ext_GetSPSSLocale",(DL_FUNC)&ext_GetSPSSLocale,2,GetSPSSLocaleArgs},
-        {"ext_GetCLocale",(DL_FUNC)&ext_GetCLocale,2,GetSPSSLocaleArgs},        
+        {"ext_GetCLocale",(DL_FUNC)&ext_GetCLocale,2,GetCLocaleArgs},        
         {"ext_SetCLocale",(DL_FUNC)&ext_SetCLocale,1,SetCLocaleArgs},
         {"ext_SetOutputLanguage",(DL_FUNC)&ext_SetOutputLanguage,2,SetOutputLanguageArgs},
         {"ext_SetDateCell",(DL_FUNC)&ext_SetDateCell,11,SetDateCellArgs},
@@ -326,6 +327,8 @@ extern "C"{
         {"ext_IsBackendReady",(DL_FUNC)&ext_IsBackendReady,1,IsBackendReadyArgs},
         {"ext_IsXDriven",(DL_FUNC)&ext_IsXDriven,1,IsXDrivenArgs},
         {"ext_IsDistributedMode",(DL_FUNC)&ext_IsDistributedMode,1,IsDistributedModeArgs},
+        {"ext_InitXProcess",(DL_FUNC)&ext_InitXProcess,6,InitXProcessArgs},
+        {"ext_StopReceiveXdApiThread",(DL_FUNC)&ext_StopReceiveXdApiThread,1,StopReceiveXdApiThreadArgs},
         {0,0,0}
     };
 
@@ -675,6 +678,17 @@ extern "C"{
     static int         (*SetNCellValueFromCache)(const char* dsName, const int columnIndex, const double value) = 0;
     static int         (*SetCCellValueFromCache)(const char* dsName, const int columnIndex, const char* value) = 0;
     static int         (*SetCasePartValue)(const char* dsName, const int rowIndex, int* columnIndexList, bool isCache, int size) = 0;
+
+    //===================new APIs in 28.0=======================
+    static void        (*InitXProcess)(
+                                        const char* statsProcName, 
+                                        const char* pPath, 
+                                        const char* pPid, 
+                                        const char* xProcName,
+                                        const char* xHome
+                                      ) = 0;
+    static int          (*StopReceiveXdApiThread)() = 0;
+
     
     //Initialize the function pointer
     void InitializeFP()
@@ -906,83 +920,85 @@ extern "C"{
         SetNCellValueFromCache = (int (*)(const char*, const int, const double))GETADDRESS(pLib, "SetNCellValueFromCache");
         SetCCellValueFromCache = (int (*)(const char*, const int, const char*))GETADDRESS(pLib, "SetCCellValueFromCache");
         SetCasePartValue = (int (*)(const char*, const int, int*, bool, int))GETADDRESS(pLib, "SetCasePartValue");
+
+        //===================new APIs in 28.0=======================
+        InitXProcess = (void (*)(const char*, const char*, const char*, const char*, const char*))GETADDRESS(pLib, "InitXProcess");
+        StopReceiveXdApiThread = (int (*)())GETADDRESS(pLib, "StopReceiveXdApiThread");
     }
 
     //load spssxd_p.dll
-  int LoadLib()
-  {
-
-    // The object holding the new PATH env string cannot go out of scope.
-    const char* spsshome = NULL;
-    char* libPath = NULL;
-    if (getenv("SPSS_HOME")) {
-        spsshome = getenv("SPSS_HOME");
-    }
-    if (NULL == spsshome){
-        int libLen = strlen(libName)+1;
-        libPath = new char[libLen];
-        memset(libPath,'\0',libLen);
-        strcpy(libPath,libName);
-    }
-    else{
+    int LoadLib()
+    {
+        // The object holding the new PATH env string cannot go out of scope.
+        if(NULL == pLib)
+        {
+            const char* spsshome = NULL;
+            char* libPath = NULL;
+            if (getenv("SPSS_HOME")) {
+                spsshome = getenv("SPSS_HOME");
+            }
+            if (NULL == spsshome){
+                int libLen = strlen(libName)+1;
+                libPath = new char[libLen];
+                memset(libPath,'\0',libLen);
+                strcpy(libPath,libName);
+            }
+            else
+            {
 #ifdef MS_WINDOWS
-    int libLen = strlen(spsshome) + strlen(libName) + 2;
-    libPath = new char[libLen];
-    memset(libPath,'\0',libLen);
-    strcpy(libPath,spsshome);
-    if(spsshome[strlen(spsshome)-1] != '\\')
-        strcat(libPath,"\\");
-    strcat(libPath,libName);
+                int libLen = strlen(spsshome) + strlen(libName) + 2;
+                libPath = new char[libLen];
+                memset(libPath,'\0',libLen);
+                strcpy(libPath,spsshome);
+                if(spsshome[strlen(spsshome)-1] != '\\')
+                    strcat(libPath,"\\");
+                strcat(libPath,libName);
 #else
-    int libLen = strlen(spsshome) + strlen(libName) + 20;
-    libPath = new char[libLen];
-    memset(libPath,'\0',libLen);
-    strcpy(libPath,spsshome);
-    strcat(libPath,"/lib/");
-    strcat(libPath,libName);
+                int libLen = strlen(spsshome) + strlen(libName) + 20;
+                libPath = new char[libLen];
+                memset(libPath,'\0',libLen);
+                strcpy(libPath,spsshome);
+                strcat(libPath,"/lib/");
+                strcat(libPath,libName);
 #endif
-}
-    if(NULL == pLib) {
+            }
 
 #ifdef MS_WINDOWS
-         //find out spssxd module, it will success when spss drive
-         pLib = GetModuleHandle(libPath);
-         //find out spssxd module failure, load it.
-         if(NULL == pLib){
-             pLib = LoadLibraryEx(libPath,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
-         }
-//         // force to load libifcoremd.dll
-//         if (NULL == pLib1){
-//           pLib1 = LoadLibrary("libifcoremd.dll");
-//         }
+            //find out spssxd_p module, it will success when spss drive
+            pLib = GetModuleHandle(libPath);
+            //find out spssxd_p module failure, load it.
+            if(NULL == pLib)
+            {
+                pLib = LoadLibraryEx(libPath,NULL,LOAD_WITH_ALTERED_SEARCH_PATH);
+            }
 #else
-         int mode;
-         #ifdef DARWIN
-             mode = RTLD_LOCAL;     
-         #else
-             mode = RTLD_NOW | RTLD_GLOBAL;
-         #endif
-         
-         pLib = dlopen(libPath,mode);
-#endif
-    }
-   if (pLib) {
-     InitializeFP();
-   }
-   else {//load failure
-       #ifndef MS_WINDOWS
-       char *perr = dlerror();
-       if(perr) {
-           printf("dlopen fails with error: %s.\n",perr);
-       }
-       #endif
-       delete []libPath;
-       return LOAD_FAIL;
-   }
-   delete []libPath;
+            int mode;
+            #ifdef DARWIN
+                mode = RTLD_LOCAL;     
+            #else
+                mode = RTLD_NOW | RTLD_GLOBAL;
+            #endif
 
-   return LOAD_SUCCESS;
-  }
+            pLib = dlopen(libPath,mode);
+#endif
+            if (pLib) {
+                InitializeFP();
+            }
+            else {//load failure
+#ifndef MS_WINDOWS
+                char *perr = dlerror();
+                if(perr) {
+                    printf("dlopen fails with error: %s.\n",perr);
+                }
+#endif
+                delete []libPath;
+                return LOAD_FAIL;
+            }
+            delete []libPath;
+        }
+
+        return LOAD_SUCCESS;
+    }
 
     //unload spssxd_p.dll
     void FreeLib()
@@ -1151,6 +1167,10 @@ extern "C"{
         SetNCellValueFromCache = 0;
         SetCCellValueFromCache = 0;
         SetCasePartValue = 0;
+
+        //===================new APIs in 28.0=======================
+        InitXProcess = 0;
+        StopReceiveXdApiThread = 0;
     }
 
     void ext_PostOutput(
@@ -2027,7 +2047,7 @@ extern "C"{
             *weightVar = GetWeightVar(*errLevel);
             if(0 != *errLevel)
             {
-                *weightVar = "";
+                *weightVar = (char*)"";
             }
         }
     }
@@ -3475,26 +3495,30 @@ extern "C"{
             *isRemote = 1;
         }
     }
-    
-    
-///////////////////////===============================================
-    void 
-        R_init_RInvokeSpss(DllInfo *info)
+
+    //===================new APIs in 28.0=======================
+    void ext_InitXProcess(
+                            const char** statsProcName, 
+                            const char** pPath, 
+                            const char** pPid, 
+                            const char** xProcName,
+                            const char** xHome,
+                            int* errLevel
+                         )
     {
-        R_registerRoutines(
-            info,
-            cMethods,
-            callMethods,
-            0,
-            0
-            );
-        LoadLib();
+        int errCode = LoadLib();
+        if (LOAD_SUCCESS == errCode)
+        {
+            InitXProcess(*statsProcName, *pPath, *pPid, *xProcName, *xHome);
+        }
     }
 
-    void
-        R_unload_RInvokeSpss(DllInfo *info)
+    void ext_StopReceiveXdApiThread(int* errLevel)
     {
-        FreeLib();
-        return;
+        int errCode = LoadLib();
+        if (LOAD_SUCCESS == errCode)
+        {
+            *errLevel = StopReceiveXdApiThread();
+        }
     }
 }

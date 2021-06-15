@@ -3,7 +3,6 @@ RUtilities Module
 Introduction
 ------------
 This SDK directory is used to:
-    -- Support use of the R browser() function to debug R code executed from the IBM® SPSS® Statistics - Integration Plug-In for R.
     -- Support installation of R packages.
 
 Environment Variables
@@ -21,4 +20,4 @@ Usage
      Copy the content under the MacOS subdirectory to <SPSS_HOME>/bin
 
 
-© Copyright IBM Corp. 1989, 2013
+© Copyright IBM Corp. 1989, 2021

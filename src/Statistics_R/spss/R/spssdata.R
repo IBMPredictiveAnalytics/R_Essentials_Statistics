@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2015
+# (c) Copyright IBM Corp. 1989, 2021
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -341,8 +341,6 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
         gc(verbose = FALSE)
     }
     else{
-        stringsAsFactors <- unlist(options("stringsAsFactors"))[[1]]
-        options("stringsAsFactors" = TRUE )
         warn <- unlist(options("warn"))[[1]]
         options("warn" = 2 )
     
@@ -350,7 +348,7 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
         {
             value <- result
             names(value) <- varNames
-            value <- data.frame(value)
+            value <- data.frame(value, stringsAsFactors = TRUE)
             rm(result)
             gc(verbose = FALSE)
             rm(varNames)
@@ -360,14 +358,13 @@ spssdata.GetDataFromSPSS <- function(variables=NULL,
         {
             value <- result[1:length(result)-1]
             names(value) <- varNames[1:length(varNames)-1]
-            value <- data.frame(value)
+            value <- data.frame(value, stringsAsFactors = TRUE)
             row.names(value) <- result[[length(result)]]
             rm(result)
             gc(verbose = FALSE)
             rm(varNames)
             gc(verbose = FALSE)
         }
-        options("stringsAsFactors" = stringsAsFactors)
         options("warn" = warn )
     }
     

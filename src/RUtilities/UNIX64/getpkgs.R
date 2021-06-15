@@ -3,7 +3,7 @@
 # *
 # * IBM SPSS Products: Statistics Common
 # *
-# * (C) Copyright IBM Corp. 1989, 2015
+# * (C) Copyright IBM Corp. 1989, 2021
 # *
 # * US Government Users Restricted Rights - Use, duplication or disclosure
 # * restricted by GSA ADP Schedule Contract with IBM Corp. 
@@ -16,9 +16,10 @@ if ("" != Sys.getenv("SPSS_RPACKAGES_PATH")){
     .libPaths(c(spss_pkg_path, defaultlibpath))
 }
 if ("windows" == .Platform$OS.type){
-    if (!dir.exists(Sys.getenv("R_LIBS_USER"))){
-        dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
-        .libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()))
+    userFirstLibPath = strsplit(Sys.getenv("R_LIBS_USER"), ";")[[1]][1]
+    if (!dir.exists(userFirstLibPath)){
+        dir.create(userFirstLibPath, recursive = TRUE)
+        .libPaths(c(userFirstLibPath, .libPaths()))
     }
 }
 
@@ -53,17 +54,25 @@ for (i in 1:length(pkgs)){
 
 if (strsplit(Sys.getlocale("LC_CTYPE"),"_")[[1]][1] == "Chinese" || strsplit(Sys.getlocale("LC_CTYPE"),"_")[[1]][1] == "zh")
 {
-    downloadrepos = "http://ftp.ctex.org/mirrors/CRAN"
+    downloadrepos = "https://mirrors.bfsu.edu.cn/CRAN"
 }else
 {
-    downloadrepos = "http://cran.r-project.org"
+    downloadrepos = "https://cran.r-project.org"
 }
 
 if (!is.null(pkgstoget)){
     pkgsfailed<-c()
+
+    pkgType <- "source"
+    if ("windows" == .Platform$OS.type) {
+        pkgType = "binary"
+    }
+    else if (Sys.info()['sysname'] == "Darwin") {
+        pkgType = "mac.binary"
+    }
     for (i in 1:length(pkgstoget)){
         for (j in 1:length(.libPaths())){
-            res<-tryCatch(install.packages(pkgstoget[[i]], lib=.libPaths()[[j]], repos=downloadrepos),error=function(e){return(FALSE)})
+            res<-tryCatch(install.packages(pkgstoget[[i]], lib=.libPaths()[[j]], repos=downloadrepos, type=pkgType),error=function(e){return(FALSE)})
             res<-tryCatch(library(pkgstoget[[i]], character.only=TRUE),error=function(e){return(FALSE)})
             if (!identical(res,FALSE)) break
         }

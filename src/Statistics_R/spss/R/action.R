@@ -1,6 +1,6 @@
 #############################################
 # IBM?SPSS?Statistics - Essentials for R
-# (c) Copyright IBM Corp. 1989, 2018
+# (c) Copyright IBM Corp. 1989, 2021
 #
 #This program is free software; you can redistribute it and/or modify
 #it under the terms of the GNU General Public License version 2 as published by
@@ -188,6 +188,7 @@ prespss <- function()
     ##for the first call R plug-in, the toStatOutputView will be set to TRUE.
     initPackage()
     
+    options(error = message)
     options(hasBrowser = FALSE)
     spss.PivotTableMap <<- list()
     spss.DimensionMap <<- list()
@@ -393,6 +394,7 @@ postspss <- function()
         .C("ext_EndProcedure",as.integer(err),PACKAGE=spss_package)
         options(is.pvTableConnectionOpen = FALSE)
     }
+    .C("ext_StopReceiveXdApiThread",as.integer(err),PACKAGE=spss_package)
 }
 
 
@@ -547,7 +549,7 @@ disconnection <- function()
 
 extrapath <- function(spssPath, spssType)
 {
-    if (spssType == "Subscription")
+    if (spssType == "SubscriptionEA")
     {
         majorVer <- spssType
     }
@@ -560,24 +562,16 @@ extrapath <- function(spssPath, spssType)
     defaultlibpath = .libPaths()
     if ("windows" == .Platform$OS.type)
     {
-        app_path = Sys.getenv("LOCALAPPDATA")
-	    if ( !file.exists(app_path ) )
-	    {
-		    app_path = file.path(Sys.getenv("USERPROFILE"), "AppData\\Local")
-		    if ( !file.exists(app_path ) )
-		    {
-			    app_path = file.path(Sys.getenv("USERPROFILE"), "Local Settings\\Application Data")
-		    }
-	    }
-	    spss_app_path = file.path(app_path, "IBM\\SPSS\\Statistics")
+        app_path = Sys.getenv("APPDATA")
+	    spss_app_path = file.path(app_path, "IBM\\SPSS Statistics")
     }
     else if ( length(grep("darwin", R.Version()$os, ignore.case=TRUE)) > 0 )
     {
-        spss_app_path = file.path(Sys.getenv("HOME"), "Library/Application Support/IBM/SPSS/Statistics")
+        spss_app_path = file.path(Sys.getenv("HOME"), "Library/Application Support/IBM/SPSS Statistics")
     }
     else
     {
-        spss_app_path = file.path(Sys.getenv("HOME"), ".IBM/SPSS/Statistics")
+        spss_app_path = file.path(Sys.getenv("HOME"), ".IBM/SPSS Statistics")
     }
     spss_ext_app_path = file.path(spss_app_path, majorVer, "extensions")
     .libPaths(c(spss_ext_app_path, defaultlibpath))
@@ -588,14 +582,6 @@ extrapath <- function(spssPath, spssType)
     {
         spssExtension = file.path(spssPath, "extensions" )
         .libPaths(c(spssExtension, defaultlibpath))
-    }
-    
-    
-    if ("windows" == .Platform$OS.type)
-    {
-        defaultlibpath = .libPaths()
-        profile_path = file.path(Sys.getenv("ALLUSERSPROFILE"), "IBM\\SPSS\\Statistics", majorVer, "extensions")
-        .libPaths(c(profile_path, defaultlibpath))
     }
     
     if ("" != Sys.getenv("SPSS_EXTENSIONS_PATH")){
@@ -949,6 +935,23 @@ postOutputToR <- function()
     options(filePosForRDriven = tempLines)
 }
 
+initRProcess <- function(procName, pPath, pPid, rProcessName)
+{
+    errLevel <- 0
+    rHome <- normalizePath(R.home())
+
+    out <- .C("ext_InitXProcess", as.character(procName), 
+                                as.character(pPath),
+                                as.character(pPid),
+                                as.character(rProcessName),
+                                as.character(rHome),
+                                as.integer(errLevel), PACKAGE=spss_package)
+
+    last.SpssError <<- out[[6]]
+    if( is.SpssError(last.SpssError))
+        stop(printSpssError(last.SpssError),call. = getOption("SPSSStatisticsTraceback"), domain = NA)
+}
+
 spsspkg.StartStatistics <- function(hide="", show="", nfc=TRUE, nl=TRUE)
 {
     errLevel <- 0
@@ -985,8 +988,12 @@ spsspkg.StartStatistics <- function(hide="", show="", nfc=TRUE, nl=TRUE)
             {
                 unlink(tempfullname)
             }
+
+            spssHome <- "-spsshome"
+            spssHome <- paste(spssHome, getOption("spssPath"), sep="=")
             
-            commandLine <- paste("-out", tempfullname)
+            commandLine <- paste(spssHome, "-out", sep=",")
+            commandLine <- paste(commandLine, tempfullname)
             commandLine <- paste(commandLine, cmd, sep="")
             out <- .C("ext_StartSpss", as.character(commandLine), as.integer(errLevel), PACKAGE=spss_package)
             last.SpssError <<- out[[2]]

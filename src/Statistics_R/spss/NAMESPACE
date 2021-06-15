@@ -1,8 +1,9 @@
-useDynLib(spss260)
+useDynLib(spssstatistics)
 
 export(
     prespss,
     postspss,
+    initRProcess,
     SetOutputFromBrowser,
     GetOutput,
     spssxmlworkspace.CreateXPathDictionary,

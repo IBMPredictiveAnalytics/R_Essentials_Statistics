@@ -1,6 +1,6 @@
 /************************************************************************
 ** IBM® SPSS® Statistics - Essentials for R
-** (c) Copyright IBM Corp. 1989, 2015
+** (c) Copyright IBM Corp. 1989, 2021
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License version 2 as published by
@@ -497,18 +497,17 @@ RINVOKESPSS_API void ext_IsXDriven(int* isXdrive);
 //===================new APIs in 24.0=======================
 RINVOKESPSS_API void ext_IsDistributedMode(int* isRemote);
 
-//===================R initialize=========================
+//===================new APIs in 28.0=======================
+RINVOKESPSS_API void ext_InitXProcess(
+                                      const char** statsProcName, 
+                                      const char** pPath, 
+                                      const char** pPid, 
+                                      const char** xProcName,
+                                      const char** xHome,
+                                      int* errLevel
+                                     );
 
-  /*
-   * This routine will be invoked when R loads the shared InvokeSPSS DLL.
-   * It registers InvokeSPSS DLL with R.
-   */
-   RINVOKESPSS_API void R_init_RInvokeSPSS(DllInfo *info);
-  
-  /*
-   * This routine will be invoked when R unloads the shared InvokeSPSS DLL.
-   */
-  RINVOKESPSS_API void R_unload_RInvokeSPSS(DllInfo *info);
+RINVOKESPSS_API void ext_StopReceiveXdApiThread(int* errLevel);
   
 }
 
