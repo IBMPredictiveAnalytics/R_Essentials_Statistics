@@ -16,7 +16,7 @@
 An interface to use R with IBM SPSS Statistics
 }
 \description{
-This package provides an interface to use R with IBMÂ® SPSSÂ® Statistics. You can run IBM SPSS Statistics from an external R process, such as an R IDE or the R interpreter. In this mode, the R program starts up a new instance of the IBM SPSS Statistics processor without an associated instance of the IBM SPSS Statistics client. You can also run R code from within IBM SPSS Statistics by wrapping the code in BEGIN PROGRAM R - END PROGRAM blocks of command syntax.  
+This package provides an interface to use R with IBM® SPSS® Statistics. You can run IBM SPSS Statistics from an external R process, such as an R IDE or the R interpreter. In this mode, the R program starts up a new instance of the IBM SPSS Statistics processor without an associated instance of the IBM SPSS Statistics client. You can also run R code from within IBM SPSS Statistics by wrapping the code in BEGIN PROGRAM R - END PROGRAM blocks of command syntax.  
 
 The help for the spss package is organized into the following topics, in addition to the functions described in this help file:\cr
 
@@ -35,8 +35,8 @@ Detailed help is available in the IBM SPSS Statistics help system under "Integra
 \tabular{ll}{
 Package: \tab spss\cr
 Type: \tab Package\cr
-Version: \tab 26.0\cr
-Date: \tab 2016-04-25\cr
+Version: \tab 28.0\cr
+Date: \tab 2021-04-25\cr
 }
 spsspkg.GetOutputLanguage retrieves the output language of the IBM SPSS Statistics processor.\cr
 
@@ -131,8 +131,9 @@ isDistributed <- spsspkg.IsDistributedMode()
 print(isDistributed)
 
 
-Â© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2021
 }
 \note{
 To drive IBM SPSS Statistics from an external R process, call the spsspkg.StartStatistics function after loading the spssstatistics package. 
 You execute IBM SPSS Statistics command syntax with the spsspkg.Submit function (described in \code{\link{external}}). Tabular output from IBM SPSS Statistics is displayed as plain text in R. Graphical output from IBM SPSS Statistics is not displayed in R. Note that the spsspkg.Submit function starts up IBM SPSS Statistics if it is not already running.
+}

@@ -23,8 +23,6 @@
       \item{\code{data}:}{contains the index value (varID) of the associated variable.}
    }
 }
-
-}
 \seealso{
    \code{\link{spsspivottable}},
    \code{\link{BasePivotTable}},
@@ -32,7 +30,7 @@
    \code{\link{CellText.String}},
    \code{\link{CellText.VarValue}}
 
-© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2021
 }
 \details{
   This class is used to store variable names that are then used as cell values, dimension values, category values or

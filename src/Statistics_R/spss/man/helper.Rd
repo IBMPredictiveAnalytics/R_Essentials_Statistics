@@ -1,9 +1,7 @@
 \name{spsspkg.helper}
 \alias{spsspkg.helper}
 \alias{help}
-\title{
 \title{Display extension command help}
-}
 \description{
 Display html help for an extension command in the default browser.
 }
@@ -26,7 +24,7 @@ None
 spsspkg.helper("STATS_HECKMAN_REGR")
 
 
-© Copyright IBM Corp. 1989, 2015
+© Copyright IBM Corp. 1989, 2021
 }
 
 \keyword{documentation}
