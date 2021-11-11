@@ -291,7 +291,16 @@ prespss <- function()
 
     codepageName <- getCodePageMap(getOption("spssLocale"))
     if( isUnicodeOn || l10n_info()$'UTF-8')
-        fp <- file(tempfullname, open="at", encoding="UTF-8")
+    {
+        if ("windows" == .Platform$OS.type)
+        {
+            fp <- file(tempfullname, open="at", encoding="latin1")
+        }
+        else
+        {
+            fp <- file(tempfullname, open="at", encoding="UTF-8")
+        }
+    }
     else
     {
         if(is.null(codepageName))

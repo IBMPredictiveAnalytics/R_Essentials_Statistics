@@ -63,8 +63,16 @@ readSpssVersion <- function()
         options(spssdxFile = FALSE)
     }        
     
-    options(spssPath = spssExePath)
-    Sys.setenv(SPSS_HOME=spssExePath)
+    if ("windows" == .Platform$OS.type)
+    {
+        Sys.setenv(SPSS_HOME=spssExePath)
+        options(spssPath = spssExePath)
+    }
+    else
+    {
+        Sys.setenv(SPSS_HOME=dirname(spssExePath))
+        options(spssPath = dirname(spssExePath))
+    }
 
     lines <- scan(spssdxcfg,
                   what='character',

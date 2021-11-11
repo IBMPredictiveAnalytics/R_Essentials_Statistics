@@ -1,6 +1,6 @@
 NOTICES AND INFORMATION
 
-IBM SPSS Statistics 28.0 - R Plugin
+IBM SPSS Statistics 28.0.1.0 - R Plugin
 
 The IBM license agreement and any applicable information on the web
 download page for IBM products refers Licensee to this file for details
@@ -31,7 +31,7 @@ Apache Software License 2.0
 
 The Program includes some or all of the following that IBM obtained under the Apache License Version 2.0:
 
-jackson-core 2.9.9, jackson-databind 2.9.9.3, jackson-annotations 2.9.9, Xerces-C++ 3.2.2, ibm-cos-java-sdk-bundle 2.6.1, OpenSSL 1.1.1f, castor-core 1.4.1.spss1.jar, castor-xml 1.4.1.spss1.jar, jackson-annotations 2.10.0, jackson-core 2.10.0, jackson-databind 2.10.0, log4j-1.2-api 2.13.3, log4j-api 2.13.3, log4j-core 2.13.3, SparseBitSet 1.2 , ooxml-shemas 1.4
+jackson-core 2.9.9, jackson-databind 2.9.9.3, jackson-annotations 2.9.9, Xerces-C++ 3.2.2, ibm-cos-java-sdk-bundle 2.6.1, OpenSSL 1.1.1f, castor-core 1.4.1.spss1.jar, castor-xml 1.4.1.spss1.jar, jackson-annotations 2.10.0, jackson-core 2.10.0, jackson-databind 2.10.0, log4j-1.2-api 2.13.3, log4j-api 2.13.3, log4j-core 2.13.3, SparseBitSet 1.2 , ooxml-shemas 1.4, jackson-annotations 2.12.4, jackson-core 2.12.4, jackson-databind 2.12.4
 
 https://opensource.org/licenses/Apache-2.0
 
@@ -9230,7 +9230,7 @@ END OF TERMS AND CONDITIONS - Python Software Foundation License
 
 MIT License 
 
-The Program includes some or all of the following that IBM obtained under the MIT License: renv 0.13.2
+The Program includes some or all of the following that IBM obtained under the MIT License: renv 0.13.2, RapidJSON 1.1.0
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -9240,6 +9240,6 @@ END OF MIT TERMS AND CONDITIONS
 
 
 
-L/N:  L-CZAA-BX375W
-D/N:  L-CZAA-BX375W
-P/N:  L-CZAA-BX375W
+L/N:  L-LLFN-C5TDGU
+D/N:  L-LLFN-C5TDGU
+P/N:  L-LLFN-C5TDGU
